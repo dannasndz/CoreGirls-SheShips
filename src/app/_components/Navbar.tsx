@@ -17,7 +17,7 @@ const navLinks = [
 
 export default function Navbar() {
   return (
-    <header className="w-full bg-cream border-b border-[#E5E0D9] px-6 py-2 flex items-center justify-between">
+    <header className="w-full sticky top-0 z-50 bg-cream border-b border-[#E5E0D9] px-6 py-2 flex items-center justify-between">
       {/* Logo */}
       <Link href="/" className="flex items-center shrink-0">
         <Image
