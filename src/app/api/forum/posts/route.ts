@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -14,7 +16,8 @@ export async function GET() {
     });
 
     return NextResponse.json({ data: posts, error: null });
-  } catch {
+  } catch (err) {
+    console.error("GET /api/forum/posts error:", err);
     return NextResponse.json(
       { data: null, error: "Internal server error" },
       { status: 500 }
@@ -32,7 +35,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { title, content } = await req.json();
+    const { title, content, categories, tags } = await req.json();
 
     if (!title || !content) {
       return NextResponse.json(
@@ -41,10 +44,20 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const validCategories = ["Science", "Technology", "Engineer", "Mathematics"];
+    const cleanCategories = Array.isArray(categories)
+      ? categories.filter((c: string) => validCategories.includes(c))
+      : [];
+    const cleanTags = Array.isArray(tags)
+      ? tags.map((t: string) => t.trim()).filter(Boolean)
+      : [];
+
     const post = await prisma.post.create({
       data: {
         title,
         content,
+        categories: cleanCategories,
+        tags: cleanTags,
         authorId: session.user.id,
       },
       include: {
@@ -53,7 +66,8 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ data: post, error: null }, { status: 201 });
-  } catch {
+  } catch (err) {
+    console.error("POST /api/forum/posts error:", err);
     return NextResponse.json(
       { data: null, error: "Internal server error" },
       { status: 500 }

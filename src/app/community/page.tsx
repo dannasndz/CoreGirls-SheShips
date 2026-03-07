@@ -14,27 +14,23 @@ import {
   MoreHorizontal,
   Plus,
   LogOut,
+  X,
+  Hash,
 } from "lucide-react";
 
 interface Post {
   id: string;
   title: string;
   content: string;
+  categories: string[];
+  tags: string[];
   createdAt: string;
   author: { id: string; username: string };
   _count: { likes: number };
 }
 
-const categories = ["All", "Science", "Technology", "Engineer"];
-
-const trendingTopics = [
-  "#WomenInSTEM",
-  "#NASA",
-  "#NASA",
-  "#WomenInSTEM",
-  "#WomenInSTEM",
-  "#HiWomen",
-];
+const STEM_CATEGORIES = ["Science", "Technology", "Engineer", "Mathematics"];
+const filterOptions = ["All", ...STEM_CATEGORIES];
 
 function timeAgo(dateStr: string) {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -73,6 +69,9 @@ export default function CommunityPage() {
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newContent, setNewContent] = useState("");
+  const [newCategories, setNewCategories] = useState<string[]>([]);
+  const [newTagInput, setNewTagInput] = useState("");
+  const [newTags, setNewTags] = useState<string[]>([]);
   const [posting, setPosting] = useState(false);
 
   const fetchPosts = useCallback(async () => {
@@ -95,6 +94,31 @@ export default function CommunityPage() {
     if (session) fetchPosts();
   }, [session, fetchPosts]);
 
+  const toggleCategory = (cat: string) => {
+    setNewCategories((prev) =>
+      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
+    );
+  };
+
+  const addTag = () => {
+    const tag = newTagInput.trim().replace(/^#/, "");
+    if (tag && !newTags.includes(tag)) {
+      setNewTags((prev) => [...prev, tag]);
+    }
+    setNewTagInput("");
+  };
+
+  const handleTagKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      addTag();
+    }
+  };
+
+  const removeTag = (tag: string) => {
+    setNewTags((prev) => prev.filter((t) => t !== tag));
+  };
+
   const handleCreatePost = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTitle.trim() || !newContent.trim()) return;
@@ -103,11 +127,19 @@ export default function CommunityPage() {
       const res = await fetch("/api/forum/posts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: newTitle, content: newContent }),
+        body: JSON.stringify({
+          title: newTitle,
+          content: newContent,
+          categories: newCategories,
+          tags: newTags,
+        }),
       });
       if (res.ok) {
         setNewTitle("");
         setNewContent("");
+        setNewCategories([]);
+        setNewTags([]);
+        setNewTagInput("");
         setShowCreatePost(false);
         fetchPosts();
       }
@@ -127,7 +159,19 @@ export default function CommunityPage() {
     }
   };
 
-  // Auth gate: show full-page overlay if not logged in
+  // Collect all unique tags from posts for trending
+  const allTags = Array.from(
+    new Set(posts.flatMap((p) => p.tags ?? []))
+  );
+
+  // Filter posts by active category
+  const filteredPosts =
+    activeCategory === "All"
+      ? posts
+      : posts.filter((p) =>
+          (p.categories ?? []).includes(activeCategory)
+        );
+
   if (status === "loading") {
     return (
       <div className="min-h-screen bg-cream flex items-center justify-center">
@@ -169,7 +213,6 @@ export default function CommunityPage() {
         <div className="max-w-7xl mx-auto grid grid-cols-[220px_1fr_260px] gap-6 p-6">
           {/* Left Sidebar */}
           <aside className="space-y-6">
-            {/* Navigation */}
             <div className="rounded-2xl bg-white border border-light-pink p-4 shadow-sm">
               <h3 className="text-sm font-bold text-girly-purple mb-3 font-[family-name:var(--font-fredoka)]">
                 Navigation
@@ -199,7 +242,6 @@ export default function CommunityPage() {
               </nav>
             </div>
 
-            {/* My Groups */}
             <div className="rounded-2xl bg-white border border-light-pink p-4 shadow-sm">
               <h3 className="text-sm font-bold text-girly-purple mb-3 font-[family-name:var(--font-fredoka)]">
                 My groups
@@ -216,7 +258,6 @@ export default function CommunityPage() {
               </ul>
             </div>
 
-            {/* Logout */}
             <button
               onClick={() => signOut()}
               className="flex items-center gap-2 text-sm text-dark-purple/60 hover:text-hot-pink transition px-2"
@@ -238,9 +279,9 @@ export default function CommunityPage() {
                   </span>
                 </h1>
                 <p className="text-dark-purple/70 mt-1 text-sm max-w-xs">
-                  There are {posts.length} discussion{posts.length !== 1 && "s"}{" "}
-                  in your circles of interest. Ready to learn something new
-                  today?
+                  There are {posts.length} discussion
+                  {posts.length !== 1 && "s"} in your circles of interest.
+                  Ready to learn something new today?
                 </p>
               </div>
               <button
@@ -256,7 +297,7 @@ export default function CommunityPage() {
             {showCreatePost && (
               <form
                 onSubmit={handleCreatePost}
-                className="rounded-2xl bg-white border border-light-pink p-5 shadow-sm space-y-3"
+                className="rounded-2xl bg-white border border-light-pink p-5 shadow-sm space-y-4"
               >
                 <input
                   type="text"
@@ -274,6 +315,71 @@ export default function CommunityPage() {
                   className="w-full rounded-lg border border-light-pink bg-cream px-3 py-2 text-dark-purple placeholder:text-dark-purple/40 focus:outline-none focus:ring-2 focus:ring-girly-purple text-sm resize-none"
                   required
                 />
+
+                {/* Category selector */}
+                <div>
+                  <p className="text-xs font-semibold text-dark-purple/60 mb-2">
+                    Categories
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {STEM_CATEGORIES.map((cat) => (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => toggleCategory(cat)}
+                        className={`px-3 py-1 rounded-full text-xs font-medium transition ${
+                          newCategories.includes(cat)
+                            ? "bg-girly-purple text-white"
+                            : "bg-light-pink/30 text-dark-purple hover:bg-light-pink/50"
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tags input */}
+                <div>
+                  <p className="text-xs font-semibold text-dark-purple/60 mb-2">
+                    Tags
+                  </p>
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {newTags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-light-pink/40 text-strong-purple text-xs font-medium"
+                      >
+                        #{tag}
+                        <button
+                          type="button"
+                          onClick={() => removeTag(tag)}
+                          className="hover:text-hot-pink transition"
+                        >
+                          <X size={12} />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <div className="flex-1 relative">
+                      <Hash
+                        size={14}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-purple/30"
+                      />
+                      <input
+                        type="text"
+                        value={newTagInput}
+                        onChange={(e) => setNewTagInput(e.target.value)}
+                        onKeyDown={handleTagKeyDown}
+                        onBlur={addTag}
+                        placeholder="Add a tag and press Enter"
+                        className="w-full rounded-lg border border-light-pink bg-cream pl-8 pr-3 py-1.5 text-dark-purple placeholder:text-dark-purple/40 focus:outline-none focus:ring-2 focus:ring-girly-purple text-xs"
+                      />
+                    </div>
+                  </div>
+                </div>
+
                 <div className="flex gap-2 justify-end">
                   <button
                     type="button"
@@ -295,7 +401,7 @@ export default function CommunityPage() {
 
             {/* Category Filters */}
             <div className="flex gap-2">
-              {categories.map((cat) => (
+              {filterOptions.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
@@ -311,15 +417,17 @@ export default function CommunityPage() {
             </div>
 
             {/* Posts */}
-            {posts.length === 0 && (
+            {filteredPosts.length === 0 && (
               <div className="rounded-2xl bg-white border border-light-pink p-8 shadow-sm text-center">
                 <p className="text-dark-purple/50 text-sm">
-                  No posts yet. Be the first to share something!
+                  {activeCategory === "All"
+                    ? "No posts yet. Be the first to share something!"
+                    : `No posts in ${activeCategory} yet.`}
                 </p>
               </div>
             )}
 
-            {posts.map((post) => (
+            {filteredPosts.map((post) => (
               <article
                 key={post.id}
                 className="rounded-2xl bg-white border border-light-pink p-5 shadow-sm space-y-3"
@@ -345,6 +453,29 @@ export default function CommunityPage() {
                     <MoreHorizontal size={20} />
                   </button>
                 </div>
+
+                {/* Categories + Tags */}
+                {((post.categories ?? []).length > 0 ||
+                  (post.tags ?? []).length > 0) && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {(post.categories ?? []).map((cat: string) => (
+                      <span
+                        key={cat}
+                        className="px-2.5 py-0.5 rounded-full bg-strong-purple/10 text-strong-purple text-xs font-semibold"
+                      >
+                        {cat}
+                      </span>
+                    ))}
+                    {(post.tags ?? []).map((tag: string) => (
+                      <span
+                        key={tag}
+                        className="px-2.5 py-0.5 rounded-full bg-light-pink/40 text-girly-purple text-xs font-medium cursor-pointer hover:bg-light-pink/60 transition"
+                      >
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
 
                 {/* Content */}
                 <h3 className="text-base font-bold text-dark-purple">
@@ -387,14 +518,20 @@ export default function CommunityPage() {
                 Trending Topics
               </h3>
               <div className="flex flex-wrap gap-2">
-                {trendingTopics.map((topic, i) => (
-                  <span
-                    key={i}
-                    className="text-sm text-dark-purple font-medium hover:text-girly-purple cursor-pointer transition"
-                  >
-                    {topic}
-                  </span>
-                ))}
+                {allTags.length > 0 ? (
+                  allTags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="text-sm text-dark-purple font-medium hover:text-girly-purple cursor-pointer transition"
+                    >
+                      #{tag}
+                    </span>
+                  ))
+                ) : (
+                  <p className="text-xs text-dark-purple/40">
+                    No tags yet — add some to your posts!
+                  </p>
+                )}
               </div>
             </div>
 
