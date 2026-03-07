@@ -18,6 +18,9 @@ const baloo2 = Baloo_2({
 export const metadata: Metadata = {
   title: "SheShips",
   description: "Discover your career path",
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 export default function RootLayout({
