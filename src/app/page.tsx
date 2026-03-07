@@ -7,7 +7,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="flex flex-col-reverse md:flex-row items-center justify-between gap-12 px-8 md:px-16 lg:px-24 py-10 md:py-0 md:min-h-[calc(100vh-60px)]">
         {/* Left: Slogan + Buttons */}
-        <div className="flex flex-col items-center md:items-start gap-4 w-full md:w-1/2">
+        <div className="flex flex-col items-center md:items-start gap-6 w-full md:w-1/2">
           <Image
             src="/slogan.svg"
             alt="Meet the woman shaping our world, and join them"
@@ -21,14 +21,14 @@ export default function Home() {
             {/* Take the Quiz button */}
             <Link
               href="/quiz"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-linear-to-br from-girly-purple via-hot-pink to-cute-orange hover:from-cute-orange hover:via-hot-pink hover:to-girly-purple text-white font-semibold text-xl transition-all duration-500 ease-in-out shadow-md"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-linear-to-br from-girly-purple via-hot-pink to-cute-orange hover:from-cute-orange hover:via-hot-pink hover:to-girly-purple text-white font-semibold text-2xl transition-all duration-500 ease-in-out shadow-md"
             >
               Take the Quiz
               <Image
                 src="/quiz-icon.svg"
                 alt="quiz icon"
-                width={18}
-                height={18}
+                width={24}
+                height={24}
                 className="object-contain relative -top-0.5"
               />
             </Link>
@@ -36,7 +36,7 @@ export default function Home() {
             {/* Explore button */}
             <Link
               href="/explore-careers"
-              className="inline-flex items-center px-6 py-3 rounded-full border-2 border-cute-orange text-cute-orange font-semibold text-xl hover:bg-cute-orange hover:text-white transition-all duration-300"
+              className="inline-flex items-center px-6 py-3 rounded-full border-2 border-cute-orange text-cute-orange font-semibold text-2xl hover:bg-cute-orange hover:text-white transition-all duration-300"
             >
               Explore
             </Link>
@@ -58,7 +58,7 @@ export default function Home() {
 
       {/* STEM Section */}
       <section
-        className="relative w-full py-24 px-6 md:px-16 lg:px-24 flex items-center justify-center overflow-hidden"
+        className="relative w-full py-18 px-6 md:px-16 lg:px-24 md:py-24 md:min-h-[calc(80vh-60px)] flex items-center justify-center overflow-hidden"
         style={{
           backgroundImage: "url('/background-pattern.png')",
           backgroundSize: "cover",
@@ -66,7 +66,24 @@ export default function Home() {
         }}
       >
         {/* Purple overlay */}
-        <div className="absolute inset-0 bg-girly-purple/80" />
+        <div className="absolute inset-0 bg-girly-purple/60" />
+
+        {/* Section heading */}
+        <div className="relative z-10 flex flex-col items-center w-full max-w-8xl">
+          <div className="text-center mb-14">
+            <h2
+              className="text-6xl md:text-7xl font-extrabold text-white"
+              style={{ fontFamily: "var(--font-fredoka)" }}
+            >
+              The Future of STEM Needs You
+            </h2>
+            <p
+              className="text-2xl md:text-3xl text-white/80 mt-3 bg-strong-purple/50 px-4 py-2 rounded-full inline-block"
+              style={{ fontFamily: "var(--font-baloo)" }}
+            >
+              Women are underrepresented in every STEM field. You can change that.
+            </p>
+          </div>
 
         {/* Cards grid */}
         <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-10 w-full max-w-8xl">
@@ -78,8 +95,9 @@ export default function Home() {
               letterColor: "text-white",
               wordColor: "text-white",
               titleColor: "text-girly-purple",
+              stat: "Only 33% of researchers worldwide are women.",
               definition:
-                "Explore the natural world through observation, experimentation, and discovery. From biology to chemistry, science is everywhere.",
+                "From Nobel laureate Marie Curie to ecologist Sandra Díaz, women in science are rewriting the rules. Your curiosity could lead the next breakthrough.",
             },
             {
               letter: "T",
@@ -88,8 +106,9 @@ export default function Home() {
               letterColor: "text-white",
               wordColor: "text-white",
               titleColor: "text-hot-pink",
+              stat: "Just 26% of tech professionals are women.",
               definition:
-                "Design and build the tools that shape our future. Technology drives innovation in every industry imaginable.",
+                "Grace Hopper invented the first compiler, and today Latina engineers lead innovation at top companies worldwide. Your ideas belong here.",
             },
             {
               letter: "E",
@@ -98,8 +117,9 @@ export default function Home() {
               letterColor: "text-white",
               wordColor: "text-white",
               titleColor: "text-cute-orange",
+              stat: "Less than 15% of engineers globally are women.",
               definition:
-                "Solve real-world problems by combining creativity and math. Engineers design everything from bridges to robots.",
+                "From bridges to biomedical devices, women engineers solve the world's toughest challenges. Creativity + logic is your superpower.",
             },
             {
               letter: "M",
@@ -108,8 +128,9 @@ export default function Home() {
               letterColor: "text-white",
               wordColor: "text-white",
               titleColor: "text-light-pink",
+              stat: "Maryam Mirzakhani was the first woman to win the Fields Medal.",
               definition:
-                "The universal language behind every field. Math develops logical thinking and powers science, tech, and art.",
+                "Math is the foundation of every STEM field and opens every door. From data science to cryptography — let it open yours.",
             },
           ].map(
             ({
@@ -119,6 +140,7 @@ export default function Home() {
               letterColor,
               wordColor,
               titleColor,
+              stat,
               definition,
             }) => (
               <div
@@ -150,7 +172,7 @@ export default function Home() {
                   {word}
                 </span>
 
-                {/* Hover state: word title + definition */}
+                {/* Hover state: stat + definition */}
                 <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 px-5 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0">
                   <span
                     className={`text-2xl md:text-4xl font-extrabold ${titleColor}`}
@@ -158,6 +180,12 @@ export default function Home() {
                   >
                     {word}
                   </span>
+                  <p
+                    className="text-xs md:text-sm font-bold text-dark-purple/70 text-center uppercase tracking-wide"
+                    style={{ fontFamily: "var(--font-baloo)" }}
+                  >
+                    {stat}
+                  </p>
                   <p
                     className="text-sm md:text-base text-dark-purple text-center leading-relaxed"
                     style={{ fontFamily: "var(--font-baloo)" }}
@@ -169,6 +197,7 @@ export default function Home() {
             ),
           )}
         </div>
+        </div>
       </section>
 
       {/* Career Guide Section */}
@@ -176,21 +205,21 @@ export default function Home() {
         {/* Title */}
         <div className="text-center mb-14">
           <h2
-            className="text-5xl md:text-6xl font-extrabold text-dark-purple"
+            className="text-6xl md:text-7xl font-extrabold text-dark-purple"
             style={{ fontFamily: "var(--font-fredoka)" }}
           >
-            Career Guide
+            Your Journey Starts Here
           </h2>
           <p
-            className="text-2xl md:text-3xl text-dark-purple mt-1"
+            className="text-3xl md:text-4xl text-dark-purple mt-2"
             style={{ fontFamily: "var(--font-baloo)" }}
           >
-            how does it work?
+            three simple steps to find your STEM path
           </p>
         </div>
 
         {/* Steps row */}
-        <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:min-h-[calc(40vh-60px)]">
           {/* Step 1 */}
           <div className="flex flex-col items-center text-center max-w-xs gap-4">
             <div>
@@ -213,9 +242,9 @@ export default function Home() {
                 className="text-lg text-dark-purple mt-1 leading-relaxed"
                 style={{ fontFamily: "var(--font-baloo)" }}
               >
-                7 quick stages where we can learn what do you like.{" "}
+                Take our fun, 7-stage quiz designed just for you.{" "}
                 <span className="text-hot-pink font-semibold">
-                  No previous knowledge needed.
+                  No pressure, no right or wrong answers — just discover what excites you.
                 </span>
               </p>
             </div>
@@ -263,10 +292,10 @@ export default function Home() {
                 className="text-lg text-dark-purple mt-1 leading-relaxed"
                 style={{ fontFamily: "var(--font-baloo)" }}
               >
-                Get your STEM custom profile.{" "}
+                Get a personalized STEM profile based on your unique answers.{" "}
                 <span className="text-girly-purple">
-                  what is that career, what are they doing and why you are the
-                  perfect fit.
+                  Learn what the career looks like, what you'd be doing, and
+                  why you're the perfect match.
                 </span>
               </p>
             </div>
@@ -308,15 +337,15 @@ export default function Home() {
                 className="text-3xl font-extrabold text-cute-orange leading-tight"
                 style={{ fontFamily: "var(--font-fredoka)" }}
               >
-                Women in STEM
+                Meet Your Role Models
               </h3>
               <p
                 className="text-lg text-dark-purple mt-1 leading-relaxed"
                 style={{ fontFamily: "var(--font-baloo)" }}
               >
-                See STEM professionals.{" "}
+                Connect with real women thriving in STEM.{" "}
                 <span className="text-cute-orange">
-                  Their story and how do they got there.
+                  Read their stories, learn from their journeys, and see yourself in their success.
                 </span>
               </p>
             </div>

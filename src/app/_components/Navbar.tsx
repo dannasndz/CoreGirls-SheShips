@@ -40,7 +40,7 @@ export default function Navbar() {
                   href={href}
                   className={
                     highlight
-                      ? "inline-flex items-center gap-2 justify-center px-3 py-2 rounded-full bg-linear-to-r from-strong-purple to-girly-purple hover:from-girly-purple hover:to-hot-pink text-white font-semibold text-sm transition-all duration-500 ease-in-out shadow-md"
+                      ? "inline-flex items-center gap-2 justify-center px-3 py-2 rounded-full bg-linear-to-br from-strong-purple via-strong-purple to-girly-purple hover:from-girly-purple hover:via-hot-pink hover:to-cute-orange text-white font-semibold text-sm transition-all duration-500 ease-in-out shadow-md"
                       : `${navigationMenuTriggerStyle()} font-semibold text-strong-purple bg-transparent hover:bg-girly-purple/10`
                   }
                 >
