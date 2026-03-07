@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fredoka, Baloo_2 } from "next/font/google";
 import { SessionProvider } from "@/components/providers/session-provider";
 import "./globals.css";
+import Navbar from "./_components/Navbar";
 
 const fredokaOne = Fredoka({
   variable: "--font-fredoka",
@@ -30,6 +31,7 @@ export default function RootLayout({
       <body
         className={`${fredokaOne.variable} ${baloo2.variable} antialiased`}
       >
+        <Navbar />
         <SessionProvider>{children}</SessionProvider>
       </body>
     </html>
