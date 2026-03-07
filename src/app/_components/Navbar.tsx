@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Sparkles } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -33,7 +32,7 @@ export default function Navbar() {
 
       {/* Nav links */}
       <NavigationMenu className="hidden md:flex">
-        <NavigationMenuList className="gap-1">
+        <NavigationMenuList className="gap-2">
           {navLinks.map(({ label, href, highlight }) => (
             <NavigationMenuItem key={href}>
               <NavigationMenuLink asChild>
@@ -41,12 +40,20 @@ export default function Navbar() {
                   href={href}
                   className={
                     highlight
-                      ? "inline-flex items-center gap-2 justify-center px-3 py-2 rounded-full bg-linear-to-r from-strong-purple to-girly-purple hover:from-girly-purple hover:to-hot-pink text-white font-semibold text-sm transition-all shadow-md"
+                      ? "inline-flex items-center gap-2 justify-center px-3 py-2 rounded-full bg-linear-to-r from-strong-purple to-girly-purple hover:from-girly-purple hover:to-hot-pink text-white font-semibold text-sm transition-all duration-500 ease-in-out shadow-md"
                       : `${navigationMenuTriggerStyle()} font-semibold text-strong-purple bg-transparent hover:bg-girly-purple/10`
                   }
                 >
-                  {highlight && <Sparkles className="size-4" />}
                   {label}
+                  {highlight && (
+                    <Image
+                      src="/quiz-icon.svg"
+                      alt="quiz icon"
+                      width={18}
+                      height={18}
+                      className="object-contain relative -top-0.5"
+                    />
+                  )}
                 </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
