@@ -1,7 +1,9 @@
 "use client";
 
 import { Career, categoryLabels } from "@/data/careers";
+import { roleModels } from "@/data/roleModels";
 import Image from "next/image";
+import { Linkedin, Flame, BookOpen, Link2, Star } from "lucide-react";
 
 const getCareerImage = (id: string) => {
   if (id === "database-administrator") return "/careers/database-administrato.png";
@@ -20,7 +22,7 @@ export default function CareerModal({ career, onClose }: CareerModalProps) {
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+        className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header with image */}
@@ -31,9 +33,9 @@ export default function CareerModal({ career, onClose }: CareerModalProps) {
             src={getCareerImage(career.id)}
             alt={career.name}
             fill
-            className="object-cover"
+            className="object-cover blur-xs"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-black/10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-black/10" />
 
           <button
             onClick={onClose}
@@ -48,8 +50,9 @@ export default function CareerModal({ career, onClose }: CareerModalProps) {
                 {categoryLabels[career.category]}
               </span>
               {career.growth && (
-                <span className="bg-white/80 text-cute-orange text-xs font-bold px-3 py-1 rounded-full backdrop-blur-sm">
-                  🔥 Trending Career
+                <span className="bg-linear-to-br from-cute-orange/60 to-hot-pink/60 text-white text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-sm flex items-center gap-1">
+                  <Flame size={12} />
+                  Growth
                 </span>
               )}
             </div>
@@ -78,10 +81,11 @@ export default function CareerModal({ career, onClose }: CareerModalProps) {
           {/* What to study */}
           <div>
             <h3
-              className="text-xl font-extrabold text-dark-purple mb-3"
+              className="text-xl font-extrabold text-dark-purple mb-3 inline-flex items-center gap-2"
               style={{ fontFamily: "var(--font-fredoka)" }}
             >
-              📚 What to Study
+              <BookOpen size={20} className="text-girly-purple" />
+              What to Study
             </h3>
             <div className="flex flex-wrap gap-2">
               {career.studyPaths.map((path) => (
@@ -99,10 +103,11 @@ export default function CareerModal({ career, onClose }: CareerModalProps) {
           {/* Related careers */}
           <div>
             <h3
-              className="text-xl font-extrabold text-dark-purple mb-3"
+              className="text-xl font-extrabold text-dark-purple mb-3 inline-flex items-center gap-2"
               style={{ fontFamily: "var(--font-fredoka)" }}
             >
-              🔗 Related Careers
+              <Link2 size={20} className="text-hot-pink" />
+              Related Careers
             </h3>
             <div className="flex flex-wrap gap-2">
               {career.relatedCareers.map((related) => (
@@ -117,39 +122,59 @@ export default function CareerModal({ career, onClose }: CareerModalProps) {
             </div>
           </div>
 
-          {/* Leaders */}
+          {/* Role Models in this field */}
           <div>
             <h3
-              className="text-xl font-extrabold text-dark-purple mb-3"
+              className="text-xl font-extrabold text-dark-purple mb-3 inline-flex items-center gap-2"
               style={{ fontFamily: "var(--font-fredoka)" }}
             >
-              ⭐ Leaders in This Field
+              <Star size={20} className="text-cute-orange" />
+              Women Leading This Field
             </h3>
-            <div className="flex flex-col gap-2">
-              {career.leaders.map((leader) => (
-                <div
-                  key={leader.name}
-                  className="flex items-center gap-3 bg-cream rounded-2xl px-4 py-3"
-                >
-                  <div className="w-10 h-10 rounded-full bg-cute-orange/20 flex items-center justify-center text-lg">
-                    👩‍🔬
+            <div className="flex flex-col gap-3">
+              {roleModels
+                .filter((rm) => rm.category === career.category)
+                .slice(0, 4)
+                .map((rm) => (
+                  <div
+                    key={rm.id}
+                    className="flex items-center gap-3 bg-cream rounded-2xl px-4 py-3"
+                  >
+                    <div className="w-12 h-12 rounded-full overflow-hidden shrink-0">
+                      <Image
+                        src={rm.photo}
+                        alt={rm.name}
+                        width={48}
+                        height={48}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p
+                        className="font-bold text-dark-purple text-sm leading-tight"
+                        style={{ fontFamily: "var(--font-fredoka)" }}
+                      >
+                        {rm.name}
+                      </p>
+                      <p
+                        className="text-dark-purple/50 text-xs truncate"
+                        style={{ fontFamily: "var(--font-baloo)" }}
+                      >
+                        {rm.field} · {rm.country}
+                      </p>
+                    </div>
+                    {rm.linkedin && (
+                      <a
+                        href={rm.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-cute-orange hover:text-hot-pink transition-colors shrink-0"
+                      >
+                        <Linkedin size={16} />
+                      </a>
+                    )}
                   </div>
-                  <div>
-                    <p
-                      className="font-bold text-dark-purple text-sm"
-                      style={{ fontFamily: "var(--font-fredoka)" }}
-                    >
-                      {leader.name}
-                    </p>
-                    <p
-                      className="text-dark-purple/60 text-xs"
-                      style={{ fontFamily: "var(--font-baloo)" }}
-                    >
-                      {leader.country}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         </div>
