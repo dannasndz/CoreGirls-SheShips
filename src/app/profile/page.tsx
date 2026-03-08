@@ -52,6 +52,20 @@ export default function ProfilePage() {
 
   const events = profile.eventAttendances.map((a) => a.event);
 
+  const quizResultUrl = profile.quizResult
+    ? (() => {
+        const score = (profile.quizResult.answers as { score?: { S?: number; T?: number; E?: number; M?: number } })?.score ?? {};
+        const params = new URLSearchParams({
+          career: profile.quizResult.career,
+          S: String(score.S ?? 0),
+          T: String(score.T ?? 0),
+          E: String(score.E ?? 0),
+          M: String(score.M ?? 0),
+        });
+        return `/quiz/result?${params.toString()}`;
+      })()
+    : null;
+
   return (
     <div className="min-h-[calc(100vh-56px)] flex flex-col md:flex-row">
 
@@ -163,7 +177,7 @@ export default function ProfilePage() {
                   {t("profile.taken", { date: formatDate(profile.quizResult.createdAt) })}
                 </p>
                 <Link
-                  href="/quiz/result"
+                  href={quizResultUrl ?? "/quiz/result"}
                   className="text-xs text-white font-semibold mt-2 inline-block hover:underline transition-colors"
                 >
                   {t("profile.viewResults")}
