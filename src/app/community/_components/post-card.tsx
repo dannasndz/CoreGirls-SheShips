@@ -4,6 +4,14 @@ import { useState } from "react";
 import { Heart, MessageCircle, MoreHorizontal } from "lucide-react";
 import { timeAgo, getInitial, getAvatarColor, PostData } from "./helpers";
 import { CommentsSection } from "./comments-section";
+import { useI18n } from "@/lib/i18n";
+
+const categoryLabelKeys: Record<string, string> = {
+  Science: "exploreCareers.science",
+  Technology: "exploreCareers.technology",
+  Engineer: "exploreCareers.engineering",
+  Mathematics: "exploreCareers.mathematics",
+};
 
 interface PostCardProps {
   post: PostData;
@@ -12,6 +20,7 @@ interface PostCardProps {
 }
 
 export function PostCard({ post, onLike, commentsApiBase }: PostCardProps) {
+  const { t, locale } = useI18n();
   const [commentCount, setCommentCount] = useState(post._count.comments);
 
   return (
@@ -29,7 +38,7 @@ export function PostCard({ post, onLike, commentsApiBase }: PostCardProps) {
               {post.author.username}
             </p>
             <p className="text-xs text-dark-purple/50">
-              {timeAgo(post.createdAt)}
+              {timeAgo(post.createdAt, locale)}
             </p>
           </div>
         </div>
@@ -44,7 +53,7 @@ export function PostCard({ post, onLike, commentsApiBase }: PostCardProps) {
               key={cat}
               className="px-2.5 py-0.5 rounded-full bg-cute-orange/10 text-cute-orange text-xs font-semibold"
             >
-              {cat}
+              {categoryLabelKeys[cat] ? t(categoryLabelKeys[cat]) : cat}
             </span>
           ))}
           {(post.tags ?? []).map((tag: string) => (

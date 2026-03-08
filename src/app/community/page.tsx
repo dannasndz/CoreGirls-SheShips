@@ -400,19 +400,28 @@ export default function CommunityPage() {
                 )}
 
                 <div className="flex gap-1.5 sm:gap-2 overflow-x-auto pb-1 scrollbar-none -mx-1 px-1">
-                  {filterOptions.map((cat) => (
-                    <button
-                      key={cat}
-                      onClick={() => setActiveCategory(cat)}
-                      className={`px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium transition whitespace-nowrap shrink-0 ${
-                        activeCategory === cat
-                          ? "bg-girly-purple text-white"
-                          : "bg-white border border-[#E5E0D9] text-dark-purple hover:text-hot-pink hover:bg-light-pink/20"
-                      }`}
-                    >
-                      {cat}
-                    </button>
-                  ))}
+                  {filterOptions.map((cat) => {
+                    const labelMap: Record<string, string> = {
+                      All: t("common.all"),
+                      Science: t("exploreCareers.science"),
+                      Technology: t("exploreCareers.technology"),
+                      Engineer: t("exploreCareers.engineering"),
+                      Mathematics: t("exploreCareers.mathematics"),
+                    };
+                    return (
+                      <button
+                        key={cat}
+                        onClick={() => setActiveCategory(cat)}
+                        className={`px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium transition whitespace-nowrap shrink-0 ${
+                          activeCategory === cat
+                            ? "bg-girly-purple text-white"
+                            : "bg-white border border-[#E5E0D9] text-dark-purple hover:text-hot-pink hover:bg-light-pink/20"
+                        }`}
+                      >
+                        {labelMap[cat] ?? cat}
+                      </button>
+                    );
+                  })}
                 </div>
 
                 {loadingPosts && (
@@ -428,7 +437,14 @@ export default function CommunityPage() {
                     <p className="text-dark-purple/50 text-sm">
                       {activeCategory === "All"
                         ? t("community.noPosts")
-                        : t("community.noPostsInCategory", { category: activeCategory })}
+                        : t("community.noPostsInCategory", {
+                            category: ({
+                              Science: t("exploreCareers.science"),
+                              Technology: t("exploreCareers.technology"),
+                              Engineer: t("exploreCareers.engineering"),
+                              Mathematics: t("exploreCareers.mathematics"),
+                            } as Record<string, string>)[activeCategory] ?? activeCategory,
+                          })}
                     </p>
                   </div>
                 )}

@@ -11,7 +11,7 @@ interface RightSidebarProps {
 }
 
 export function RightSidebar({ tags, upcomingEvents, onViewAllEvents }: RightSidebarProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   return (
     <aside className="space-y-6">
@@ -52,7 +52,7 @@ export function RightSidebar({ tags, upcomingEvents, onViewAllEvents }: RightSid
                   <div className="flex gap-3 mt-1 text-[10px] text-white/80">
                     <span className="flex items-center gap-1">
                       <CalendarDays size={10} />
-                      {formatEventDate(event.date)}
+                      {formatEventDate(event.date, locale)}
                     </span>
                     <span className="flex items-center gap-1">
                       <Clock size={10} />

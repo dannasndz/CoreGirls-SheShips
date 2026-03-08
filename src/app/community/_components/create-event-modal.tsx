@@ -10,6 +10,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { EventData } from "./helpers";
+import { useI18n } from "@/lib/i18n";
 
 interface EventModalProps {
   open: boolean;
@@ -29,6 +30,7 @@ export function CreateEventModal({
   currentUsername,
   editEvent,
 }: EventModalProps) {
+  const { t, locale } = useI18n();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [modality, setModality] = useState<Modality>("remote");
@@ -77,7 +79,7 @@ export function CreateEventModal({
     organizerMode === "self" ? currentUsername ?? "" : organizerName;
 
   const formatDate = (d: Date) =>
-    d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    d.toLocaleDateString(locale === "es" ? "es-ES" : "en-US", { month: "short", day: "numeric", year: "numeric" });
 
   const resetForm = () => {
     setTitle("");
@@ -99,15 +101,15 @@ export function CreateEventModal({
     e.preventDefault();
     setError("");
     if (!title.trim() || !description.trim() || !selectedDate || !hour || !resolvedOrganizer.trim()) {
-      setError("Please fill in all required fields.");
+      setError(t("events.errorRequired"));
       return;
     }
     if (needsLocation && !location.trim()) {
-      setError("Location is required for in-person/hybrid events.");
+      setError(t("events.errorLocation"));
       return;
     }
     if (needsLink && !meetingLink.trim()) {
-      setError("Meeting link is required for remote/hybrid events.");
+      setError(t("events.errorMeetingLink"));
       return;
     }
 
@@ -142,10 +144,10 @@ export function CreateEventModal({
         onClose();
       } else {
         const data = await res.json();
-        setError(data.error || "Failed to save event");
+        setError(data.error || t("events.errorFailed"));
       }
     } catch {
-      setError("Something went wrong");
+      setError(t("events.errorGeneric"));
     } finally {
       setSaving(false);
     }
@@ -154,6 +156,12 @@ export function CreateEventModal({
   const handleClose = () => {
     resetForm();
     onClose();
+  };
+
+  const modalityLabels: Record<Modality, string> = {
+    "in-person": t("events.inPerson"),
+    remote: t("events.remote"),
+    hybrid: t("events.hybrid"),
   };
 
   const inputClass =
@@ -172,7 +180,7 @@ export function CreateEventModal({
         <div className="flex justify-between items-center mb-5">
           <h2 className="text-xl font-bold text-girly-purple font-[family-name:var(--font-fredoka)] inline-flex items-center gap-2">
             <CalendarPlus size={22} className="text-girly-purple" />
-            {isEdit ? "Edit Event" : "Create an Event"}
+            {isEdit ? t("events.editEvent") : t("events.createEvent")}
           </h2>
           <button
             onClick={handleClose}
@@ -186,13 +194,13 @@ export function CreateEventModal({
           {/* Row 1: Title */}
           <div>
             <label className="block text-sm font-medium text-dark-purple mb-1">
-              Event Title *
+              {t("events.eventTitle")}
             </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Women in AI Workshop"
+              placeholder={t("events.eventTitlePlaceholder")}
               className={inputClass}
               required
             />
@@ -201,12 +209,12 @@ export function CreateEventModal({
           {/* Row 2: Description */}
           <div>
             <label className="block text-sm font-medium text-dark-purple mb-1">
-              Description *
+              {t("events.description")}
             </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="What's this event about?"
+              placeholder={t("events.descriptionPlaceholder")}
               rows={3}
               className={`${inputClass} resize-none`}
               required
@@ -217,7 +225,7 @@ export function CreateEventModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-dark-purple mb-2">
-                Modality *
+                {t("events.modality")}
               </label>
               <div className="flex flex-wrap gap-2">
                 {(["in-person", "remote", "hybrid"] as Modality[]).map((m) => (
@@ -230,7 +238,7 @@ export function CreateEventModal({
                         : "bg-girly-purple/10 text-strong-purple hover:bg-girly-purple/20"
                       }`}
                   >
-                    {m === "in-person" ? "In Person" : m === "remote" ? "Remote" : "Hybrid"}
+                    {modalityLabels[m]}
                   </button>
                 ))}
               </div>
@@ -239,13 +247,13 @@ export function CreateEventModal({
               {needsLink && (
                 <>
                   <label className="block text-sm font-medium text-dark-purple mb-1">
-                    Meeting Link *
+                    {t("events.meetingLinkLabel")}
                   </label>
                   <input
                     type="url"
                     value={meetingLink}
                     onChange={(e) => setMeetingLink(e.target.value)}
-                    placeholder="e.g. https://zoom.us/j/..."
+                    placeholder={t("events.meetingLinkPlaceholder")}
                     className={inputClass}
                   />
                 </>
@@ -253,13 +261,13 @@ export function CreateEventModal({
               {needsLocation && !needsLink && (
                 <>
                   <label className="block text-sm font-medium text-dark-purple mb-1">
-                    Location *
+                    {t("events.locationLabel")}
                   </label>
                   <input
                     type="text"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                    placeholder="e.g. 123 Main St, City"
+                    placeholder={t("events.locationPlaceholder")}
                     className={inputClass}
                   />
                 </>
@@ -271,13 +279,13 @@ export function CreateEventModal({
           {needsLocation && needsLink && (
             <div>
               <label className="block text-sm font-medium text-dark-purple mb-1">
-                Location *
+                {t("events.locationLabel")}
               </label>
               <input
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                placeholder="e.g. 123 Main St, City"
+                placeholder={t("events.locationPlaceholder")}
                 className={inputClass}
               />
             </div>
@@ -287,7 +295,7 @@ export function CreateEventModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-dark-purple mb-1">
-                Date *
+                {t("events.dateLabel")}
               </label>
               <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                 <PopoverTrigger asChild>
@@ -298,7 +306,7 @@ export function CreateEventModal({
                     <span className={selectedDate ? "" : "text-dark-purple/40"}>
                       {selectedDate
                         ? formatDate(selectedDate)
-                        : "Select a date..."}
+                        : t("events.selectDate")}
                     </span>
                     <ChevronDown size={14} className="text-dark-purple/40" />
                   </button>
@@ -320,7 +328,7 @@ export function CreateEventModal({
             </div>
             <div>
               <label className="block text-sm font-medium text-dark-purple mb-1">
-                Time *
+                {t("events.timeLabel")}
               </label>
               <Input
                 type="time"
@@ -336,7 +344,7 @@ export function CreateEventModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-dark-purple mb-2">
-                Organizer *
+                {t("events.organizerLabel")}
               </label>
               <div className="flex gap-2 mb-2">
                 <button
@@ -347,7 +355,7 @@ export function CreateEventModal({
                       : "bg-girly-purple/10 text-strong-purple hover:bg-girly-purple/20"
                     }`}
                 >
-                  Myself
+                  {t("events.myself")}
                 </button>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -361,18 +369,18 @@ export function CreateEventModal({
                     >
                       {organizerMode === "custom" && organizerName
                         ? organizerName
-                        : "Custom"}
+                        : t("events.custom")}
                     </button>
                   </PopoverTrigger>
                   <PopoverContent className="w-64 p-3 z-[200]" align="start">
                     <label className="block text-xs font-medium text-dark-purple mb-1.5">
-                      Organizer name
+                      {t("events.organizerNameLabel")}
                     </label>
                     <input
                       type="text"
                       value={organizerName}
                       onChange={(e) => setOrganizerName(e.target.value)}
-                      placeholder="e.g. SheShips Community"
+                      placeholder={t("events.organizerNamePlaceholder")}
                       className={inputClass}
                       autoFocus
                     />
@@ -382,14 +390,14 @@ export function CreateEventModal({
             </div>
             <div>
               <label className="block text-sm font-medium text-dark-purple mb-1">
-                Participants Limit
+                {t("events.participantsLimit")}
               </label>
               <input
                 type="number"
                 min="1"
                 value={participantsLimit}
                 onChange={(e) => setParticipantsLimit(e.target.value)}
-                placeholder="Unlimited"
+                placeholder={t("events.unlimited")}
                 className={inputClass}
               />
             </div>
@@ -398,13 +406,13 @@ export function CreateEventModal({
           {/* Row 6: External Link */}
           <div>
             <label className="block text-sm font-medium text-dark-purple mb-1">
-              External Info Link (optional)
+              {t("events.externalLink")}
             </label>
             <input
               type="url"
               value={externalLink}
               onChange={(e) => setExternalLink(e.target.value)}
-              placeholder="e.g. https://eventbrite.com/..."
+              placeholder={t("events.externalLinkPlaceholder")}
               className={inputClass}
             />
           </div>
@@ -420,14 +428,14 @@ export function CreateEventModal({
               onClick={handleClose}
               className="px-4 py-2 rounded-lg text-sm text-dark-purple/60 hover:bg-light-pink/30 transition"
             >
-              Cancel
+              {t("events.cancel")}
             </button>
             <button
               type="submit"
               disabled={saving}
               className="px-4 py-2 rounded-lg bg-girly-purple text-white text-sm font-semibold hover:bg-strong-purple transition disabled:opacity-50"
             >
-              {saving ? "Saving..." : isEdit ? "Save Changes" : "Create Event"}
+              {saving ? t("events.saving") : isEdit ? t("events.saveChanges") : t("events.createEvent")}
             </button>
           </div>
         </form>
