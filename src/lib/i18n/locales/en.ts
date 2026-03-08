@@ -132,6 +132,7 @@ const en = {
     mathDesc: "Unlock patterns that shape our world",
     quote:
       "Every great scientist, engineer, and innovator started exactly where you are now — curious.",
+    preparingQuiz: "Preparing your quiz...",
   },
 
   // Quiz Page
@@ -142,6 +143,10 @@ const en = {
     stage: "Stage {number}",
     optionA: "Option A",
     optionB: "Option B",
+    analyzingAnswers: "Analyzing your answers...",
+    findingPath: "Finding your STEM path...",
+    matchingCareer: "Matching your career...",
+    onlyMoment: "This will only take a moment",
     optionC: "Option C",
     optionD: "Option D",
   },
@@ -174,12 +179,17 @@ const en = {
     trendingCareer: "Trending Career",
     whyMatches: "Why this matches you",
     basedOnAnswers: "Based on your answers, {percentage}% of your choices aligned with {category}.",
+    stemProfile: "Your STEM Profile",
+    answersAligned: "{percentage}% of your answers aligned with {category}",
     whatToStudy: "What to Study",
+    relatedCareers: "Related Careers",
     leadersInField: "Leaders in This Field",
     otherCareers: "Other {category} Careers You Might Like",
-    exploreAll: "Explore All {category} Careers",
+    exploreAll: "Explore {category} Careers",
     browseAll: "Browse All Careers",
     retakeQuiz: "Retake Quiz",
+    trending: "Trending",
+    more: "+{count} more",
     loadingResults: "Loading your results...",
     categoryDescriptions: {
       S: "You're driven by curiosity about how the world works. You love observing, experimenting, and discovering new things. Science is your superpower!",

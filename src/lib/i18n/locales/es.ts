@@ -132,6 +132,7 @@ const es = {
     mathDesc: "Descifra los patrones que dan forma al mundo",
     quote:
       "Toda gran científica, ingeniera e innovadora empezó exactamente donde tú estás ahora — con curiosidad.",
+    preparingQuiz: "Preparando tu quiz...",
   },
 
   // Quiz Page
@@ -142,6 +143,10 @@ const es = {
     stage: "Etapa {number}",
     optionA: "Opción A",
     optionB: "Opción B",
+    analyzingAnswers: "Analizando tus respuestas...",
+    findingPath: "Encontrando tu camino STEM...",
+    matchingCareer: "Buscando tu carrera ideal...",
+    onlyMoment: "Esto solo tomará un momento",
     optionC: "Opción C",
     optionD: "Opción D",
   },
@@ -174,12 +179,17 @@ const es = {
     trendingCareer: "Carrera en Tendencia",
     whyMatches: "Por qué esto te queda",
     basedOnAnswers: "Según tus respuestas, el {percentage}% de tus elecciones se alinearon con {category}.",
+    stemProfile: "Tu Perfil STEM",
+    answersAligned: "{percentage}% de tus respuestas se alinearon con {category}",
     whatToStudy: "Qué Estudiar",
+    relatedCareers: "Carreras Relacionadas",
     leadersInField: "Líderes en Este Campo",
     otherCareers: "Otras Carreras de {category} Que Te Podrían Gustar",
-    exploreAll: "Explorar Todas las Carreras de {category}",
+    exploreAll: "Explorar Carreras de {category}",
     browseAll: "Ver Todas las Carreras",
     retakeQuiz: "Repetir Quiz",
+    trending: "En Tendencia",
+    more: "+{count} más",
     loadingResults: "Cargando tus resultados...",
     categoryDescriptions: {
       S: "¡Te impulsa la curiosidad sobre cómo funciona el mundo! Te encanta observar, experimentar y descubrir cosas nuevas. ¡La ciencia es tu superpoder!",
