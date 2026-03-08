@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { User } from "lucide-react";
+import { User, LogIn } from "lucide-react";
+import { AuthModal } from "@/components/auth-modal";
 import { useI18n } from "@/lib/i18n";
 import {
   NavigationMenu,
@@ -20,6 +21,7 @@ type NavLink = { label: string; href: string; highlight?: boolean };
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hasCompletedQuiz, setHasCompletedQuiz] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const pathname = usePathname();
   const { data: session } = useSession();
   const { t, locale, setLocale } = useI18n();
@@ -139,8 +141,8 @@ export default function Navbar() {
             </button>
           </div>
 
-          {/* Profile icon */}
-          {session?.user && (
+          {/* Login icon (no session) / Account bubble (session) */}
+          {session?.user ? (
             <Link
               href="/profile"
               className="w-9 h-9 rounded-full bg-linear-to-br from-strong-purple to-girly-purple flex items-center justify-center hover:from-girly-purple hover:to-hot-pink transition-all duration-300 shadow-sm"
@@ -148,6 +150,14 @@ export default function Navbar() {
             >
               <User className="w-4.5 h-4.5 text-white" />
             </Link>
+          ) : (
+            <button
+              onClick={() => setShowAuthModal(true)}
+              className="w-9 h-9 rounded-full border-2 border-girly-purple flex items-center justify-center text-girly-purple hover:bg-girly-purple/10 transition-all duration-300"
+              aria-label="Log in"
+            >
+              <LogIn className="w-4.5 h-4.5" />
+            </button>
           )}
         </div>
       </div>
@@ -180,7 +190,7 @@ export default function Navbar() {
               )}
             </Link>
           ))}
-          {session?.user && (
+          {session?.user ? (
             <Link
               href="/profile"
               onClick={() => setMobileOpen(false)}
@@ -189,9 +199,26 @@ export default function Navbar() {
               <User className="w-5 h-5" />
               {t("nav.myProfile")}
             </Link>
+          ) : (
+            <button
+              onClick={() => {
+                setMobileOpen(false);
+                setShowAuthModal(true);
+              }}
+              className="px-4 py-3 rounded-full text-base font-semibold text-strong-purple hover:bg-girly-purple/10 transition-colors flex items-center gap-2 w-full text-left"
+            >
+              <LogIn className="w-5 h-5" />
+              {t("auth.logIn")}
+            </button>
           )}
         </nav>
       </div>
+
+      <AuthModal
+        open={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={() => setShowAuthModal(false)}
+      />
     </header>
   );
 }
