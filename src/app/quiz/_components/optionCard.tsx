@@ -1,4 +1,5 @@
 import { Option } from "@/types/quiz"
+import { SpeakButton } from "@/components/speak-button"
 
 type Props = {
     option: Option
@@ -25,11 +26,16 @@ export default function OptionCard({ option, label, selected, onSelect }: Props)
 
             <div className={`
                 w-full p-5 min-h-28 text-white text-center
-                flex flex-col items-center justify-center
+                flex flex-col items-center justify-center relative
                 bg-linear-to-r from-cute-orange to-orange-400
                 transition-opacity duration-300
                 ${selected ? "opacity-100" : "opacity-90 hover:opacity-100"}
             `}>
+                <SpeakButton
+                    text={`${label}. ${option.text}`}
+                    size="sm"
+                    className="absolute top-2 right-2 bg-white/20 text-white hover:bg-white/30"
+                />
                 <p className="text-lg font-bold mb-1">
                     {label}
                 </p>
