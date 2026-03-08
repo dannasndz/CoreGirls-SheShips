@@ -17,7 +17,7 @@ export default function HeroSection() {
 
         <div className="flex flex-row gap-4 flex-wrap justify-center md:justify-start">
           <Link
-            href="/quiz"
+            href="/preQuiz"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-linear-to-br from-girly-purple via-hot-pink to-cute-orange hover:from-cute-orange hover:via-hot-pink hover:to-girly-purple text-white font-semibold text-2xl transition-all duration-500 ease-in-out shadow-md"
           >
             Take the Quiz
