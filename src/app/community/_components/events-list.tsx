@@ -12,6 +12,7 @@ import {
   Pencil,
 } from "lucide-react";
 import { EventData, formatEventDate } from "./helpers";
+import { useI18n } from "@/lib/i18n";
 
 interface EventsListProps {
   events: EventData[];
@@ -25,18 +26,6 @@ interface EventsListProps {
   currentUserId?: string;
 }
 
-const modalityLabel: Record<string, string> = {
-  "in-person": "In Person",
-  remote: "Remote",
-  hybrid: "Hybrid",
-};
-
-const modalityColor: Record<string, string> = {
-  "in-person": "bg-cute-orange/10 text-cute-orange",
-  remote: "bg-girly-purple/10 text-girly-purple",
-  hybrid: "bg-strong-purple/10 text-strong-purple",
-};
-
 export function EventsList({
   events,
   loading,
@@ -48,8 +37,21 @@ export function EventsList({
   attendingIds,
   currentUserId,
 }: EventsListProps) {
+  const { t } = useI18n();
   const [loadingAttend, setLoadingAttend] = useState<string | null>(null);
   const [loadingCancel, setLoadingCancel] = useState<string | null>(null);
+
+  const modalityLabel: Record<string, string> = {
+    "in-person": t("events.inPerson"),
+    remote: t("events.remote"),
+    hybrid: t("events.hybrid"),
+  };
+
+  const modalityColor: Record<string, string> = {
+    "in-person": "bg-cute-orange/10 text-cute-orange",
+    remote: "bg-girly-purple/10 text-girly-purple",
+    hybrid: "bg-strong-purple/10 text-strong-purple",
+  };
 
   const handleAttend = async (eventId: string) => {
     setLoadingAttend(eventId);
@@ -70,21 +72,21 @@ export function EventsList({
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-dark-purple font-[family-name:var(--font-fredoka)]">
-          Events
+          {t("events.title")}
         </h2>
         <button
           onClick={onCreateEvent}
           className="flex items-center gap-2 px-4 py-2 rounded-full border-2 border-girly-purple text-girly-purple font-semibold text-sm hover:bg-girly-purple hover:text-white transition"
         >
           <Plus size={16} />
-          New Event
+          {t("events.newEvent")}
         </button>
       </div>
 
       {loading && (
         <div className="rounded-2xl bg-white border border-light-pink p-8 shadow-sm text-center">
           <p className="text-girly-purple text-sm font-medium animate-pulse">
-            Loading events...
+            {t("events.loadingEvents")}
           </p>
         </div>
       )}
@@ -92,7 +94,7 @@ export function EventsList({
       {!loading && events.length === 0 && (
         <div className="rounded-2xl bg-white border border-light-pink p-8 shadow-sm text-center">
           <p className="text-dark-purple/50 text-sm">
-            No events yet. Create the first one!
+            {t("events.noEvents")}
           </p>
         </div>
       )}
@@ -100,7 +102,7 @@ export function EventsList({
       {upcoming.length > 0 && (
         <>
           <p className="text-xs font-semibold text-dark-purple/50 uppercase tracking-wide">
-            Upcoming
+            {t("events.upcoming")}
           </p>
           {upcoming.map((event) => {
             const isAttending = attendingIds.has(event.id);
@@ -126,7 +128,7 @@ export function EventsList({
                       </span>
                       {event.cancelled && (
                         <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-600">
-                          Cancelled
+                          {t("events.cancelled")}
                         </span>
                       )}
                     </div>
@@ -168,7 +170,7 @@ export function EventsList({
                       className="flex items-center gap-1.5 text-girly-purple hover:underline"
                     >
                       <Video size={14} />
-                      Join online
+                      {t("events.joinOnline")}
                       <ExternalLink size={10} />
                     </a>
                   )}
@@ -180,7 +182,7 @@ export function EventsList({
                       className="flex items-center gap-1.5 text-girly-purple hover:underline"
                     >
                       <ExternalLink size={14} />
-                      More info
+                      {t("events.moreInfo")}
                     </a>
                   )}
                   <span className="flex items-center gap-1.5">
@@ -189,12 +191,12 @@ export function EventsList({
                     {event.participantsLimit
                       ? ` / ${event.participantsLimit}`
                       : ""}{" "}
-                    attending
+                    {t("events.attending")}
                   </span>
                 </div>
 
                 <p className="text-xs text-dark-purple/40">
-                  Organized by {event.organizerName}
+                  {t("events.organizedBy", { name: event.organizerName })}
                 </p>
 
                 <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-light-pink/50">
@@ -216,10 +218,10 @@ export function EventsList({
                       {loadingAttend === event.id
                         ? "..."
                         : isAttending
-                          ? "Cancel RSVP"
+                          ? t("events.cancelRSVP")
                           : isFull
-                            ? "Event Full"
-                            : "Attend"}
+                            ? t("events.eventFull")
+                            : t("events.attend")}
                     </button>
                   )}
                   {currentUserId && !event.cancelled && (
@@ -227,7 +229,7 @@ export function EventsList({
                       onClick={() => onShareToForum(event)}
                       className="px-4 py-1.5 rounded-full text-sm font-medium border border-light-pink text-dark-purple/60 hover:border-girly-purple hover:text-girly-purple transition"
                     >
-                      Share to Forum
+                      {t("events.shareToForum")}
                     </button>
                   )}
                   {currentUserId === event.createdBy.id && (
@@ -243,8 +245,8 @@ export function EventsList({
                       {loadingCancel === event.id
                         ? "..."
                         : event.cancelled
-                          ? "Reactivate Event"
-                          : "Cancel Event"}
+                          ? t("events.reactivateEvent")
+                          : t("events.cancelEvent")}
                     </button>
                   )}
                 </div>
@@ -257,7 +259,7 @@ export function EventsList({
       {past.length > 0 && (
         <>
           <p className="text-xs font-semibold text-dark-purple/50 uppercase tracking-wide mt-4">
-            Past Events
+            {t("events.pastEvents")}
           </p>
           {past.map((event) => (
             <div
@@ -276,7 +278,7 @@ export function EventsList({
                   </span>
                   {event.cancelled && (
                     <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-600">
-                      Cancelled
+                      {t("events.cancelled")}
                     </span>
                   )}
                 </div>
@@ -297,7 +299,7 @@ export function EventsList({
                 </span>
                 <span className="flex items-center gap-1">
                   <Users size={12} />
-                  {event._count.attendees} attended
+                  {event._count.attendees} {t("events.attended")}
                 </span>
               </div>
             </div>

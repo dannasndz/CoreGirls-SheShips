@@ -1,9 +1,12 @@
 "use client";
 
-import { Career, categoryLabels } from "@/data/careers";
-import { roleModels } from "@/data/roleModels";
+import { Career, categoryLabels as categoryLabelsEn } from "@/data/careers";
+import { categoryLabelsEs } from "@/data/careers.es";
+import { roleModels as roleModelsEn } from "@/data/roleModels";
+import { roleModelsEs } from "@/data/roleModels.es";
 import Image from "next/image";
 import { Linkedin, Flame, BookOpen, Link2, Star } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 const getCareerImage = (id: string) => {
   if (id === "database-administrator") return "/careers/database-administrato.png";
@@ -15,7 +18,14 @@ type CareerModalProps = {
   onClose: () => void;
 };
 
+const categoryLabelsMap = { en: categoryLabelsEn, es: categoryLabelsEs } as const;
+const roleModelsMap = { en: roleModelsEn, es: roleModelsEs } as const;
+
 export default function CareerModal({ career, onClose }: CareerModalProps) {
+  const { t, locale } = useI18n();
+  const categoryLabels = categoryLabelsMap[locale];
+  const roleModels = roleModelsMap[locale];
+
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
@@ -52,7 +62,7 @@ export default function CareerModal({ career, onClose }: CareerModalProps) {
               {career.growth && (
                 <span className="bg-linear-to-br from-cute-orange/60 to-hot-pink/60 text-white text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-sm flex items-center gap-1">
                   <Flame size={12} />
-                  Growth
+                  {t("exploreCareers.growth")}
                 </span>
               )}
             </div>
@@ -85,7 +95,7 @@ export default function CareerModal({ career, onClose }: CareerModalProps) {
               style={{ fontFamily: "var(--font-fredoka)" }}
             >
               <BookOpen size={20} className="text-girly-purple" />
-              What to Study
+              {t("exploreCareers.whatToStudy")}
             </h3>
             <div className="flex flex-wrap gap-2">
               {career.studyPaths.map((path) => (
@@ -107,7 +117,7 @@ export default function CareerModal({ career, onClose }: CareerModalProps) {
               style={{ fontFamily: "var(--font-fredoka)" }}
             >
               <Link2 size={20} className="text-hot-pink" />
-              Related Careers
+              {t("exploreCareers.relatedCareers")}
             </h3>
             <div className="flex flex-wrap gap-2">
               {career.relatedCareers.map((related) => (
@@ -129,7 +139,7 @@ export default function CareerModal({ career, onClose }: CareerModalProps) {
               style={{ fontFamily: "var(--font-fredoka)" }}
             >
               <Star size={20} className="text-cute-orange" />
-              Women Leading This Field
+              {t("exploreCareers.womenLeading")}
             </h3>
             <div className="flex flex-col gap-3">
               {roleModels

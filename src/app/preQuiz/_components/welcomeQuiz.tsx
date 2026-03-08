@@ -7,45 +7,47 @@ import SplashScreen from "@/components/SplashCursor"
 import SplitText from "@/components/SplitText";
 import LiquidChrome from '@/components/LiquidChrome';
 import { Clock, ClipboardList, Sparkles } from "lucide-react"
+import { useI18n } from "@/lib/i18n"
 
-
-const stemPaths = [
-    {
-        letter: "S",
-        title: "Science",
-        description: "Explore the mysteries of nature and life",
-        gradient: "from-girly-purple to-strong-purple",
-        textColor: "text-girly-purple",
-        bgAccent: "bg-girly-purple",
-    },
-    {
-        letter: "T",
-        title: "Technology",
-        description: "Build the digital tools of tomorrow",
-        gradient: "from-hot-pink to-girly-purple",
-        textColor: "text-hot-pink",
-        bgAccent: "bg-hot-pink",
-    },
-    {
-        letter: "E",
-        title: "Engineering",
-        description: "Design and create real-world solutions",
-        gradient: "from-cute-orange to-hot-pink",
-        textColor: "text-cute-orange",
-        bgAccent: "bg-cute-orange",
-    },
-    {
-        letter: "M",
-        title: "Mathematics",
-        description: "Unlock patterns that shape our world",
-        gradient: "from-strong-purple to-hot-pink",
-        textColor: "text-strong-purple",
-        bgAccent: "bg-strong-purple",
-    },
-]
 
 export default function WelcomeQuiz() {
     const router = useRouter()
+    const { t } = useI18n()
+
+    const stemPaths = [
+        {
+            letter: "S",
+            title: t("stem.science.word"),
+            description: t("preQuiz.scienceDesc"),
+            gradient: "from-girly-purple to-strong-purple",
+            textColor: "text-girly-purple",
+            bgAccent: "bg-girly-purple",
+        },
+        {
+            letter: "T",
+            title: t("stem.technology.word"),
+            description: t("preQuiz.techDesc"),
+            gradient: "from-hot-pink to-girly-purple",
+            textColor: "text-hot-pink",
+            bgAccent: "bg-hot-pink",
+        },
+        {
+            letter: "E",
+            title: t("stem.engineering.word"),
+            description: t("preQuiz.engineeringDesc"),
+            gradient: "from-cute-orange to-hot-pink",
+            textColor: "text-cute-orange",
+            bgAccent: "bg-cute-orange",
+        },
+        {
+            letter: "M",
+            title: t("stem.mathematics.word"),
+            description: t("preQuiz.mathDesc"),
+            gradient: "from-strong-purple to-hot-pink",
+            textColor: "text-strong-purple",
+            bgAccent: "bg-strong-purple",
+        },
+    ]
 
     return (
         <div className="flex flex-col md:flex-row h-screen">
@@ -74,11 +76,11 @@ export default function WelcomeQuiz() {
                 <div className="max-w-md space-y-8 text-center md:text-left relative z-10">
                     <div className="space-y-4">
                         <p className="text-light-pink/80 font-semibold tracking-wide uppercase text-sm">
-                            STEM Discovery Quiz
+                            {t("preQuiz.label")}
                         </p>
                         <h1 className="text-6xl md:text-7xl font-extrabold text-white font-heading leading-tight">
                             <SplitText
-                                text="Welcome!"
+                                text={t("preQuiz.welcome")}
                                 className="text-6xl md:text-7xl font-extrabold text-white font-heading leading-tight"
                                 delay={40}
                                 duration={1}
@@ -88,9 +90,7 @@ export default function WelcomeQuiz() {
                             />
                         </h1>
                         <p className="text-lg text-white/80 leading-relaxed">
-                            You&apos;re about to discover which STEM path fits
-                            you best. Answer a few fun questions and find out
-                            where your superpower lies!
+                            {t("preQuiz.description")}
                         </p>
                     </div>
 
@@ -98,7 +98,7 @@ export default function WelcomeQuiz() {
                         <span className="flex items-center gap-1.5 bg-white/10 rounded-full px-4 py-1.5">
                             <Clock size={14} />
                             <SplitText
-                                text="5 min"
+                                text={t("preQuiz.fiveMin")}
                                 className="text-sm text-white/60"
                                 delay={40}
                                 duration={1}
@@ -111,7 +111,7 @@ export default function WelcomeQuiz() {
                         <span className="flex items-center gap-1.5 bg-white/10 rounded-full px-4 py-1.5">
                             <ClipboardList size={14} />
                             <SplitText
-                                text="15 questions"
+                                text={t("preQuiz.fifteenQuestions")}
                                 className="text-sm text-white/60"
                                 delay={40}
                                 duration={1}
@@ -124,7 +124,7 @@ export default function WelcomeQuiz() {
                         <span className="flex items-center gap-1.5 bg-white/10 rounded-full px-4 py-1.5">
                             <Sparkles size={14} />
                             <SplitText
-                                text="No wrong answers"
+                                text={t("preQuiz.noWrongAnswers")}
                                 className="text-sm text-white/60"
                                 delay={40}
                                 duration={1}
@@ -144,7 +144,7 @@ export default function WelcomeQuiz() {
                             transition-all duration-500 ease-in-out
                             shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 cursor-pointer"
                     >
-                        Let&apos;s go! &rarr;
+                        {t("preQuiz.letsGo")}
                     </button>
                 </div>
             </div>
@@ -156,10 +156,10 @@ export default function WelcomeQuiz() {
 
                 <div className="max-w-md w-full relative z-10">
                     <p className="text-dark-purple/40 text-xs font-semibold tracking-[0.3em] uppercase mb-3">
-                        Your path awaits
+                        {t("preQuiz.pathAwaits")}
                     </p>
                     <h2 className="text-3xl md:text-4xl font-bold text-strong-purple font-heading leading-tight mb-10">
-                        What will you<br />discover?
+                        {t("preQuiz.whatDiscover")}
                     </h2>
 
                     <div className="space-y-5">
@@ -197,8 +197,7 @@ export default function WelcomeQuiz() {
 
                     <div className="mt-10 border-l-2 border-light-pink pl-5">
                         <p className="text-dark-purple/50 text-sm italic leading-relaxed">
-                            &ldquo;Every great scientist, engineer, and innovator
-                            started exactly where you are now — curious.&rdquo;
+                            &ldquo;{t("preQuiz.quote")}&rdquo;
                         </p>
                     </div>
                 </div>

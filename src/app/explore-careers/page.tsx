@@ -2,11 +2,13 @@
 
 import { useState, useMemo, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { careers, categoryLabels, Career } from "@/data/careers";
+import { careers as careersEn, Career } from "@/data/careers";
+import { careersEs } from "@/data/careers.es";
 import CareerCard from "./_components/CareerCard";
 import CareerModal from "./_components/CareerModal";
 import { Search, Flame, Filter, ChevronDown } from "lucide-react";
 import SplitText from "@/components/SplitText";
+import { useI18n } from "@/lib/i18n";
 import {
   Pagination,
   PaginationContent,
@@ -24,15 +26,19 @@ import {
 
 const ITEMS_PER_PAGE = 18; // 3 rows × 6 cols
 
-const stemFilters = [
-  { label: "Science", value: "S" },
-  { label: "Technology", value: "T" },
-  { label: "Engineering", value: "E" },
-  { label: "Mathematics", value: "M" },
-];
+const careersMap = { en: careersEn, es: careersEs } as const;
 
 function ExploreCareersContent() {
+  const { t, locale } = useI18n();
+  const careers = careersMap[locale];
   const searchParams = useSearchParams();
+  const stemFilters = [
+    { label: t("exploreCareers.science"), value: "S" },
+    { label: t("exploreCareers.technology"), value: "T" },
+    { label: t("exploreCareers.engineering"), value: "E" },
+    { label: t("exploreCareers.mathematics"), value: "M" },
+  ];
+
   const initialCategory = searchParams.get("category");
 
   const [search, setSearch] = useState("");
@@ -62,7 +68,7 @@ function ExploreCareersContent() {
     }
 
     return result;
-  }, [search, activeFilter]);
+  }, [search, activeFilter, careers]);
 
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
   const paginatedCareers = filtered.slice(
@@ -86,7 +92,7 @@ function ExploreCareersContent() {
       {/* Header */}
       <div className="text-center pt-8 sm:pt-12 pb-6 sm:pb-8 px-4 sm:px-6">
         <SplitText
-          text="Who could that be?"
+          text={t("exploreCareers.heading")}
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-dark-purple"
           delay={40}
           duration={1}
@@ -111,7 +117,7 @@ function ExploreCareersContent() {
             type="text"
             value={search}
             onChange={handleSearchChange}
-            placeholder="Search careers, skills, or fields..."
+            placeholder={t("exploreCareers.searchPlaceholder")}
             className="w-full pl-11 pr-4 py-2.5 rounded-full border-2 border-girly-purple/30 bg-white text-dark-purple placeholder:text-dark-purple/40 focus:border-girly-purple focus:outline-none transition-colors text-sm sm:text-base"
             style={{ fontFamily: "var(--font-baloo)" }}
           />
@@ -130,7 +136,7 @@ function ExploreCareersContent() {
             style={{ fontFamily: "var(--font-fredoka)" }}
           >
             <Flame size={14} className="sm:w-4 sm:h-4" />
-            <span className="hidden xs:inline">TOP</span> Growth 2026
+            <span className="hidden xs:inline">TOP</span> {t("exploreCareers.topGrowth")}
           </button>
 
           {/* STEM Dropdown */}
@@ -147,7 +153,7 @@ function ExploreCareersContent() {
                 <Filter size={16} />
                 {activeFilter && ["S", "T", "E", "M"].includes(activeFilter)
                   ? stemFilters.find((f) => f.value === activeFilter)?.label
-                  : "STEM Field"}
+                  : t("exploreCareers.stemField")}
                 <ChevronDown size={14} />
               </button>
             </DropdownMenuTrigger>
@@ -174,7 +180,7 @@ function ExploreCareersContent() {
                     className="rounded-xl cursor-pointer font-semibold text-sm text-dark-purple/50"
                     style={{ fontFamily: "var(--font-fredoka)" }}
                   >
-                    Clear filter
+                    {t("exploreCareers.clearFilter")}
                   </DropdownMenuItem>
                 </>
               )}
@@ -190,7 +196,7 @@ function ExploreCareersContent() {
             className="text-center text-sm text-dark-purple/40 italic"
             style={{ fontFamily: "var(--font-baloo)" }}
           >
-            * Listed alphabetically, not in order of relevance.
+            {t("exploreCareers.disclaimer")}
           </p>
         </div>
       )}
@@ -203,6 +209,7 @@ function ExploreCareersContent() {
               <PaginationItem>
                 <PaginationPrevious
                   href="#"
+                  text={t("common.previous")}
                   onClick={(e) => {
                     e.preventDefault();
                     if (currentPage > 1) setCurrentPage(currentPage - 1);
@@ -230,6 +237,7 @@ function ExploreCareersContent() {
               <PaginationItem>
                 <PaginationNext
                   href="#"
+                  text={t("common.nextPage")}
                   onClick={(e) => {
                     e.preventDefault();
                     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -260,13 +268,13 @@ function ExploreCareersContent() {
               className="text-2xl text-dark-purple/50 font-semibold"
               style={{ fontFamily: "var(--font-fredoka)" }}
             >
-              No careers found
+              {t("exploreCareers.noCareers")}
             </p>
             <p
               className="text-lg text-dark-purple/40 mt-2"
               style={{ fontFamily: "var(--font-baloo)" }}
             >
-              Try a different search or filter
+              {t("exploreCareers.tryDifferent")}
             </p>
           </div>
         )}

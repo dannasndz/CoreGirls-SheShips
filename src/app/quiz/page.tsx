@@ -5,21 +5,21 @@ import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
 import Image from "next/image"
-import { questions } from "@/data/quizQuestions"
+import { questions as questionsEn } from "@/data/quizQuestions"
+import { questionsEs } from "@/data/quizQuestions.es"
 import Question from "@/app/quiz/_components/question"
 import ProgressBar from "@/app/quiz/_components/progressBar"
 import QuizAuthModal from "@/app/quiz/_components/quizAuthModal"
 import { StemType, Score } from "@/types/quiz"
-import { careers } from "@/data/careers"
+import { careers as careersEn } from "@/data/careers"
+import { careersEs } from "@/data/careers.es"
 import Grainient from '@/components/Grainient';
+import { useI18n } from "@/lib/i18n"
 
-const STAGES = [...new Set(questions.map((q) => q.stage))]
+const questionsMap = { en: questionsEn, es: questionsEs } as const
+const careersMap = { en: careersEn, es: careersEs } as const
 
-function getStageNumber(stageName: string) {
-    return STAGES.indexOf(stageName) + 1
-}
-
-function pickCareer(answers: Record<number, StemType>) {
+function pickCareer(answers: Record<number, StemType>, careers: typeof careersEn) {
     const score: Score = { S: 0, T: 0, E: 0, M: 0 }
     for (const type of Object.values(answers)) {
         score[type]++
@@ -42,11 +42,19 @@ function pickCareer(answers: Record<number, StemType>) {
 export default function QuizPage() {
     const router = useRouter()
     const { data: session, status } = useSession()
+    const { t, locale } = useI18n()
     const [current, setCurrent] = useState(0)
     const [answers, setAnswers] = useState<Record<number, StemType>>({})
     const [progress, setProgress] = useState(0)
     const [showAuthModal, setShowAuthModal] = useState(false)
     const pendingFinish = useRef(false)
+
+    const questions = questionsMap[locale]
+    const STAGES = [...new Set(questions.map((q) => q.stage))]
+
+    function getStageNumber(stageName: string) {
+        return STAGES.indexOf(stageName) + 1
+    }
 
     const total = questions.length
     const currentQuestion = questions[current]
@@ -73,8 +81,10 @@ export default function QuizPage() {
         }
     }
 
+    const careers = careersMap[locale]
+
     function navigateToResults() {
-        const { career, score } = pickCareer(answers)
+        const { career, score } = pickCareer(answers, careers)
 
         // Save results to DB
         fetch("/api/quiz/submit", {
@@ -186,7 +196,7 @@ export default function QuizPage() {
                             disabled={current === 0}
                             className="flex items-center gap-1 text-white/80 font-semibold text-sm sm:text-base hover:text-white transition-colors disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
                         >
-                            <span>&larr;</span> Back
+                            <span>&larr;</span> {t("quiz.back")}
                         </button>
 
                         <div className="flex gap-1.5 sm:gap-2">
@@ -216,7 +226,7 @@ export default function QuizPage() {
                                     transition-all duration-500 ease-in-out shadow-md
                                     cursor-pointer animate-pulse"
                             >
-                                See Results <span>&#10024;</span>
+                                {t("quiz.seeResults")} <span>&#10024;</span>
                             </button>
                         ) : (
                             <button
@@ -230,7 +240,7 @@ export default function QuizPage() {
                                     disabled:opacity-40 disabled:pointer-events-none
                                     cursor-pointer"
                             >
-                                Next <span>&rarr;</span>
+                                {t("quiz.next")} <span>&rarr;</span>
                             </button>
                         )}
                     </div>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n";
 
 type Mode = "login" | "signup";
 
@@ -13,6 +14,7 @@ interface AuthModalProps {
 }
 
 export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
+  const { t } = useI18n();
   const [mode, setMode] = useState<Mode>("login");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -35,7 +37,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
         });
         const data = await res.json();
         if (!res.ok) {
-          setError(data.error || "Registration failed");
+          setError(data.error || t("auth.registrationFailed"));
           setLoading(false);
           return;
         }
@@ -48,7 +50,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
       });
 
       if (result?.error) {
-        setError("Invalid credentials");
+        setError(t("auth.invalidCredentials"));
         setLoading(false);
         return;
       }
@@ -57,7 +59,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
       setPassword("");
       onSuccess();
     } catch {
-      setError("Something went wrong");
+      setError(t("auth.somethingWentWrong"));
     } finally {
       setLoading(false);
     }
@@ -68,7 +70,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
       <div className="w-full max-w-sm mx-4 rounded-2xl bg-white p-6 shadow-xl border border-light-pink">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-girly-purple font-[family-name:var(--font-fredoka)]">
-            {mode === "login" ? "Welcome back!" : "Join SheShips"}
+            {mode === "login" ? t("auth.welcomeBack") : t("auth.joinSheShips")}
           </h2>
           <button
             onClick={onClose}
@@ -81,28 +83,28 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-dark-purple mb-1">
-              Username
+              {t("auth.username")}
             </label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full rounded-lg border border-light-pink bg-cream px-3 py-2 text-dark-purple placeholder:text-dark-purple/40 focus:outline-none focus:ring-2 focus:ring-girly-purple"
-              placeholder="Enter your username"
+              placeholder={t("auth.usernamePlaceholder")}
               required
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-dark-purple mb-1">
-              Password
+              {t("auth.password")}
             </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded-lg border border-light-pink bg-cream px-3 py-2 text-dark-purple placeholder:text-dark-purple/40 focus:outline-none focus:ring-2 focus:ring-girly-purple"
-              placeholder="Enter your password"
+              placeholder={t("auth.passwordPlaceholder")}
               required
               minLength={6}
             />
@@ -118,15 +120,15 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
             className="w-full h-10 bg-girly-purple text-white font-semibold hover:bg-strong-purple transition"
           >
             {loading
-              ? "Loading..."
+              ? t("auth.loading")
               : mode === "login"
-                ? "Log in"
-                : "Sign up"}
+                ? t("auth.logIn")
+                : t("auth.signUp")}
           </Button>
         </form>
 
         <p className="mt-4 text-center text-sm text-dark-purple/70">
-          {mode === "login" ? "Don't have an account?" : "Already have an account?"}{" "}
+          {mode === "login" ? t("auth.dontHaveAccount") : t("auth.alreadyHaveAccount")}{" "}
           <button
             onClick={() => {
               setMode(mode === "login" ? "signup" : "login");
@@ -134,7 +136,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
             }}
             className="text-girly-purple font-semibold hover:underline"
           >
-            {mode === "login" ? "Sign up" : "Log in"}
+            {mode === "login" ? t("auth.signUp") : t("auth.logIn")}
           </button>
         </p>
       </div>

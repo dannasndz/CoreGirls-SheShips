@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X, Hash } from "lucide-react";
 import { STEM_CATEGORIES } from "./helpers";
+import { useI18n } from "@/lib/i18n";
 
 interface CreatePostFormProps {
   onSubmit: (data: {
@@ -18,8 +19,9 @@ interface CreatePostFormProps {
 export function CreatePostForm({
   onSubmit,
   onCancel,
-  placeholder = "What's on your mind?",
+  placeholder,
 }: CreatePostFormProps) {
+  const { t } = useI18n();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [categories, setCategories] = useState<string[]>([]);
@@ -73,14 +75,14 @@ export function CreatePostForm({
         type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="Post title"
+        placeholder={t("createPost.titlePlaceholder")}
         className="w-full rounded-lg border border-light-pink bg-cream px-3 py-2 text-dark-purple placeholder:text-dark-purple/40 focus:outline-none focus:ring-2 focus:ring-girly-purple text-sm"
         required
       />
       <textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        placeholder={placeholder}
+        placeholder={placeholder ?? t("createPost.contentPlaceholder")}
         rows={3}
         className="w-full rounded-lg border border-light-pink bg-cream px-3 py-2 text-dark-purple placeholder:text-dark-purple/40 focus:outline-none focus:ring-2 focus:ring-girly-purple text-sm resize-none"
         required
@@ -89,7 +91,7 @@ export function CreatePostForm({
       {/* Categories */}
       <div>
         <p className="text-xs font-semibold text-dark-purple/60 mb-2">
-          Categories
+          {t("createPost.categories")}
         </p>
         <div className="flex flex-wrap gap-2">
           {STEM_CATEGORIES.map((cat) => (
@@ -111,7 +113,7 @@ export function CreatePostForm({
 
       {/* Tags */}
       <div>
-        <p className="text-xs font-semibold text-dark-purple/60 mb-2">Tags</p>
+        <p className="text-xs font-semibold text-dark-purple/60 mb-2">{t("createPost.tags")}</p>
         {tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-2">
             {tags.map((tag) => (
@@ -144,7 +146,7 @@ export function CreatePostForm({
             onChange={(e) => setTagInput(e.target.value)}
             onKeyDown={handleTagKeyDown}
             onBlur={addTag}
-            placeholder="Add a tag and press Enter"
+            placeholder={t("createPost.tagPlaceholder")}
             className="w-full rounded-lg border border-light-pink bg-cream pl-8 pr-3 py-1.5 text-dark-purple placeholder:text-dark-purple/40 focus:outline-none focus:ring-2 focus:ring-girly-purple text-xs"
           />
         </div>
@@ -156,14 +158,14 @@ export function CreatePostForm({
           onClick={onCancel}
           className="px-4 py-1.5 rounded-lg text-sm text-dark-purple/60 hover:bg-light-pink/30 transition"
         >
-          Cancel
+          {t("createPost.cancel")}
         </button>
         <button
           type="submit"
           disabled={posting}
           className="px-4 py-1.5 rounded-lg bg-girly-purple text-white text-sm font-semibold hover:bg-strong-purple transition disabled:opacity-50"
         >
-          {posting ? "Posting..." : "Post"}
+          {posting ? t("createPost.posting") : t("createPost.post")}
         </button>
       </div>
     </form>

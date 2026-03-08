@@ -1,14 +1,19 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useI18n } from "@/lib/i18n";
 
 export default function HeroSection() {
+  const { t } = useI18n();
+
   return (
     <section className="flex flex-col-reverse md:flex-row items-center justify-between gap-12 px-8 md:px-16 lg:px-24 py-10 md:py-0 md:min-h-[calc(100vh-60px)]">
       {/* Left: Slogan + Buttons */}
       <div className="flex flex-col items-center md:items-start gap-6 w-full md:w-1/2">
         <Image
           src="/slogan.svg"
-          alt="Meet the woman shaping our world, and join them"
+          alt={t("hero.sloganAlt")}
           width={480}
           height={420}
           className="w-[85%] sm:w-[75%] md:w-full object-contain"
@@ -20,7 +25,7 @@ export default function HeroSection() {
             href="/preQuiz"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-linear-to-br from-girly-purple via-hot-pink to-cute-orange hover:from-cute-orange hover:via-hot-pink hover:to-girly-purple text-white font-semibold text-2xl transition-all duration-500 ease-in-out shadow-md"
           >
-            Take the Quiz
+            {t("hero.takeTheQuiz")}
             <Image
               src="/quiz-icon.svg"
               alt="quiz icon"
@@ -34,7 +39,7 @@ export default function HeroSection() {
             href="/explore-careers"
             className="inline-flex items-center px-6 py-3 rounded-full border-2 border-cute-orange text-cute-orange font-semibold text-2xl hover:bg-cute-orange hover:text-white transition-all duration-300"
           >
-            Explore
+            {t("hero.explore")}
           </Link>
         </div>
       </div>
@@ -43,7 +48,7 @@ export default function HeroSection() {
       <div className="w-full md:w-1/2 flex justify-center md:justify-end">
         <Image
           src="/banner.png"
-          alt="Women shaping the world"
+          alt={t("hero.bannerAlt")}
           width={480}
           height={420}
           className="w-[85%] sm:w-[75%] md:w-full object-contain"

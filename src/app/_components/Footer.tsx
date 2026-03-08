@@ -1,4 +1,10 @@
+"use client";
+
+import { useI18n } from "@/lib/i18n";
+
 export default function Footer() {
+  const { t } = useI18n();
+
   return (
     <footer className="bg-dark-purple text-white py-16 px-6 md:px-16 lg:px-24">
       <div className="max-w-6xl mx-auto">
@@ -9,14 +15,13 @@ export default function Footer() {
               className="text-3xl font-extrabold text-hot-pink"
               style={{ fontFamily: "var(--font-fredoka)" }}
             >
-              Core Girls
+              {t("footer.coreGirls")}
             </h3>
             <p
               className="text-base text-white/70 leading-relaxed"
               style={{ fontFamily: "var(--font-baloo)" }}
             >
-              We are a team of three passionate women from Mexico who believe
-              every girl deserves to see herself in STEM.
+              {t("footer.teamDescription")}
             </p>
             <div
               className="flex flex-col gap-1 text-white/80"
@@ -34,24 +39,22 @@ export default function Footer() {
               className="text-3xl font-extrabold text-girly-purple"
               style={{ fontFamily: "var(--font-fredoka)" }}
             >
-              💜 #SheShips
+              {t("footer.sheships")}
             </h3>
             <p
               className="text-base text-white/70 leading-relaxed"
               style={{ fontFamily: "var(--font-baloo)" }}
             >
               <span className="text-white font-semibold">
-                Global Hackathon 8M
+                {t("footer.hackathonTitle")}
               </span>{" "}
-              — Build. Share. Launch.
+              {t("footer.hackathonSuffix")}
             </p>
             <p
               className="text-base text-white/70 leading-relaxed"
               style={{ fontFamily: "var(--font-baloo)" }}
             >
-              A 48-hour remote hackathon celebrating International Women&apos;s
-              Day (March 6–8) where women and multidisciplinary creators come
-              together to build and publish something real.
+              {t("footer.hackathonDescription")}
             </p>
           </div>
 
@@ -61,16 +64,13 @@ export default function Footer() {
               className="text-3xl font-extrabold text-cute-orange"
               style={{ fontFamily: "var(--font-fredoka)" }}
             >
-              Our Mission
+              {t("footer.mission")}
             </h3>
             <p
               className="text-base text-white/70 leading-relaxed"
               style={{ fontFamily: "var(--font-baloo)" }}
             >
-              Dismantling the structural barriers, lack of information, and
-              invisibility of female leaders that perpetuate the gender gap in
-              STEM across Latin America, empowering the next generation of women
-              to confidently claim their space in science and technology.
+              {t("footer.missionText")}
             </p>
           </div>
         </div>
@@ -81,13 +81,13 @@ export default function Footer() {
             className="text-sm text-white/50"
             style={{ fontFamily: "var(--font-baloo)" }}
           >
-            Made with 💜 by Core Girls · #SheShips Hackathon 8M · March 2026
+            {t("footer.madeWith")}
           </p>
           <p
             className="text-sm text-white/50"
             style={{ fontFamily: "var(--font-baloo)" }}
           >
-            This is not just a hackathon. This is a space to ship.
+            {t("footer.notJustHackathon")}
           </p>
         </div>
       </div>

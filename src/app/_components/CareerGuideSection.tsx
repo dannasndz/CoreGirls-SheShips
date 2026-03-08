@@ -2,13 +2,16 @@
 
 import Image from "next/image";
 import SplitText from "@/components/SplitText";
+import { useI18n } from "@/lib/i18n";
 
 export default function CareerGuideSection() {
+  const { t } = useI18n();
+
   return (
     <section className="bg-cream py-36 px-6 md:px-16 lg:px-24">
       <div className="text-center mb-12">
         <SplitText
-          text="Your Journey Starts Here"
+          text={t("careerGuide.heading")}
           className="text-6xl md:text-7xl font-extrabold text-dark-purple"
           delay={40}
           duration={1}
@@ -26,7 +29,7 @@ export default function CareerGuideSection() {
           className="text-3xl md:text-4xl text-dark-purple mt-2"
           style={{ fontFamily: "var(--font-baloo)" }}
         >
-          three simple steps to find your STEM path
+          {t("careerGuide.subheading")}
         </p>
       </div>
 
@@ -36,7 +39,7 @@ export default function CareerGuideSection() {
           <div>
             <Image
               src="/1pink.png"
-              alt="Answer the Quiz"
+              alt={t("careerGuide.step1Title")}
               width={184}
               height={184}
               className="object-contain"
@@ -47,16 +50,15 @@ export default function CareerGuideSection() {
               className="text-3xl font-extrabold text-hot-pink leading-tight"
               style={{ fontFamily: "var(--font-fredoka)" }}
             >
-              Answer the Quiz
+              {t("careerGuide.step1Title")}
             </h3>
             <p
               className="text-lg text-dark-purple mt-1 leading-relaxed"
               style={{ fontFamily: "var(--font-baloo)" }}
             >
-              Take our fun, 7-stage quiz designed just for you.{" "}
+              {t("careerGuide.step1Text")}{" "}
               <span className="text-hot-pink font-semibold">
-                No pressure, no right or wrong answers — just discover what
-                excites you.
+                {t("careerGuide.step1Highlight")}
               </span>
             </p>
           </div>
@@ -87,7 +89,7 @@ export default function CareerGuideSection() {
           <div className="w-36 h-36 md:w-44 md:h-44 rounded-full bg-linear-to-br from-strong-purple to-girly-purple flex items-center justify-center shadow-lg">
             <Image
               src="/2purple.png"
-              alt="Discover your Path"
+              alt={t("careerGuide.step2Title")}
               width={184}
               height={184}
               className="object-contain"
@@ -98,16 +100,15 @@ export default function CareerGuideSection() {
               className="text-3xl font-extrabold text-girly-purple leading-tight"
               style={{ fontFamily: "var(--font-fredoka)" }}
             >
-              Discover your Path
+              {t("careerGuide.step2Title")}
             </h3>
             <p
               className="text-lg text-dark-purple mt-1 leading-relaxed"
               style={{ fontFamily: "var(--font-baloo)" }}
             >
-              Get a personalized STEM profile based on your unique answers.{" "}
+              {t("careerGuide.step2Text")}{" "}
               <span className="text-girly-purple">
-                Learn what the career looks like, what you&apos;d be doing, and
-                why you&apos;re the perfect match.
+                {t("careerGuide.step2Highlight")}
               </span>
             </p>
           </div>
@@ -149,16 +150,15 @@ export default function CareerGuideSection() {
               className="text-3xl font-extrabold text-cute-orange leading-tight"
               style={{ fontFamily: "var(--font-fredoka)" }}
             >
-              Meet Your Role Models
+              {t("careerGuide.step3Title")}
             </h3>
             <p
               className="text-lg text-dark-purple mt-1 leading-relaxed"
               style={{ fontFamily: "var(--font-baloo)" }}
             >
-              Connect with real women thriving in STEM.{" "}
+              {t("careerGuide.step3Text")}{" "}
               <span className="text-cute-orange">
-                Read their stories, learn from their journeys, and see yourself
-                in their success.
+                {t("careerGuide.step3Highlight")}
               </span>
             </p>
           </div>

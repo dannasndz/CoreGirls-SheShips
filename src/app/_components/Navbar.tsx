@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { User } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -14,17 +15,18 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 
-const navLinks = [
-  { label: "Careers", href: "/explore-careers" },
-  { label: "References", href: "/references" },
-  { label: "Community", href: "/community" },
-  { label: "Take the Quiz", href: "/preQuiz", highlight: true },
-];
-
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
   const { data: session } = useSession();
+  const { t, locale, setLocale } = useI18n();
+
+  const navLinks = [
+    { label: t("nav.careers"), href: "/explore-careers" },
+    { label: t("nav.references"), href: "/references" },
+    { label: t("nav.community"), href: "/community" },
+    { label: t("nav.takeTheQuiz"), href: "/preQuiz", highlight: true },
+  ];
 
   if (pathname === "/quiz" || pathname === "/preQuiz") return null;
 
@@ -96,10 +98,24 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           {/* Language switch */}
           <div className="flex items-center gap-1 shrink-0 border border-girly-purple rounded-full px-1 py-1 bg-white">
-            <button className="px-3 py-1 rounded-full text-sm font-semibold bg-girly-purple text-white transition">
+            <button
+              onClick={() => setLocale("es")}
+              className={`px-3 py-1 rounded-full text-sm font-semibold transition ${
+                locale === "es"
+                  ? "bg-girly-purple text-white"
+                  : "text-dark-purple hover:bg-girly-purple/10"
+              }`}
+            >
               ES
             </button>
-            <button className="px-3 py-1 rounded-full text-sm font-semibold text-dark-purple hover:bg-girly-purple/10 transition">
+            <button
+              onClick={() => setLocale("en")}
+              className={`px-3 py-1 rounded-full text-sm font-semibold transition ${
+                locale === "en"
+                  ? "bg-girly-purple text-white"
+                  : "text-dark-purple hover:bg-girly-purple/10"
+              }`}
+            >
               EN
             </button>
           </div>
@@ -109,7 +125,7 @@ export default function Navbar() {
             <Link
               href="/profile"
               className="w-9 h-9 rounded-full bg-gradient-to-br from-strong-purple to-girly-purple flex items-center justify-center hover:from-girly-purple hover:to-hot-pink transition-all duration-300 shadow-sm"
-              aria-label="My Profile"
+              aria-label={t("nav.myProfile")}
             >
               <User className="w-4.5 h-4.5 text-white" />
             </Link>
@@ -152,7 +168,7 @@ export default function Navbar() {
               className="px-4 py-3 rounded-full text-base font-semibold text-strong-purple hover:bg-girly-purple/10 transition-colors flex items-center gap-2"
             >
               <User className="w-5 h-5" />
-              My Profile
+              {t("nav.myProfile")}
             </Link>
           )}
         </nav>

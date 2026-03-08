@@ -4,22 +4,23 @@ import { useSearchParams } from "next/navigation"
 import { Suspense } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { careers, categoryLabels, categoryColors } from "@/data/careers"
+import { careers as careersEn, categoryLabels as categoryLabelsEn, categoryColors } from "@/data/careers"
+import { careersEs, categoryLabelsEs } from "@/data/careers.es"
 import { StemType } from "@/types/quiz"
-
-const categoryDescriptions: Record<StemType, string> = {
-    S: "You're driven by curiosity about how the world works. You love observing, experimenting, and discovering new things. Science is your superpower!",
-    T: "You love building, coding, and creating digital experiences. Technology is your playground, and you're ready to shape the future!",
-    E: "You're a natural problem-solver who loves designing and building things. Engineering lets you turn ideas into reality!",
-    M: "You see patterns everywhere and love working with numbers and logic. Mathematics is the language you use to understand the world!",
-}
+import { useI18n } from "@/lib/i18n"
 
 const getCareerImage = (id: string) => {
     if (id === "database-administrator") return "/careers/database-administrato.png"
     return `/careers/${id}.png`
 }
 
+const careersMap = { en: careersEn, es: careersEs } as const;
+const categoryLabelsMap = { en: categoryLabelsEn, es: categoryLabelsEs } as const;
+
 function QuizResultContent() {
+    const { t, locale } = useI18n()
+    const careers = careersMap[locale]
+    const categoryLabels = categoryLabelsMap[locale]
     const searchParams = useSearchParams()
     const careerId = searchParams.get("career")
     const scores = {
@@ -39,13 +40,13 @@ function QuizResultContent() {
                         className="text-3xl font-extrabold text-dark-purple mb-4"
                         style={{ fontFamily: "var(--font-fredoka)" }}
                     >
-                        No result found
+                        {t("quizResult.noResult")}
                     </h1>
                     <Link
                         href="/quiz"
                         className="text-girly-purple font-semibold underline"
                     >
-                        Take the quiz again
+                        {t("quizResult.takeAgain")}
                     </Link>
                 </div>
             </div>
@@ -63,6 +64,8 @@ function QuizResultContent() {
     const otherCareers = careers
         .filter((c) => c.category === topType && c.id !== career.id && c.growth)
         .slice(0, 3)
+
+    const categoryDesc = t(`quizResult.categoryDescriptions.${topType}`)
 
     return (
         <div className="min-h-screen bg-cream">
@@ -83,13 +86,13 @@ function QuizResultContent() {
                         className="text-lg text-girly-purple font-semibold mb-2"
                         style={{ fontFamily: "var(--font-baloo)" }}
                     >
-                        Your quiz results are in!
+                        {t("quizResult.resultsIn")}
                     </p>
                     <h1
                         className="text-4xl md:text-5xl font-extrabold text-dark-purple"
                         style={{ fontFamily: "var(--font-fredoka)" }}
                     >
-                        You could be a...
+                        {t("quizResult.youCouldBe")}
                     </h1>
                 </div>
 
@@ -111,7 +114,7 @@ function QuizResultContent() {
                                 </span>
                                 {career.growth && (
                                     <span className="bg-cute-orange text-white text-xs font-bold px-3 py-1 rounded-full">
-                                        Trending Career
+                                        {t("quizResult.trendingCareer")}
                                     </span>
                                 )}
                             </div>
@@ -139,15 +142,17 @@ function QuizResultContent() {
                                 className="text-xl font-extrabold text-dark-purple mb-3"
                                 style={{ fontFamily: "var(--font-fredoka)" }}
                             >
-                                Why this matches you
+                                {t("quizResult.whyMatches")}
                             </h3>
                             <p
                                 className="text-dark-purple/70 leading-relaxed mb-4"
                                 style={{ fontFamily: "var(--font-baloo)" }}
                             >
-                                {categoryDescriptions[topType]} Based on your answers,{" "}
-                                <strong>{percentage}%</strong> of your choices aligned with{" "}
-                                <strong>{categoryLabels[topType]}</strong>.
+                                {categoryDesc}{" "}
+                                {t("quizResult.basedOnAnswers", {
+                                    percentage: String(percentage),
+                                    category: categoryLabels[topType],
+                                })}
                             </p>
 
                             {/* Score Breakdown */}
@@ -186,7 +191,7 @@ function QuizResultContent() {
                                 className="text-xl font-extrabold text-dark-purple mb-3"
                                 style={{ fontFamily: "var(--font-fredoka)" }}
                             >
-                                What to Study
+                                {t("quizResult.whatToStudy")}
                             </h3>
                             <div className="flex flex-wrap gap-2">
                                 {career.studyPaths.map((path) => (
@@ -207,7 +212,7 @@ function QuizResultContent() {
                                 className="text-xl font-extrabold text-dark-purple mb-3"
                                 style={{ fontFamily: "var(--font-fredoka)" }}
                             >
-                                Leaders in This Field
+                                {t("quizResult.leadersInField")}
                             </h3>
                             {career.leaders.map((leader) => (
                                 <div
@@ -244,7 +249,7 @@ function QuizResultContent() {
                             className="text-2xl font-extrabold text-dark-purple mb-4 text-center"
                             style={{ fontFamily: "var(--font-fredoka)" }}
                         >
-                            Other {categoryLabels[topType]} Careers You Might Like
+                            {t("quizResult.otherCareers", { category: categoryLabels[topType] })}
                         </h3>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             {otherCareers.map((c) => (
@@ -280,21 +285,21 @@ function QuizResultContent() {
                         className="px-8 py-3 rounded-full bg-linear-to-r from-strong-purple to-girly-purple text-white font-semibold text-center hover:from-girly-purple hover:to-hot-pink transition-all duration-500 shadow-md"
                         style={{ fontFamily: "var(--font-fredoka)" }}
                     >
-                        Explore All {categoryLabels[topType]} Careers
+                        {t("quizResult.exploreAll", { category: categoryLabels[topType] })}
                     </Link>
                     <Link
                         href="/explore-careers"
                         className="px-8 py-3 rounded-full border-2 border-girly-purple text-girly-purple font-semibold text-center hover:bg-girly-purple/10 transition-all duration-300"
                         style={{ fontFamily: "var(--font-fredoka)" }}
                     >
-                        Browse All Careers
+                        {t("quizResult.browseAll")}
                     </Link>
                     <Link
                         href="/quiz"
                         className="px-8 py-3 rounded-full border-2 border-dark-purple/20 text-dark-purple/60 font-semibold text-center hover:bg-dark-purple/5 transition-all duration-300"
                         style={{ fontFamily: "var(--font-fredoka)" }}
                     >
-                        Retake Quiz
+                        {t("quizResult.retakeQuiz")}
                     </Link>
                 </div>
             </div>
@@ -303,10 +308,11 @@ function QuizResultContent() {
 }
 
 export default function QuizResultPage() {
+    const { t } = useI18n()
     return (
         <Suspense fallback={
             <div className="min-h-screen flex items-center justify-center bg-cream">
-                <p className="text-dark-purple text-lg">Loading your results...</p>
+                <p className="text-dark-purple text-lg">{t("quizResult.loadingResults")}</p>
             </div>
         }>
             <QuizResultContent />

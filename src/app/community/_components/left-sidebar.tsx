@@ -4,6 +4,7 @@ import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { Home, Users, Heart, Calendar, LogOut, Plus } from "lucide-react";
 import { GroupData } from "./helpers";
+import { useI18n } from "@/lib/i18n";
 
 type View = "feed" | "groups" | "liked" | "events";
 
@@ -20,11 +21,13 @@ export function LeftSidebar({
   groups,
   onCreateGroup,
 }: LeftSidebarProps) {
+  const { t } = useI18n();
+
   return (
     <aside className="space-y-6">
       <div className="rounded-2xl bg-white border border-light-pink p-4 shadow-sm">
         <h3 className="text-sm font-bold text-girly-purple mb-3 font-[family-name:var(--font-fredoka)]">
-          Navigation
+          {t("sidebar.navigation")}
         </h3>
         <nav className="space-y-1">
           <button
@@ -36,7 +39,7 @@ export function LeftSidebar({
             }`}
           >
             <Home size={18} />
-            Home
+            {t("sidebar.home")}
           </button>
           <button
             onClick={() => onViewChange("liked")}
@@ -47,7 +50,7 @@ export function LeftSidebar({
             }`}
           >
             <Heart size={18} />
-            Liked Posts
+            {t("sidebar.likedPosts")}
           </button>
           <button
             onClick={() => onViewChange("groups")}
@@ -58,7 +61,7 @@ export function LeftSidebar({
             }`}
           >
             <Users size={18} />
-            Groups
+            {t("sidebar.groups")}
           </button>
           <button
             onClick={() => onViewChange("events")}
@@ -69,7 +72,7 @@ export function LeftSidebar({
             }`}
           >
             <Calendar size={18} />
-            Events
+            {t("sidebar.events")}
           </button>
         </nav>
       </div>
@@ -77,7 +80,7 @@ export function LeftSidebar({
       <div className="rounded-2xl bg-white border border-light-pink p-4 shadow-sm">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-sm font-bold text-girly-purple font-[family-name:var(--font-fredoka)]">
-            My groups
+            {t("sidebar.myGroups")}
           </h3>
           <button
             onClick={onCreateGroup}
@@ -88,7 +91,7 @@ export function LeftSidebar({
         </div>
         {groups.length === 0 ? (
           <p className="text-xs text-dark-purple/40">
-            No groups yet -- create or join one!
+            {t("sidebar.noGroups")}
           </p>
         ) : (
           <ul className="space-y-2 text-sm text-dark-purple">
@@ -115,7 +118,7 @@ export function LeftSidebar({
         className="flex items-center gap-2 text-sm text-dark-purple/60 hover:text-hot-pink transition px-2"
       >
         <LogOut size={16} />
-        Log out
+        {t("sidebar.logOut")}
       </button>
     </aside>
   );

@@ -1,12 +1,20 @@
+"use client";
+
 import Image from "next/image";
 import { Linkedin, History } from "lucide-react";
-import { RoleModel, categoryLabels } from "@/data/roleModels";
+import { RoleModel, categoryLabels as categoryLabelsEn } from "@/data/roleModels";
+import { categoryLabelsEs } from "@/data/roleModels.es";
+import { useI18n } from "@/lib/i18n";
 
 type RoleModelCardProps = {
   roleModel: RoleModel;
 };
 
+const categoryLabelsMap = { en: categoryLabelsEn, es: categoryLabelsEs } as const;
+
 export default function RoleModelCard({ roleModel }: RoleModelCardProps) {
+  const { locale } = useI18n();
+  const categoryLabels = categoryLabelsMap[locale];
   const categoryColors: Record<string, string> = {
     S: "bg-girly-purple/15 text-girly-purple",
     T: "bg-hot-pink/15 text-hot-pink",
@@ -42,7 +50,7 @@ export default function RoleModelCard({ roleModel }: RoleModelCardProps) {
               style={{ fontFamily: "var(--font-fredoka)" }}
             >
               <History size={10} />
-              Pioneer
+              {locale === "es" ? "Pionera" : "Pioneer"}
             </span>
           )}
         </div>
@@ -89,7 +97,7 @@ export default function RoleModelCard({ roleModel }: RoleModelCardProps) {
             style={{ fontFamily: "var(--font-fredoka)" }}
           >
             <Linkedin size={16} />
-            LinkedIn Profile
+            {locale === "es" ? "Perfil de LinkedIn" : "LinkedIn Profile"}
           </a>
         )}
       </div>

@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { GlobalSpotlight } from "@/components/MagicBento";
 import { Loader2 } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 import type { ProfileData } from "./_components/types";
 import { GLOW_COLOR } from "./_components/types";
 import ProfileHeader from "./_components/ProfileHeader";
@@ -15,6 +16,7 @@ import PostsCard from "./_components/PostsCard";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
+  const { t } = useI18n();
   const router = useRouter();
   const gridRef = useRef<HTMLDivElement>(null);
   const [profile, setProfile] = useState<ProfileData | null>(null);
@@ -47,7 +49,7 @@ export default function ProfilePage() {
     return (
       <div className="min-h-screen bg-cream flex flex-col items-center justify-center p-10">
         <h1 className="text-2xl font-bold text-dark-purple mb-2">
-          Please log in to view your profile
+          {t("profile.pleaseLogIn")}
         </h1>
       </div>
     );
@@ -76,15 +78,15 @@ export default function ProfilePage() {
           <QuizCard quizResult={profile.quizResult} />
           <GroupsCard memberships={profile.groupMemberships} />
           <EventsCard
-            title="Events Created"
+            title={t("profile.eventsCreated")}
             events={profile.events}
-            emptyText="No events yet"
+            emptyText={t("profile.noEventsYet")}
           />
           <PostsCard posts={profile.posts} />
           <EventsCard
-            title="Attending"
+            title={t("profile.attendingLabel")}
             events={profile.eventAttendances.map((a) => a.event)}
-            emptyText="Not attending any events"
+            emptyText={t("profile.notAttending")}
           />
         </div>
       </div>

@@ -5,6 +5,7 @@ import { useEffect, useState, useCallback } from "react";
 import { AuthModal } from "@/components/auth-modal";
 import { Plus, Home, Heart, Users as UsersIcon, Calendar as CalendarIcon } from "lucide-react";
 import { PostData, GroupData, EventData, STEM_CATEGORIES } from "./_components/helpers";
+import { useI18n } from "@/lib/i18n";
 import { PostCard } from "./_components/post-card";
 import { CreatePostForm } from "./_components/create-post-form";
 import { CreateGroupModal } from "./_components/create-group-modal";
@@ -19,6 +20,7 @@ const filterOptions = ["All", ...STEM_CATEGORIES];
 
 export default function CommunityPage() {
   const { data: session, status } = useSession();
+  const { t } = useI18n();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [posts, setPosts] = useState<PostData[]>([]);
   const [groups, setGroups] = useState<GroupData[]>([]);
@@ -298,7 +300,7 @@ export default function CommunityPage() {
     return (
       <div className="min-h-screen bg-cream flex items-center justify-center">
         <div className="text-girly-purple text-lg font-medium animate-pulse">
-          Loading...
+          {t("community.loading")}
         </div>
       </div>
     );
@@ -316,16 +318,15 @@ export default function CommunityPage() {
 
       {!session && !showAuthModal && (
         <div className="min-h-screen bg-cream flex flex-col items-center justify-center p-10 gap-4">
-          <h1 className="text-4xl font-bold text-girly-purple">Community</h1>
+          <h1 className="text-4xl font-bold text-girly-purple">{t("community.title")}</h1>
           <p className="text-dark-purple text-center max-w-md">
-            Connect with other women in tech. Share stories, ask questions, and
-            inspire each other.
+            {t("community.description")}
           </p>
           <button
             onClick={() => setShowAuthModal(true)}
             className="px-6 py-2 rounded-lg bg-girly-purple text-white font-semibold hover:bg-strong-purple transition"
           >
-            Log in to continue
+            {t("community.loginToContinue")}
           </button>
         </div>
       )}
@@ -336,10 +337,10 @@ export default function CommunityPage() {
           <div className="flex gap-2 overflow-x-auto pb-3 lg:hidden scrollbar-none -mx-1 px-1">
             {(
               [
-                { key: "feed", label: "Home", icon: <Home size={16} /> },
-                { key: "liked", label: "Liked", icon: <Heart size={16} /> },
-                { key: "groups", label: "Groups", icon: <UsersIcon size={16} /> },
-                { key: "events", label: "Events", icon: <CalendarIcon size={16} /> },
+                { key: "feed", label: t("community.home"), icon: <Home size={16} /> },
+                { key: "liked", label: t("community.liked"), icon: <Heart size={16} /> },
+                { key: "groups", label: t("community.groups"), icon: <UsersIcon size={16} /> },
+                { key: "events", label: t("community.events"), icon: <CalendarIcon size={16} /> },
               ] as const
             ).map((item) => (
               <button
@@ -360,7 +361,7 @@ export default function CommunityPage() {
               className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap bg-white border border-light-pink text-dark-purple transition shrink-0"
             >
               <Plus size={16} />
-              New Group
+              {t("community.newGroup")}
             </button>
           </div>
 
@@ -381,15 +382,10 @@ export default function CommunityPage() {
                 <div className="rounded-2xl bg-white border border-light-pink p-4 sm:p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div>
                     <h1 className="text-2xl sm:text-3xl font-bold text-dark-purple font-[family-name:var(--font-fredoka)]">
-                      Hi,{" "}
-                      <span className="text-girly-purple">
-                        {session.user.name}!
-                      </span>
+                      {t("community.hi", { name: session.user.name ?? "" })}
                     </h1>
                     <p className="text-dark-purple/70 mt-1 text-sm max-w-xs">
-                      There are {posts.length} discussion
-                      {posts.length !== 1 && "s"} in your circles of interest.
-                      Ready to learn something new today?
+                      {t("community.discussionCount", { count: String(posts.length) })}
                     </p>
                   </div>
                   <button
@@ -397,7 +393,7 @@ export default function CommunityPage() {
                     className="flex items-center gap-2 px-4 py-2 rounded-full border-2 border-girly-purple text-girly-purple font-semibold text-sm hover:bg-girly-purple hover:text-white transition shrink-0"
                   >
                     <Plus size={18} />
-                    Create Post
+                    {t("community.createPost")}
                   </button>
                 </div>
 
@@ -427,7 +423,7 @@ export default function CommunityPage() {
                 {loadingPosts && (
                   <div className="rounded-2xl bg-white border border-light-pink p-8 shadow-sm text-center">
                     <p className="text-girly-purple text-sm font-medium animate-pulse">
-                      Loading posts...
+                      {t("community.loadingPosts")}
                     </p>
                   </div>
                 )}
@@ -436,8 +432,8 @@ export default function CommunityPage() {
                   <div className="rounded-2xl bg-white border border-light-pink p-8 shadow-sm text-center">
                     <p className="text-dark-purple/50 text-sm">
                       {activeCategory === "All"
-                        ? "No posts yet. Be the first to share something!"
-                        : `No posts in ${activeCategory} yet.`}
+                        ? t("community.noPosts")
+                        : t("community.noPostsInCategory", { category: activeCategory })}
                     </p>
                   </div>
                 )}
@@ -456,13 +452,13 @@ export default function CommunityPage() {
             {activeView === "liked" && (
               <>
                 <h2 className="text-xl font-bold text-dark-purple font-[family-name:var(--font-fredoka)]">
-                  Liked Posts
+                  {t("community.likedPosts")}
                 </h2>
 
                 {loadingLiked && (
                   <div className="rounded-2xl bg-white border border-light-pink p-8 shadow-sm text-center">
                     <p className="text-girly-purple text-sm font-medium animate-pulse">
-                      Loading liked posts...
+                      {t("community.loadingLiked")}
                     </p>
                   </div>
                 )}
@@ -470,7 +466,7 @@ export default function CommunityPage() {
                 {!loadingLiked && likedPosts.length === 0 && (
                   <div className="rounded-2xl bg-white border border-light-pink p-8 shadow-sm text-center">
                     <p className="text-dark-purple/50 text-sm">
-                      You haven&apos;t liked any posts yet.
+                      {t("community.noLikedPosts")}
                     </p>
                   </div>
                 )}

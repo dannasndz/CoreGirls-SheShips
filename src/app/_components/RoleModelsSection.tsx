@@ -3,35 +3,35 @@
 import Image from "next/image";
 import Link from "next/link";
 import SplitText from "@/components/SplitText";
-
-const roleModels = [
-  {
-    name: "Julieta Fierro",
-    field: "Astrophysics · Mexico 🇲🇽",
-    about:
-      "A legendary Mexican astrophysicist and science communicator at UNAM. She wrote 40 books, won the UNESCO Kalinga Prize, and dedicated her life to making the Universe accessible to everyone.",
-    color: "bg-girly-purple",
-    photo: "/woman/julieta.png",
-  },
-  {
-    name: "Sandra Díaz",
-    field: "Ecology · Argentina 🇦🇷",
-    about:
-      "One of the most cited environmental scientists in the world. She won the Princess of Asturias Award and was named one of Nature's 10 people who mattered in science in 2019.",
-    color: "bg-cute-orange",
-    photo: "/woman/sandra.png",
-  },
-  {
-    name: "Silvia Torres-Peimbert",
-    field: "Astronomy · Mexico 🇲🇽",
-    about:
-      "The first Latin American woman to preside over the International Astronomical Union. She won the L'Oréal-UNESCO Award for Women in Science for her work on the chemical composition of nebulae.",
-    color: "bg-dark-purple",
-    photo: "/woman/silvia.png",
-  },
-];
+import { useI18n } from "@/lib/i18n";
 
 export default function RoleModelsSection() {
+  const { t } = useI18n();
+
+  const roleModels = [
+    {
+      name: "Julieta Fierro",
+      field: t("roleModels.julieta.field"),
+      about: t("roleModels.julieta.about"),
+      color: "bg-girly-purple",
+      photo: "/woman/julieta.png",
+    },
+    {
+      name: "Sandra Díaz",
+      field: t("roleModels.sandra.field"),
+      about: t("roleModels.sandra.about"),
+      color: "bg-cute-orange",
+      photo: "/woman/sandra.png",
+    },
+    {
+      name: "Silvia Torres-Peimbert",
+      field: t("roleModels.silvia.field"),
+      about: t("roleModels.silvia.about"),
+      color: "bg-dark-purple",
+      photo: "/woman/silvia.png",
+    },
+  ];
+
   return (
     <section
       className="relative w-full py-18 px-6 md:px-16 lg:px-24 md:py-24 md:min-h-[calc(80vh-60px)] flex items-center justify-center overflow-hidden"
@@ -46,7 +46,7 @@ export default function RoleModelsSection() {
       <div className="relative z-10 max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <SplitText
-            text="Women Who Inspire"
+            text={t("roleModels.heading")}
             className="text-6xl md:text-7xl font-extrabold text-white text-shadow-lg"
             delay={40}
             duration={1}
@@ -64,7 +64,7 @@ export default function RoleModelsSection() {
             className="text-2xl md:text-3xl text-white/80 mt-3 bg-pink-900/20 px-4 py-2 rounded-full inline-block shadow-sm"
             style={{ fontFamily: "var(--font-baloo)" }}
           >
-            real stories from real women breaking barriers in STEM
+            {t("roleModels.subheading")}
           </p>
         </div>
 
@@ -117,7 +117,7 @@ export default function RoleModelsSection() {
             className="inline-flex items-center gap-2 text-white text-xl font-semibold underline underline-offset-4 hover:text-white/80 transition-colors"
             style={{ fontFamily: "var(--font-baloo)" }}
           >
-            Discover more role models →
+            {t("roleModels.discoverMore")}
           </Link>
         </div>
       </div>

@@ -2,55 +2,54 @@
 
 import Image from "next/image";
 import SplitText from "@/components/SplitText";
-
-const stemCards = [
-  {
-    letter: "S",
-    word: "Science",
-    img: "/science-card.png",
-    letterColor: "text-white",
-    wordColor: "text-white",
-    titleColor: "text-girly-purple",
-    stat: "Only 33% of researchers worldwide are women.",
-    definition:
-      "From Nobel laureate Marie Curie to ecologist Sandra Díaz, women in science are rewriting the rules. Your curiosity could lead the next breakthrough.",
-  },
-  {
-    letter: "T",
-    word: "Technology",
-    img: "/tech-card.png",
-    letterColor: "text-white",
-    wordColor: "text-white",
-    titleColor: "text-hot-pink",
-    stat: "Just 26% of tech professionals are women.",
-    definition:
-      "Grace Hopper invented the first compiler, and today Latina engineers lead innovation at top companies worldwide. Your ideas belong here.",
-  },
-  {
-    letter: "E",
-    word: "Engineering",
-    img: "/engineer-card.png",
-    letterColor: "text-white",
-    wordColor: "text-white",
-    titleColor: "text-cute-orange",
-    stat: "Less than 15% of engineers globally are women.",
-    definition:
-      "From bridges to biomedical devices, women engineers solve the world's toughest challenges. Creativity + logic is your superpower.",
-  },
-  {
-    letter: "M",
-    word: "Mathematics",
-    img: "/math-card.png",
-    letterColor: "text-white",
-    wordColor: "text-white",
-    titleColor: "text-light-pink",
-    stat: "Maryam Mirzakhani was the first woman to win the Fields Medal.",
-    definition:
-      "Math is the foundation of every STEM field and opens every door. From data science to cryptography — let it open yours.",
-  },
-];
+import { useI18n } from "@/lib/i18n";
 
 export default function STEMSection() {
+  const { t } = useI18n();
+
+  const stemCards = [
+    {
+      letter: "S",
+      word: t("stem.science.word"),
+      img: "/science-card.png",
+      letterColor: "text-white",
+      wordColor: "text-white",
+      titleColor: "text-girly-purple",
+      stat: t("stem.science.stat"),
+      definition: t("stem.science.definition"),
+    },
+    {
+      letter: "T",
+      word: t("stem.technology.word"),
+      img: "/tech-card.png",
+      letterColor: "text-white",
+      wordColor: "text-white",
+      titleColor: "text-hot-pink",
+      stat: t("stem.technology.stat"),
+      definition: t("stem.technology.definition"),
+    },
+    {
+      letter: "E",
+      word: t("stem.engineering.word"),
+      img: "/engineer-card.png",
+      letterColor: "text-white",
+      wordColor: "text-white",
+      titleColor: "text-cute-orange",
+      stat: t("stem.engineering.stat"),
+      definition: t("stem.engineering.definition"),
+    },
+    {
+      letter: "M",
+      word: t("stem.mathematics.word"),
+      img: "/math-card.png",
+      letterColor: "text-white",
+      wordColor: "text-white",
+      titleColor: "text-light-pink",
+      stat: t("stem.mathematics.stat"),
+      definition: t("stem.mathematics.definition"),
+    },
+  ];
+
   return (
     <section
       className="relative w-full py-18 px-6 md:px-16 lg:px-24 md:py-24 md:min-h-[calc(80vh-60px)] flex items-center justify-center overflow-hidden"
@@ -65,7 +64,7 @@ export default function STEMSection() {
       <div className="relative z-10 flex flex-col items-center w-full max-w-8xl">
         <div className="text-center mb-14">
           <SplitText
-            text="The Future of STEM Needs You"
+            text={t("stem.heading")}
             className="text-6xl md:text-7xl font-extrabold text-white text-shadow-lg"
             delay={40}
             duration={1}
@@ -83,7 +82,7 @@ export default function STEMSection() {
             className="text-2xl md:text-3xl text-white/80 mt-3 bg-strong-purple/50 px-4 py-2 rounded-full inline-block shadow-sm"
             style={{ fontFamily: "var(--font-baloo)" }}
           >
-            Women are underrepresented in every STEM field. You can change that.
+            {t("stem.subheading")}
           </p>
         </div>
 
