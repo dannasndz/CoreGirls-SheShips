@@ -59,3 +59,30 @@ export interface CommentData {
   createdAt: string;
   author: { id: string; username: string };
 }
+
+export interface EventData {
+  id: string;
+  title: string;
+  description: string;
+  modality: string;
+  location: string | null;
+  meetingLink: string | null;
+  externalLink: string | null;
+  date: string;
+  hour: string;
+  participantsLimit: number | null;
+  organizerName: string;
+  cancelled: boolean;
+  createdAt: string;
+  createdBy: { id: string; username: string };
+  _count: { attendees: number };
+}
+
+export function formatEventDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}

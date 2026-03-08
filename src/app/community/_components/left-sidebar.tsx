@@ -5,7 +5,7 @@ import { signOut } from "next-auth/react";
 import { Home, Users, Heart, Calendar, LogOut, Plus } from "lucide-react";
 import { GroupData } from "./helpers";
 
-type View = "feed" | "groups" | "liked";
+type View = "feed" | "groups" | "liked" | "events";
 
 interface LeftSidebarProps {
   activeView: View;
@@ -60,13 +60,17 @@ export function LeftSidebar({
             <Users size={18} />
             Groups
           </button>
-          <a
-            href="#"
-            className="flex items-center gap-3 px-3 py-2 rounded-lg text-dark-purple hover:bg-light-pink/30 text-sm transition"
+          <button
+            onClick={() => onViewChange("events")}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-sm w-full text-left transition ${
+              activeView === "events"
+                ? "bg-girly-purple/10 text-girly-purple"
+                : "text-dark-purple hover:bg-light-pink/30"
+            }`}
           >
             <Calendar size={18} />
             Events
-          </a>
+          </button>
         </nav>
       </div>
 

@@ -21,6 +21,8 @@ model User {
   groupPosts       GroupPost[]
   groupPostLikes   GroupPostLike[]
   groupPostComments GroupPostComment[]
+  events            Event[]
+  eventAttendances  EventAttendee[]
 }
 
 model Post {
@@ -120,6 +122,38 @@ model GroupPostComment {
   author   User      @relation(fields: [authorId], references: [id])
   postId   String
   post     GroupPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model Event {
+  id               String   @id @default(cuid())
+  title            String
+  description      String
+  modality         String   // "in-person", "remote", "hybrid"
+  location         String?  // required if in-person or hybrid
+  meetingLink      String?  // required if remote or hybrid
+  externalLink     String?  // optional link to external info page
+  date             DateTime
+  hour             String   // e.g. "14:00"
+  participantsLimit Int?
+  organizerName    String
+  cancelled        Boolean  @default(false)
+  createdAt        DateTime @default(now())
+
+  createdById String
+  createdBy   User            @relation(fields: [createdById], references: [id])
+  attendees   EventAttendee[]
+}
+
+model EventAttendee {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId  String
+  user    User  @relation(fields: [userId], references: [id])
+  eventId String
+  event   Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventId])
 }
 
 model QuizResult {
