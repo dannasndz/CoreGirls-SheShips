@@ -18,32 +18,32 @@ export default function OptionCard({ option, label, imageSrc, selected, onSelect
                 hover:shadow-xl active:scale-[0.98]
                 transition-all duration-300 ease-in-out
                 ${selected
-                    ? "ring-3 ring-cute-orange shadow-lg shadow-cute-orange/20"
-                    : "ring-1 ring-gray-200 hover:ring-cute-orange/50"
+                    ? "ring-3 ring-cute-orange shadow-lg shadow-cute-orange/30"
+                    : "ring-1 ring-white/20 hover:ring-cute-orange/50"
                 }
             `}
         >
-            <div className="flex-1 bg-gray-100">
+            <div className="relative h-[40vh] bg-white/90">
                 <Image
                     src={imageSrc}
                     alt={option.text}
-                    width={500}
-                    height={500}
-                    className="w-full h-auto"
+                    fill
+                    sizes="(max-width: 640px) 100vw, 50vw"
+                    className="object-cover"
                 />
             </div>
 
             <div className={`
-                w-full p-5 min-h-28 text-white text-center
+                w-full px-4 py-3 min-h-24 text-white text-center shrink-0
                 flex flex-col items-center justify-center
                 bg-linear-to-r from-cute-orange to-orange-400
                 transition-opacity duration-300
                 ${selected ? "opacity-100" : "opacity-90 hover:opacity-100"}
             `}>
-                <p className="text-lg font-bold mb-1">
+                <p className="text-base font-bold mb-0.5">
                     {label}
                 </p>
-                <p className="text-sm leading-snug">
+                <p className="text-xs leading-snug">
                     {option.text}
                 </p>
             </div>

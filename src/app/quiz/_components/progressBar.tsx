@@ -13,11 +13,11 @@ export default function ProgressBar({ current, total, stageName, stageNumber }: 
     return (
         <div className="w-full space-y-2">
             <div className="flex justify-between items-baseline text-sm md:text-base">
-                <span className="text-strong-purple font-semibold">
+                <span className="text-light-pink font-semibold">
                     Stage {stageNumber}:{" "}
-                    <span className="text-dark-purple font-bold">{stageName}</span>
+                    <span className="text-white font-bold">{stageName}</span>
                 </span>
-                <span className="text-dark-purple/40 font-light">
+                <span className="text-white/50 font-light">
                     {percentage}% complete
                 </span>
             </div>

@@ -7,6 +7,9 @@ import { questions } from "@/data/quizQuestions"
 import Question from "@/app/quiz/_components/question"
 import ProgressBar from "@/app/quiz/_components/progressBar"
 import { StemType } from "@/types/quiz"
+import Grainient from '@/components/Grainient';
+
+
 
 const STAGES = [...new Set(questions.map((q) => q.stage))]
 
@@ -40,92 +43,122 @@ export default function QuizPage() {
     }
 
     return (
-        <>
-        <Link href="/" className="absolute top-6 left-6">
-            <Image
-                src="/logo.png"
-                alt="SheShips logo"
-                width={48}
-                height={48}
-                className="object-contain"
-            />
-        </Link>
-
-        <div className="max-w-3xl mx-auto px-6 py-8 mt-10 md:px-10 md:py-10 overflow-x-hidden">
-            <ProgressBar
-                current={current + 1}
-                total={total}
-                stageName={currentQuestion.stage}
-                stageNumber={getStageNumber(currentQuestion.stage)}
-            />
-
-            <div className="mt-4">
-                <Question
-                    data={currentQuestion}
-                    selectedAnswer={answers[current]}
-                    onAnswer={handleAnswer}
+        <div className="relative h-screen overflow-hidden">
+            {/* Background */}
+            <div className="fixed inset-0 -z-10">
+                <Grainient
+                    color1="#6B21A8"
+                    color2="#A855F7"
+                    color3="#1A0A2E"
+                    timeSpeed={0.25}
+                    colorBalance={0}
+                    warpStrength={1}
+                    warpFrequency={5}
+                    warpSpeed={2}
+                    warpAmplitude={50}
+                    blendAngle={0}
+                    blendSoftness={0.05}
+                    rotationAmount={500}
+                    noiseScale={2}
+                    grainAmount={0.1}
+                    grainScale={2}
+                    grainAnimated={false}
+                    contrast={1.5}
+                    gamma={1}
+                    saturation={1}
+                    centerX={0}
+                    centerY={0}
+                    zoom={0.9}
                 />
             </div>
 
-            {/* Navigation */}
-            <div className="flex items-center justify-between mt-10">
-                <button
-                    onClick={back}
-                    disabled={current === 0}
-                    className="flex items-center gap-1 text-strong-purple font-semibold hover:text-girly-purple transition-colors disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
-                >
-                    <span className="text-lg">&larr;</span> Back
-                </button>
+            {/* Logo */}
+            <Link href="/" className="fixed top-4 left-4 z-50">
+                <Image
+                    src="/logoBlanco.png"
+                    alt="SheShips logo"
+                    width={48}
+                    height={48}
+                    className="object-contain"
+                />
+            </Link>
 
-                {/* Stage dot indicators */}
-                <div className="flex gap-2">
-                    {STAGES.map((_, i) => (
-                        <div
-                            key={i}
-                            className={`
-                                w-2.5 h-2.5 rounded-full transition-all duration-300 
-                                ${i === currentStageIndex
-                                    ? "bg-strong-purple scale-110"
-                                    : i < currentStageIndex
-                                        ? "bg-girly-purple"
-                                        : "bg-gray-300"
-                                }
-                            `}
-                        />
-                    ))}
+            {/* Content */}
+            <div className="relative z-10 h-full flex flex-col max-w-3xl mx-auto px-6 pt-16 pb-3 md:px-10">
+                <ProgressBar
+                    current={current + 1}
+                    total={total}
+                    stageName={currentQuestion.stage}
+                    stageNumber={getStageNumber(currentQuestion.stage)}
+                />
+
+                <div className="mt-2">
+                    <Question
+                        data={currentQuestion}
+                        selectedAnswer={answers[current]}
+                        onAnswer={handleAnswer}
+                    />
                 </div>
 
-                <button
-                    onClick={next}
-                    disabled={answers[current] === undefined}
-                    className="flex items-center gap-1 px-6 py-2.5 rounded-full
-                        bg-linear-to-r from-strong-purple to-girly-purple
-                        text-white font-semibold text-sm
-                        hover:from-girly-purple hover:to-hot-pink
-                        transition-all duration-500 ease-in-out shadow-md
-                        disabled:opacity-40 disabled:pointer-events-none
-                        cursor-pointer"
-                >
-                    Next <span className="text-base">&rarr;</span>
-                </button>
-            </div>
+                {/* Navigation */}
+                <div className="flex items-center justify-between py-3">
+                    <button
+                        onClick={back}
+                        disabled={current === 0}
+                        className="flex items-center gap-1 text-white/80 font-semibold hover:text-white transition-colors disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
+                    >
+                        <span className="text-lg">&larr;</span> Back
+                    </button>
 
-            {/* Fun fact banner */}
-            <div
-                className={`
-                    mt-8 rounded-2xl bg-girly-purple/10 px-8 py-5
-                    text-center text-strong-purple/80 text-sm md:text-base
-                    italic leading-relaxed
-                    transition-all duration-500 ease-in-out
-                    ${showFunFact
-                        ? "opacity-100 translate-y-0"
-                        : "opacity-0 translate-y-4 pointer-events-none"
-                    }
-                `}
-            >
-                &ldquo;{currentQuestion.funFact}&rdquo;
+                    {/* Stage dot indicators */}
+                    <div className="flex gap-2">
+                        {STAGES.map((_, i) => (
+                            <div
+                                key={i}
+                                className={`
+                                    w-2.5 h-2.5 rounded-full transition-all duration-300
+                                    ${i === currentStageIndex
+                                        ? "bg-white scale-110"
+                                        : i < currentStageIndex
+                                            ? "bg-light-pink"
+                                            : "bg-white/30"
+                                    }
+                                `}
+                            />
+                        ))}
+                    </div>
+
+                    <button
+                        onClick={next}
+                        disabled={answers[current] === undefined}
+                        className="flex items-center gap-1 px-6 py-2.5 rounded-full
+                            bg-linear-to-r from-cute-orange to-hot-pink
+                            text-white font-semibold text-sm
+                            hover:from-hot-pink hover:to-cute-orange
+                            transition-all duration-500 ease-in-out shadow-md
+                            disabled:opacity-40 disabled:pointer-events-none
+                            cursor-pointer"
+                    >
+                        Next <span className="text-base">&rarr;</span>
+                    </button>
+                </div>
+
+                {/* Fun fact banner */}
+                <div
+                    className={`
+                        rounded-2xl bg-white/10 backdrop-blur-sm px-6 py-3
+                        text-center text-white/80 text-xs md:text-sm
+                        italic leading-relaxed
+                        transition-all duration-500 ease-in-out
+                        ${showFunFact
+                            ? "opacity-100 translate-y-0"
+                            : "opacity-0 translate-y-4 pointer-events-none"
+                        }
+                    `}
+                >
+                    &ldquo;{currentQuestion.funFact}&rdquo;
+                </div>
             </div>
         </div>
-        </>
     )
 }

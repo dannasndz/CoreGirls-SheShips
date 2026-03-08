@@ -12,12 +12,12 @@ const optionLetters = ["A", "B", "C", "D"]
 
 export default function Question({ data, selectedAnswer, onAnswer }: Props) {
     return (
-        <div className="text-center text-strong-purple">
-            <h2 className="text-3xl md:text-4xl font-extrabold mb-8 mt-6 font-heading leading-tight">
+        <div className="text-center text-cream">
+            <h2 className="text-2xl md:text-3xl font-extrabold mb-3 mt-1 font-heading leading-tight">
                 {data.question}
             </h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 px-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 px-1">
                 {data.options.map((option, index) => (
                     <OptionCard
                         key={index}
