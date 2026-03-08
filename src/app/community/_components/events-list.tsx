@@ -197,7 +197,7 @@ export function EventsList({
                   Organized by {event.organizerName}
                 </p>
 
-                <div className="flex items-center gap-2 pt-2 border-t border-light-pink/50">
+                <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-light-pink/50">
                   {!event.cancelled && (
                     <button
                       onClick={() => handleAttend(event.id)}

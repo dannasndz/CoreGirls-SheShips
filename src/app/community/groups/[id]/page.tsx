@@ -161,19 +161,19 @@ export default function GroupPage({
       />
 
       {session && group && (
-        <div className="max-w-5xl mx-auto p-6">
+        <div className="max-w-5xl mx-auto p-4 sm:p-6">
           {/* Header */}
-          <div className="rounded-2xl bg-white border border-light-pink p-6 shadow-sm mb-6">
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-4">
+          <div className="rounded-2xl bg-white border border-light-pink p-4 sm:p-6 shadow-sm mb-6">
+            <div className="flex flex-col sm:flex-row items-start gap-4">
+              <div className="flex items-center gap-3 flex-1 min-w-0">
                 <Link
                   href="/community"
-                  className="text-dark-purple/50 hover:text-girly-purple transition"
+                  className="text-dark-purple/50 hover:text-girly-purple transition shrink-0"
                 >
                   <ArrowLeft size={20} />
                 </Link>
-                <div>
-                  <h1 className="text-2xl font-bold text-dark-purple font-[family-name:var(--font-fredoka)]">
+                <div className="min-w-0">
+                  <h1 className="text-xl sm:text-2xl font-bold text-dark-purple font-[family-name:var(--font-fredoka)] truncate">
                     {group.name}
                   </h1>
                   {group.description && (
@@ -189,7 +189,7 @@ export default function GroupPage({
                   </p>
                 </div>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 shrink-0 self-start">
                 <button
                   onClick={handleJoin}
                   disabled={joining}
@@ -218,7 +218,7 @@ export default function GroupPage({
             </div>
           </div>
 
-          <div className="grid grid-cols-[1fr_240px] gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_240px] gap-6">
             {/* Posts Feed */}
             <div className="space-y-5">
               {showCreatePost && isMember && (
