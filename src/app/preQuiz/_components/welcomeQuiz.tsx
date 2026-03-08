@@ -14,29 +14,33 @@ const stemPaths = [
         letter: "S",
         title: "Science",
         description: "Explore the mysteries of nature and life",
-        icon: "🔬",
-        color: "from-purple-500 to-violet-600",
+        gradient: "from-girly-purple to-strong-purple",
+        textColor: "text-girly-purple",
+        bgAccent: "bg-girly-purple",
     },
     {
         letter: "T",
         title: "Technology",
         description: "Build the digital tools of tomorrow",
-        icon: "💻",
-        color: "from-pink-500 to-hot-pink",
+        gradient: "from-hot-pink to-girly-purple",
+        textColor: "text-hot-pink",
+        bgAccent: "bg-hot-pink",
     },
     {
         letter: "E",
         title: "Engineering",
         description: "Design and create real-world solutions",
-        icon: "⚙️",
-        color: "from-orange-400 to-cute-orange",
+        gradient: "from-cute-orange to-hot-pink",
+        textColor: "text-cute-orange",
+        bgAccent: "bg-cute-orange",
     },
     {
         letter: "M",
         title: "Mathematics",
         description: "Unlock patterns that shape our world",
-        icon: "📐",
-        color: "from-fuchsia-500 to-purple-600",
+        gradient: "from-strong-purple to-hot-pink",
+        textColor: "text-strong-purple",
+        bgAccent: "bg-strong-purple",
     },
 ]
 
@@ -147,42 +151,52 @@ export default function WelcomeQuiz() {
 
             {/* Right — STEM paths preview */}
             <div className="md:w-1/2 bg-cream flex items-center justify-center px-8 py-16 md:py-0 relative overflow-hidden">
-                <div className="max-w-sm w-full space-y-6 relative z-10">
-                    <div className="text-center md:text-left space-y-1">
-                        <h2 className="text-2xl font-bold text-strong-purple font-heading">
-                            What will you discover?
-                        </h2>
-                        <p className="text-dark-purple/50 text-sm">
-                            One of these four paths awaits you
-                        </p>
-                    </div>
+                <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-girly-purple/5 -translate-y-1/3 translate-x-1/3" />
+                <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-cute-orange/5 translate-y-1/3 -translate-x-1/3" />
 
-                    <div className="grid grid-cols-2 gap-4">
-                        {stemPaths.map((path) => (
+                <div className="max-w-md w-full relative z-10">
+                    <p className="text-dark-purple/40 text-xs font-semibold tracking-[0.3em] uppercase mb-3">
+                        Your path awaits
+                    </p>
+                    <h2 className="text-3xl md:text-4xl font-bold text-strong-purple font-heading leading-tight mb-10">
+                        What will you<br />discover?
+                    </h2>
+
+                    <div className="space-y-5">
+                        {stemPaths.map((path, i) => (
                             <div
                                 key={path.letter}
-                                className="group rounded-2xl bg-white p-5 ring-1 ring-gray-100
-                                    hover:ring-girly-purple/30 hover:shadow-lg
-                                    transition-all duration-300 cursor-default"
+                                className="group flex items-center gap-5 cursor-default"
                             >
                                 <div className={`
-                                    w-10 h-10 rounded-xl bg-linear-to-br ${path.color}
-                                    flex items-center justify-center text-xl mb-3
+                                    shrink-0 w-14 h-14 rounded-2xl bg-linear-to-br ${path.gradient}
+                                    flex items-center justify-center
+                                    shadow-md group-hover:shadow-lg group-hover:scale-105
+                                    transition-all duration-300
                                 `}>
-                                    {path.icon}
+                                    <span className="text-2xl font-extrabold text-white font-heading">
+                                        {path.letter}
+                                    </span>
                                 </div>
-                                <p className="font-bold text-strong-purple text-sm">
-                                    {path.title}
-                                </p>
-                                <p className="text-dark-purple/50 text-xs mt-1 leading-snug">
-                                    {path.description}
-                                </p>
+
+                                <div className="flex-1 min-w-0">
+                                    <p className={`font-bold text-base ${path.textColor} font-heading`}>
+                                        {path.title}
+                                    </p>
+                                    <p className="text-dark-purple/45 text-sm leading-snug">
+                                        {path.description}
+                                    </p>
+                                </div>
+
+                                {i < stemPaths.length - 1 && (
+                                    <div className="absolute left-7 mt-18 w-px h-5 bg-light-pink/60" />
+                                )}
                             </div>
                         ))}
                     </div>
 
-                    <div className="rounded-2xl bg-girly-purple/8 p-5 text-center">
-                        <p className="text-dark-purple/60 text-sm italic leading-relaxed">
+                    <div className="mt-10 border-l-2 border-light-pink pl-5">
+                        <p className="text-dark-purple/50 text-sm italic leading-relaxed">
                             &ldquo;Every great scientist, engineer, and innovator
                             started exactly where you are now — curious.&rdquo;
                         </p>
