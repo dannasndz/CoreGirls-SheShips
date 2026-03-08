@@ -149,4 +149,14 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-fredoka), sans-serif;
   }
+  button,
+  [role="button"],
+  a[href],
+  select,
+  summary,
+  [type="button"],
+  [type="submit"],
+  [type="reset"] {
+    cursor: pointer;
+  }
 }

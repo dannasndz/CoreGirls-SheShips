@@ -1,15 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-const protectedPaths = ["/api/forum", "/api/quiz/submit"];
+const protectedPaths = ["/api/forum", "/api/quiz/submit", "/api/groups"];
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   const isProtected = protectedPaths.some((path) => pathname.startsWith(path));
 
-  // Allow GET on forum posts without auth
-  if (pathname.startsWith("/api/forum") && req.method === "GET") {
+  // Allow GET on forum posts and groups without auth
+  if (
+    (pathname.startsWith("/api/forum") || pathname.startsWith("/api/groups")) &&
+    req.method === "GET"
+  ) {
     return NextResponse.next();
   }
 
@@ -27,5 +30,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/api/forum/:path*", "/api/quiz/submit"],
+  matcher: ["/api/forum/:path*", "/api/quiz/submit", "/api/groups/:path*"],
 };

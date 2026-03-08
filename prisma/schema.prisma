@@ -13,9 +13,14 @@ model User {
   password  String
   createdAt DateTime @default(now())
 
-  posts      Post[]
-  likes      Like[]
-  quizResult QuizResult?
+  posts            Post[]
+  likes            Like[]
+  comments         Comment[]
+  quizResult       QuizResult?
+  groupMemberships GroupMember[]
+  groupPosts       GroupPost[]
+  groupPostLikes   GroupPostLike[]
+  groupPostComments GroupPostComment[]
 }
 
 model Post {
@@ -28,8 +33,9 @@ model Post {
   updatedAt  DateTime @updatedAt
 
   authorId String
-  author   User   @relation(fields: [authorId], references: [id])
+  author   User      @relation(fields: [authorId], references: [id])
   likes    Like[]
+  comments Comment[]
 }
 
 model Like {
@@ -41,6 +47,79 @@ model Like {
   post Post @relation(fields: [postId], references: [id])
 
   @@unique([userId, postId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+
+  authorId String
+  author   User @relation(fields: [authorId], references: [id])
+  postId   String
+  post     Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model Group {
+  id          String   @id @default(cuid())
+  name        String
+  description String   @default("")
+  createdAt   DateTime @default(now())
+
+  members GroupMember[]
+  posts   GroupPost[]
+}
+
+model GroupMember {
+  id       String @id @default(cuid())
+  role     String @default("member")
+  joinedAt DateTime @default(now())
+
+  userId  String
+  user    User  @relation(fields: [userId], references: [id])
+  groupId String
+  group   Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, groupId])
+}
+
+model GroupPost {
+  id         String   @id @default(cuid())
+  title      String
+  content    String
+  categories Json     @default("[]")
+  tags       Json     @default("[]")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  authorId String
+  author   User            @relation(fields: [authorId], references: [id])
+  groupId  String
+  group    Group           @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  likes    GroupPostLike[]
+  comments GroupPostComment[]
+}
+
+model GroupPostLike {
+  id     String @id @default(cuid())
+  userId String
+  postId String
+
+  user User      @relation(fields: [userId], references: [id])
+  post GroupPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+}
+
+model GroupPostComment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+
+  authorId String
+  author   User      @relation(fields: [authorId], references: [id])
+  postId   String
+  post     GroupPost @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 model QuizResult {
