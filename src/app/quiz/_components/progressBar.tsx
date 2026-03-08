@@ -1,4 +1,5 @@
 import { Progress } from "@/components/ui/progress"
+import { useI18n } from "@/lib/i18n"
 
 type Props = {
     current: number
@@ -8,13 +9,14 @@ type Props = {
 }
 
 export default function ProgressBar({ current, total, stageName, stageNumber }: Props) {
+    const { t } = useI18n()
     const percentage = Math.round((current / total) * 100)
 
     return (
         <div className="w-full space-y-1 sm:space-y-2 shrink-0">
             <div className="flex justify-between items-baseline text-xs sm:text-sm md:text-base">
                 <span className="text-white font-extrabold">
-                    Stage {stageNumber}:{" "}
+                    {t("quiz.stage", { number: String(stageNumber) })}:{" "}
                     <span className="text-white font-semibold">{stageName}</span>
                 </span>
                 <span className="text-white/50 font-light">

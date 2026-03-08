@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { roleModels, categoryLabels } from "@/data/roleModels";
+import { roleModels as roleModelsEn } from "@/data/roleModels";
+import { roleModelsEs } from "@/data/roleModels.es";
 import RoleModelCard from "./_components/RoleModelCard";
 import { Search, Filter, ChevronDown, History } from "lucide-react";
 import SplitText from "@/components/SplitText";
+import { useI18n } from "@/lib/i18n";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -12,14 +14,18 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 
-const stemFilters = [
-  { label: "Science", value: "S" },
-  { label: "Technology", value: "T" },
-  { label: "Engineering", value: "E" },
-  { label: "Mathematics", value: "M" },
-];
+const roleModelsMap = { en: roleModelsEn, es: roleModelsEs } as const;
 
 export default function ReferencesPage() {
+  const { t, locale } = useI18n();
+  const roleModels = roleModelsMap[locale];
+
+  const stemFilters = [
+    { label: t("exploreCareers.science"), value: "S" },
+    { label: t("exploreCareers.technology"), value: "T" },
+    { label: t("exploreCareers.engineering"), value: "E" },
+    { label: t("exploreCareers.mathematics"), value: "M" },
+  ];
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const [showHistorical, setShowHistorical] = useState<boolean | null>(null);
@@ -49,7 +55,7 @@ export default function ReferencesPage() {
     }
 
     return result;
-  }, [search, activeFilter, showHistorical]);
+  }, [search, activeFilter, showHistorical, roleModels]);
 
   const handleFilterChange = (value: string) => {
     setActiveFilter(activeFilter === value ? null : value);
@@ -60,7 +66,7 @@ export default function ReferencesPage() {
       {/* Header */}
       <div className="text-center pt-8 sm:pt-12 pb-4 sm:pb-6 px-4 sm:px-6">
         <SplitText
-          text="They Did It. So Can You."
+          text={t("references.heading")}
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-dark-purple"
           delay={40}
           duration={1}
@@ -78,8 +84,7 @@ export default function ReferencesPage() {
           className="text-lg sm:text-xl text-dark-purple/60 mt-2 max-w-2xl mx-auto"
           style={{ fontFamily: "var(--font-baloo)" }}
         >
-          Latina women who have shaped STEM across the world.
-          Get inspired by their stories, they prove there&apos;s a place for you too.
+          {t("references.description")}
         </p>
       </div>
 
@@ -92,7 +97,7 @@ export default function ReferencesPage() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by name, field, or country..."
+            placeholder={t("references.searchPlaceholder")}
             className="w-full pl-11 pr-4 py-2.5 rounded-full border-2 border-girly-purple/30 bg-white text-dark-purple placeholder:text-dark-purple/40 focus:border-girly-purple focus:outline-none transition-colors text-sm sm:text-base"
             style={{ fontFamily: "var(--font-baloo)" }}
           />
@@ -115,7 +120,7 @@ export default function ReferencesPage() {
             style={{ fontFamily: "var(--font-fredoka)" }}
           >
             <History size={14} />
-            Pioneers
+            {t("references.pioneers")}
           </button>
 
           {/* Current toggle */}
@@ -132,7 +137,7 @@ export default function ReferencesPage() {
             }`}
             style={{ fontFamily: "var(--font-fredoka)" }}
           >
-            Current Leaders
+            {t("references.currentLeaders")}
           </button>
 
           {/* STEM Dropdown */}
@@ -149,7 +154,7 @@ export default function ReferencesPage() {
               <Filter size={16} />
               {activeFilter
                 ? stemFilters.find((f) => f.value === activeFilter)?.label
-                : "STEM Field"}
+                : t("exploreCareers.stemField")}
               <ChevronDown size={14} />
             </button>
           </DropdownMenuTrigger>
@@ -176,7 +181,7 @@ export default function ReferencesPage() {
                   className="rounded-xl cursor-pointer font-semibold text-sm text-dark-purple/50"
                   style={{ fontFamily: "var(--font-fredoka)" }}
                 >
-                  Clear filter
+                  {t("exploreCareers.clearFilter")}
                 </DropdownMenuItem>
               </>
             )}
@@ -191,7 +196,7 @@ export default function ReferencesPage() {
           className="text-sm text-dark-purple/40"
           style={{ fontFamily: "var(--font-baloo)" }}
         >
-          {filtered.length} role model{filtered.length !== 1 ? "s" : ""} found
+          {t("references.roleModelsFound", { count: String(filtered.length) })}
         </p>
       </div>
 
@@ -209,13 +214,13 @@ export default function ReferencesPage() {
               className="text-2xl text-dark-purple/50 font-semibold"
               style={{ fontFamily: "var(--font-fredoka)" }}
             >
-              No role models found
+              {t("references.noRoleModels")}
             </p>
             <p
               className="text-lg text-dark-purple/40 mt-2"
               style={{ fontFamily: "var(--font-baloo)" }}
             >
-              Try a different search or filter
+              {t("references.tryDifferent")}
             </p>
           </div>
         )}

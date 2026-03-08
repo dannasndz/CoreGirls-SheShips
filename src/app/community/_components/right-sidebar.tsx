@@ -2,6 +2,7 @@
 
 import { CalendarDays, Clock } from "lucide-react";
 import { EventData, formatEventDate } from "./helpers";
+import { useI18n } from "@/lib/i18n";
 
 interface RightSidebarProps {
   tags: string[];
@@ -10,12 +11,14 @@ interface RightSidebarProps {
 }
 
 export function RightSidebar({ tags, upcomingEvents, onViewAllEvents }: RightSidebarProps) {
+  const { t } = useI18n();
+
   return (
     <aside className="space-y-6">
       {/* Trending Topics */}
       <div className="rounded-2xl bg-white border border-[#E5E0D9] p-4 shadow-sm">
         <h3 className="text-sm font-bold text-girly-purple mb-3 font-[family-name:var(--font-fredoka)]">
-          Trending Topics
+          {t("rightSidebar.trendingTopics")}
         </h3>
         <div className="flex flex-wrap gap-2">
           {tags.length > 0 ? (
@@ -29,7 +32,7 @@ export function RightSidebar({ tags, upcomingEvents, onViewAllEvents }: RightSid
             ))
           ) : (
             <p className="text-xs text-dark-purple/40">
-              No tags yet -- add some to your posts!
+              {t("rightSidebar.noTags")}
             </p>
           )}
         </div>
@@ -39,7 +42,7 @@ export function RightSidebar({ tags, upcomingEvents, onViewAllEvents }: RightSid
       <div className="rounded-2xl overflow-hidden shadow-sm border border-[#E5E0D9]">
         <div className="bg-gradient-to-br from-girly-purple to-light-pink p-4 text-white">
           <h3 className="text-sm font-bold font-[family-name:var(--font-fredoka)] mb-2">
-            Upcoming Events
+            {t("rightSidebar.upcomingEvents")}
           </h3>
           {upcomingEvents.length > 0 ? (
             <div className="space-y-2">
@@ -60,7 +63,7 @@ export function RightSidebar({ tags, upcomingEvents, onViewAllEvents }: RightSid
               ))}
             </div>
           ) : (
-            <p className="text-xs text-white/70">No upcoming events yet.</p>
+            <p className="text-xs text-white/70">{t("rightSidebar.noUpcomingEvents")}</p>
           )}
         </div>
         <div className="bg-white p-3 text-center">
@@ -68,7 +71,7 @@ export function RightSidebar({ tags, upcomingEvents, onViewAllEvents }: RightSid
             onClick={onViewAllEvents}
             className="text-sm text-girly-purple font-medium hover:underline"
           >
-            See all events
+            {t("rightSidebar.seeAllEvents")}
           </button>
         </div>
       </div>

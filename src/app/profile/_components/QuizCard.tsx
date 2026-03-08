@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import { ParticleCard } from "@/components/MagicBento";
 import { Sparkles } from "lucide-react";
 import { formatDate, GLOW_COLOR, cardStyle, cardClass } from "./types";
+import { useI18n } from "@/lib/i18n";
 
 interface QuizCardProps {
   quizResult: {
@@ -11,6 +14,8 @@ interface QuizCardProps {
 }
 
 export default function QuizCard({ quizResult }: QuizCardProps) {
+  const { t } = useI18n();
+
   return (
     <ParticleCard
       className={cardClass}
@@ -23,7 +28,7 @@ export default function QuizCard({ quizResult }: QuizCardProps) {
       <div className="p-2 flex flex-col justify-between h-full">
         <div className="flex items-center gap-2 text-white text-s mb-2">
           <Sparkles className="w-4 h-4" />
-          <span>Career Quiz</span>
+          <span>{t("profile.careerQuiz")}</span>
         </div>
         {quizResult ? (
           <>
@@ -31,20 +36,20 @@ export default function QuizCard({ quizResult }: QuizCardProps) {
               {quizResult.career}
             </p>
             <p className="text-white text-s mt-2">
-              Taken {formatDate(quizResult.createdAt)}
+              {t("profile.taken", { date: formatDate(quizResult.createdAt) })}
             </p>
           </>
         ) : (
           <div className="flex flex-col items-start gap-2">
             <p className="text-white/80 text-sm">
-              Discover your ideal career path!
+              {t("profile.discoverCareer")}
             </p>
             <Link
               href="/preQuiz"
               className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-hot-pink to-cute-orange text-white text-sm font-semibold hover:brightness-110 transition-all duration-300"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              Take the Quiz
+              {t("profile.takeTheQuiz")}
             </Link>
           </div>
         )}

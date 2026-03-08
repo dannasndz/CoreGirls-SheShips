@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { signIn } from "next-auth/react"
+import { useI18n } from "@/lib/i18n"
 
 type Mode = "login" | "signup"
 
@@ -12,6 +13,7 @@ interface QuizAuthModalProps {
 }
 
 export default function QuizAuthModal({ open, onClose, onSuccess }: QuizAuthModalProps) {
+    const { t } = useI18n()
     const [mode, setMode] = useState<Mode>("signup")
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
@@ -34,7 +36,7 @@ export default function QuizAuthModal({ open, onClose, onSuccess }: QuizAuthModa
                 })
                 const data = await res.json()
                 if (!res.ok) {
-                    setError(data.error || "Registration failed")
+                    setError(data.error || t("auth.registrationFailed"))
                     setLoading(false)
                     return
                 }
@@ -47,7 +49,7 @@ export default function QuizAuthModal({ open, onClose, onSuccess }: QuizAuthModa
             })
 
             if (result?.error) {
-                setError("Invalid credentials")
+                setError(t("auth.invalidCredentials"))
                 setLoading(false)
                 return
             }
@@ -56,7 +58,7 @@ export default function QuizAuthModal({ open, onClose, onSuccess }: QuizAuthModa
             setPassword("")
             onSuccess()
         } catch {
-            setError("Something went wrong")
+            setError(t("auth.somethingWentWrong"))
         } finally {
             setLoading(false)
         }
@@ -79,15 +81,15 @@ export default function QuizAuthModal({ open, onClose, onSuccess }: QuizAuthModa
                         className="text-2xl sm:text-3xl font-extrabold text-white mb-2"
                         style={{ fontFamily: "var(--font-fredoka)" }}
                     >
-                        Your results are ready!
+                        {t("quizAuth.resultsReady")}
                     </h2>
                     <p
                         className="text-white/90 text-sm sm:text-base leading-relaxed"
                         style={{ fontFamily: "var(--font-baloo)" }}
                     >
                         {mode === "signup"
-                            ? "Create a free account to discover your perfect STEM career match"
-                            : "Log in to see your perfect STEM career match"}
+                            ? t("quizAuth.signupPrompt")
+                            : t("quizAuth.loginPrompt")}
                     </p>
                 </div>
 
@@ -99,7 +101,7 @@ export default function QuizAuthModal({ open, onClose, onSuccess }: QuizAuthModa
                                 className="block text-sm font-semibold text-dark-purple mb-1.5"
                                 style={{ fontFamily: "var(--font-fredoka)" }}
                             >
-                                Username
+                                {t("quizAuth.username")}
                             </label>
                             <input
                                 type="text"
@@ -107,7 +109,7 @@ export default function QuizAuthModal({ open, onClose, onSuccess }: QuizAuthModa
                                 onChange={(e) => setUsername(e.target.value)}
                                 className="w-full rounded-xl border-2 border-light-pink/60 bg-cream/50 px-4 py-2.5 text-dark-purple placeholder:text-dark-purple/30 focus:outline-none focus:border-girly-purple focus:ring-1 focus:ring-girly-purple/30 transition-colors"
                                 style={{ fontFamily: "var(--font-baloo)" }}
-                                placeholder="Pick a username"
+                                placeholder={t("quizAuth.usernamePlaceholder")}
                                 required
                             />
                         </div>
@@ -117,7 +119,7 @@ export default function QuizAuthModal({ open, onClose, onSuccess }: QuizAuthModa
                                 className="block text-sm font-semibold text-dark-purple mb-1.5"
                                 style={{ fontFamily: "var(--font-fredoka)" }}
                             >
-                                Password
+                                {t("quizAuth.password")}
                             </label>
                             <input
                                 type="password"
@@ -125,7 +127,7 @@ export default function QuizAuthModal({ open, onClose, onSuccess }: QuizAuthModa
                                 onChange={(e) => setPassword(e.target.value)}
                                 className="w-full rounded-xl border-2 border-light-pink/60 bg-cream/50 px-4 py-2.5 text-dark-purple placeholder:text-dark-purple/30 focus:outline-none focus:border-girly-purple focus:ring-1 focus:ring-girly-purple/30 transition-colors"
                                 style={{ fontFamily: "var(--font-baloo)" }}
-                                placeholder="Create a password"
+                                placeholder={t("quizAuth.passwordPlaceholder")}
                                 required
                                 minLength={6}
                             />
@@ -148,10 +150,10 @@ export default function QuizAuthModal({ open, onClose, onSuccess }: QuizAuthModa
                             style={{ fontFamily: "var(--font-fredoka)" }}
                         >
                             {loading
-                                ? "One moment..."
+                                ? t("quizAuth.oneMoment")
                                 : mode === "signup"
-                                    ? "Show my results!"
-                                    : "Log in & see results!"}
+                                    ? t("quizAuth.showResults")
+                                    : t("quizAuth.loginAndSee")}
                         </button>
                     </form>
 
@@ -159,12 +161,12 @@ export default function QuizAuthModal({ open, onClose, onSuccess }: QuizAuthModa
                         className="mt-5 text-center text-sm text-dark-purple/60"
                         style={{ fontFamily: "var(--font-baloo)" }}
                     >
-                        {mode === "signup" ? "Already have an account?" : "Don't have an account?"}{" "}
+                        {mode === "signup" ? t("quizAuth.alreadyHaveAccount") : t("quizAuth.dontHaveAccount")}{" "}
                         <button
                             onClick={() => { setMode(mode === "signup" ? "login" : "signup"); setError("") }}
                             className="text-girly-purple font-bold hover:underline"
                         >
-                            {mode === "signup" ? "Log in" : "Sign up"}
+                            {mode === "signup" ? t("quizAuth.logIn") : t("quizAuth.signUp")}
                         </button>
                     </p>
                 </div>

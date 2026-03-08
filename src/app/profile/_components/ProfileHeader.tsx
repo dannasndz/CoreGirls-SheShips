@@ -1,5 +1,8 @@
+"use client";
+
 import { User, CalendarDays } from "lucide-react";
 import { formatDate } from "./types";
+import { useI18n } from "@/lib/i18n";
 
 interface ProfileHeaderProps {
   username: string;
@@ -17,6 +20,8 @@ export default function ProfileHeader({
   createdAt,
   counts,
 }: ProfileHeaderProps) {
+  const { t } = useI18n();
+
   return (
     <div className="w-full bg-gradient-to-r from-dark-purple via-strong-purple to-girly-purple py-10 px-4">
       <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center gap-5">
@@ -29,14 +34,14 @@ export default function ProfileHeader({
           </h1>
           <p className="text-light-pink flex items-center justify-center sm:justify-start gap-1.5 text-sm mt-1">
             <CalendarDays className="w-3.5 h-3.5" />
-            Joined {formatDate(createdAt)}
+            {t("profile.joined", { date: formatDate(createdAt) })}
           </p>
         </div>
         <div className="sm:ml-auto flex gap-3 flex-wrap justify-center">
-          <HeaderStat value={counts.posts} label="Posts" />
-          <HeaderStat value={counts.comments} label="Comments" />
-          <HeaderStat value={counts.likes} label="Likes" />
-          <HeaderStat value={counts.groupMemberships} label="Groups" />
+          <HeaderStat value={counts.posts} label={t("profile.posts")} />
+          <HeaderStat value={counts.comments} label={t("profile.comments")} />
+          <HeaderStat value={counts.likes} label={t("profile.likes")} />
+          <HeaderStat value={counts.groupMemberships} label={t("profile.profileGroups")} />
         </div>
       </div>
     </div>

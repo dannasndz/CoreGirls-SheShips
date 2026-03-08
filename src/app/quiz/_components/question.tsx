@@ -1,6 +1,7 @@
 import { Question as QuestionType, StemType } from "@/types/quiz"
 import { SpeakButton } from "@/components/speak-button"
 import OptionCard from "./optionCard"
+import { useI18n } from "@/lib/i18n"
 
 type Props = {
     data: QuestionType
@@ -8,10 +9,12 @@ type Props = {
     onAnswer: (type: StemType) => void
 }
 
-const optionLabels = ["Option A", "Option B", "Option C", "Option D"]
 const optionLetters = ["A", "B", "C", "D"]
 
 export default function Question({ data, selectedAnswer, onAnswer }: Props) {
+    const { t } = useI18n()
+    const optionLabels = [t("quiz.optionA"), t("quiz.optionB"), t("quiz.optionC"), t("quiz.optionD")]
+
     return (
         <div className="text-center text-cream sm:flex sm:flex-col sm:flex-1 sm:min-h-0">
             <div className="flex items-center justify-center gap-2 mb-3 mt-1 sm:shrink-0">

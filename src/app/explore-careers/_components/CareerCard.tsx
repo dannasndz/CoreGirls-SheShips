@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import { Flame } from "lucide-react";
 import { Career } from "@/data/careers";
+import { useI18n } from "@/lib/i18n";
 
 const getCareerImage = (id: string) => {
   if (id === "database-administrator") return "/careers/database-administrato.png";
@@ -13,6 +16,15 @@ type CareerCardProps = {
 };
 
 export default function CareerCard({ career, onClick }: CareerCardProps) {
+  const { t } = useI18n();
+
+  const categoryLabel: Record<string, string> = {
+    S: t("exploreCareers.science"),
+    T: t("exploreCareers.technology"),
+    E: t("exploreCareers.engineering"),
+    M: t("exploreCareers.mathematics"),
+  };
+
   return (
     <button
       onClick={() => onClick(career)}
@@ -31,17 +43,14 @@ export default function CareerCard({ career, onClick }: CareerCardProps) {
 
       {/* Category badge */}
       <span className="absolute top-3 right-3 bg-girly-purple/90 text-white text-xs font-bold px-2 py-1 rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        {career.category === "S" && "Science"}
-        {career.category === "T" && "Technology"}
-        {career.category === "E" && "Engineering"}
-        {career.category === "M" && "Mathematics"}
+        {categoryLabel[career.category]}
       </span>
 
       {/* Growth badge */}
       {career.growth && (
         <span className="absolute top-3 left-3 bg-linear-to-br from-cute-orange/60 to-hot-pink/60 text-white text-xs font-semibold px-2 py-1 rounded-full backdrop-blur-sm flex items-center gap-1">
           <Flame size={12} />
-          Growth
+          {t("exploreCareers.growth")}
         </span>
       )}
 
