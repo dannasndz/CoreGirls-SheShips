@@ -1,10 +1,15 @@
 "use client";
 
+import { CalendarDays, Clock } from "lucide-react";
+import { EventData, formatEventDate } from "./helpers";
+
 interface RightSidebarProps {
   tags: string[];
+  upcomingEvents: EventData[];
+  onViewAllEvents: () => void;
 }
 
-export function RightSidebar({ tags }: RightSidebarProps) {
+export function RightSidebar({ tags, upcomingEvents, onViewAllEvents }: RightSidebarProps) {
   return (
     <aside className="space-y-6">
       {/* Trending Topics */}
@@ -32,18 +37,39 @@ export function RightSidebar({ tags }: RightSidebarProps) {
 
       {/* Upcoming Events */}
       <div className="rounded-2xl overflow-hidden shadow-sm border border-light-pink">
-        <div className="bg-gradient-to-br from-girly-purple to-light-pink p-5 text-white">
-          <h3 className="text-sm font-bold font-[family-name:var(--font-fredoka)] mb-12">
+        <div className="bg-gradient-to-br from-girly-purple to-light-pink p-4 text-white">
+          <h3 className="text-sm font-bold font-[family-name:var(--font-fredoka)] mb-2">
             Upcoming Events
           </h3>
+          {upcomingEvents.length > 0 ? (
+            <div className="space-y-2">
+              {upcomingEvents.slice(0, 3).map((event) => (
+                <div key={event.id} className="bg-white/15 rounded-lg p-2.5">
+                  <p className="text-xs font-semibold truncate">{event.title}</p>
+                  <div className="flex gap-3 mt-1 text-[10px] text-white/80">
+                    <span className="flex items-center gap-1">
+                      <CalendarDays size={10} />
+                      {formatEventDate(event.date)}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Clock size={10} />
+                      {event.hour}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs text-white/70">No upcoming events yet.</p>
+          )}
         </div>
         <div className="bg-white p-3 text-center">
-          <a
-            href="#"
+          <button
+            onClick={onViewAllEvents}
             className="text-sm text-girly-purple font-medium hover:underline"
           >
             See all events
-          </a>
+          </button>
         </div>
       </div>
     </aside>
