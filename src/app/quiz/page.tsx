@@ -87,78 +87,84 @@ export default function QuizPage() {
             </Link>
 
             {/* Content */}
-            <div className="relative z-10 sm:h-full flex flex-col max-w-3xl mx-auto px-4 pt-14 pb-4 sm:px-6 sm:pt-16 sm:pb-3 md:px-10">
-                <ProgressBar
-                    current={progress}
-                    total={total}
-                    stageName={currentQuestion.stage}
-                    stageNumber={getStageNumber(currentQuestion.stage)}
-                />
-
-                <div className="mt-2 sm:flex-1 sm:min-h-0 sm:flex sm:flex-col">
-                    <Question
-                        data={currentQuestion}
-                        selectedAnswer={answers[current]}
-                        onAnswer={handleAnswer}
+            <div className="relative z-10 sm:h-full flex items-center justify-center px-4 pt-14 pb-4 sm:px-6 sm:pt-16 sm:pb-3 md:px-10">
+                <div className="w-full max-w-3xl flex flex-col sm:h-full
+                    bg-white/10 backdrop-blur-xl border border-white/20
+                    rounded-2xl sm:rounded-3xl shadow-2xl shadow-black/20
+                    px-4 py-4 sm:px-6 sm:py-5 md:px-8 md:py-6"
+                >
+                    <ProgressBar
+                        current={progress}
+                        total={total}
+                        stageName={currentQuestion.stage}
+                        stageNumber={getStageNumber(currentQuestion.stage)}
                     />
-                </div>
 
-                {/* Navigation */}
-                <div className="flex items-center justify-between py-3 sm:py-2">
-                    <button
-                        onClick={back}
-                        disabled={current === 0}
-                        className="flex items-center gap-1 text-white/80 font-semibold text-sm sm:text-base hover:text-white transition-colors disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
-                    >
-                        <span>&larr;</span> Back
-                    </button>
-
-                    <div className="flex gap-1.5 sm:gap-2">
-                        {STAGES.map((_, i) => (
-                            <div
-                                key={i}
-                                className={`
-                                    w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-all duration-300
-                                    ${i === currentStageIndex
-                                        ? "bg-white scale-110"
-                                        : i < currentStageIndex
-                                            ? "bg-light-pink"
-                                            : "bg-white/30"
-                                    }
-                                `}
-                            />
-                        ))}
+                    <div className="mt-2 sm:flex-1 sm:min-h-0 sm:flex sm:flex-col">
+                        <Question
+                            data={currentQuestion}
+                            selectedAnswer={answers[current]}
+                            onAnswer={handleAnswer}
+                        />
                     </div>
 
-                    <button
-                        onClick={next}
-                        disabled={answers[current] === undefined}
-                        className="flex items-center gap-1 px-4 py-2 sm:px-6 sm:py-2.5 rounded-full
-                            bg-linear-to-r from-cute-orange to-hot-pink
-                            text-white font-semibold text-xs sm:text-sm
-                            hover:from-hot-pink hover:to-cute-orange
-                            transition-all duration-500 ease-in-out shadow-md
-                            disabled:opacity-40 disabled:pointer-events-none
-                            cursor-pointer"
-                    >
-                        Next <span>&rarr;</span>
-                    </button>
-                </div>
+                    {/* Navigation */}
+                    <div className="flex items-center justify-between py-3 sm:py-2">
+                        <button
+                            onClick={back}
+                            disabled={current === 0}
+                            className="flex items-center gap-1 text-white/80 font-semibold text-sm sm:text-base hover:text-white transition-colors disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
+                        >
+                            <span>&larr;</span> Back
+                        </button>
 
-                {/* Fun fact banner */}
-                <div
-                    className={`
-                        rounded-xl sm:rounded-2xl bg-white/10 backdrop-blur-sm px-4 py-2 sm:px-6 sm:py-3
-                        text-center text-white/80 text-[11px] sm:text-xs md:text-sm
-                        italic leading-relaxed
-                        transition-all duration-500 ease-in-out
-                        ${showFunFact
-                            ? "opacity-100 translate-y-0"
-                            : "opacity-0 translate-y-4 pointer-events-none"
-                        }
-                    `}
-                >
-                    &ldquo;{currentQuestion.funFact}&rdquo;
+                        <div className="flex gap-1.5 sm:gap-2">
+                            {STAGES.map((_, i) => (
+                                <div
+                                    key={i}
+                                    className={`
+                                        w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-all duration-300
+                                        ${i === currentStageIndex
+                                            ? "bg-white scale-110"
+                                            : i < currentStageIndex
+                                                ? "bg-light-pink"
+                                                : "bg-white/30"
+                                        }
+                                    `}
+                                />
+                            ))}
+                        </div>
+
+                        <button
+                            onClick={next}
+                            disabled={answers[current] === undefined}
+                            className="flex items-center gap-1 px-4 py-2 sm:px-6 sm:py-2.5 rounded-full
+                                bg-linear-to-r from-cute-orange to-hot-pink
+                                text-white font-semibold text-xs sm:text-sm
+                                hover:from-hot-pink hover:to-cute-orange
+                                transition-all duration-500 ease-in-out shadow-md
+                                disabled:opacity-40 disabled:pointer-events-none
+                                cursor-pointer"
+                        >
+                            Next <span>&rarr;</span>
+                        </button>
+                    </div>
+
+                    {/* Fun fact banner */}
+                    <div
+                        className={`
+                            rounded-xl sm:rounded-2xl bg-white/10 backdrop-blur-sm px-4 py-2 sm:px-6 sm:py-3
+                            text-center text-white/80 text-[11px] sm:text-xs md:text-sm
+                            italic leading-relaxed
+                            transition-all duration-500 ease-in-out
+                            ${showFunFact
+                                ? "opacity-100 translate-y-0"
+                                : "opacity-0 translate-y-4 pointer-events-none"
+                            }
+                        `}
+                    >
+                        &ldquo;{currentQuestion.funFact}&rdquo;
+                    </div>
                 </div>
             </div>
         </div>
