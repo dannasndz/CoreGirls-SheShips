@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
@@ -14,6 +14,7 @@ import { StemType, Score } from "@/types/quiz"
 import { careers as careersEn } from "@/data/careers"
 import { careersEs } from "@/data/careers.es"
 import Grainient from '@/components/Grainient';
+import { Sparkles } from "lucide-react";
 import { useI18n } from "@/lib/i18n"
 
 const questionsMap = { en: questionsEn, es: questionsEs } as const
@@ -47,9 +48,13 @@ export default function QuizPage() {
     const [answers, setAnswers] = useState<Record<number, StemType>>({})
     const [progress, setProgress] = useState(0)
     const [showAuthModal, setShowAuthModal] = useState(false)
+    const [showLoader, setShowLoader] = useState(false)
+    const [loaderMessage, setLoaderMessage] = useState(0)
     const pendingFinish = useRef(false)
+    const resultUrl = useRef("")
 
     const questions = questionsMap[locale]
+    const careers = careersMap[locale]
     const STAGES = [...new Set(questions.map((q) => q.stage))]
 
     function getStageNumber(stageName: string) {
@@ -81,12 +86,23 @@ export default function QuizPage() {
         }
     }
 
-    const careers = careersMap[locale]
+    const loaderMessages = [
+        t("quiz.analyzingAnswers"),
+        t("quiz.findingPath"),
+        t("quiz.matchingCareer"),
+    ]
+
+    useEffect(() => {
+        if (!showLoader) return
+        const interval = setInterval(() => {
+            setLoaderMessage((prev) => (prev + 1) % loaderMessages.length)
+        }, 1200)
+        return () => clearInterval(interval)
+    }, [showLoader])
 
     function navigateToResults() {
         const { career, score } = pickCareer(answers, careers)
 
-        // Save results to DB
         fetch("/api/quiz/submit", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -100,7 +116,9 @@ export default function QuizPage() {
             E: String(score.E),
             M: String(score.M),
         })
-        router.push(`/quiz/result?${params.toString()}`)
+        resultUrl.current = `/quiz/result?${params.toString()}`
+        setShowLoader(true)
+        setTimeout(() => router.push(resultUrl.current), 3500)
     }
 
     function finish() {
@@ -118,6 +136,71 @@ export default function QuizPage() {
             pendingFinish.current = false
             navigateToResults()
         }
+    }
+
+    if (showLoader) {
+        return (
+            <div className="fixed inset-0 z-200">
+                <div className="absolute inset-0">
+                    <Grainient
+                        color1="#6B21A8"
+                        color2="#A855F7"
+                        color3="#1A0A2E"
+                        timeSpeed={0.25}
+                        colorBalance={0}
+                        warpStrength={1}
+                        warpFrequency={5}
+                        warpSpeed={2}
+                        warpAmplitude={50}
+                        blendAngle={0}
+                        blendSoftness={0.05}
+                        rotationAmount={500}
+                        noiseScale={2}
+                        grainAmount={0.1}
+                        grainScale={2}
+                        grainAnimated={false}
+                        contrast={1.5}
+                        gamma={1}
+                        saturation={1}
+                        centerX={0}
+                        centerY={0}
+                        zoom={0.9}
+                    />
+                </div>
+
+                <div className="relative z-10 flex flex-col items-center justify-center h-full gap-8">
+                    {/* Animated circles */}
+                    <div className="relative w-28 h-28">
+                        <div className="absolute inset-0 rounded-full border-4 border-white/10" />
+                        <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-cute-orange border-r-hot-pink animate-spin" />
+                        <div className="absolute inset-2 rounded-full border-4 border-transparent border-b-girly-purple border-l-light-pink animate-spin"
+                            style={{ animationDirection: "reverse", animationDuration: "1.5s" }}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <Sparkles size={32} className="text-white" />
+                        </div>
+                    </div>
+
+                    {/* Messages */}
+                    <div className="text-center space-y-3">
+                        <p
+                            key={loaderMessage}
+                            className="text-white text-xl font-heading font-bold animate-funfact-in"
+                        >
+                            {loaderMessages[loaderMessage]}
+                        </p>
+                        <p className="text-white/50 text-sm">
+                            {t("quiz.onlyMoment")}
+                        </p>
+                    </div>
+
+                    {/* Progress bar */}
+                    <div className="w-56 h-1.5 bg-white/15 rounded-full overflow-hidden">
+                        <div className="h-full bg-linear-to-r from-cute-orange via-hot-pink to-girly-purple rounded-full animate-loader-bar" />
+                    </div>
+                </div>
+            </div>
+        )
     }
 
     return (

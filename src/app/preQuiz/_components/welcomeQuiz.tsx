@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
@@ -9,10 +10,10 @@ import LiquidChrome from '@/components/LiquidChrome';
 import { Clock, ClipboardList, Sparkles } from "lucide-react"
 import { useI18n } from "@/lib/i18n"
 
-
 export default function WelcomeQuiz() {
     const router = useRouter()
     const { t } = useI18n()
+    const [loading, setLoading] = useState(false)
 
     const stemPaths = [
         {
@@ -48,6 +49,54 @@ export default function WelcomeQuiz() {
             bgAccent: "bg-strong-purple",
         },
     ]
+
+    const loaderLetters = [
+        { letter: "S", label: t("stem.science.word"), gradient: "from-girly-purple to-strong-purple" },
+        { letter: "T", label: t("stem.technology.word"), gradient: "from-hot-pink to-girly-purple" },
+        { letter: "E", label: t("stem.engineering.word"), gradient: "from-cute-orange to-hot-pink" },
+        { letter: "M", label: t("stem.mathematics.word"), gradient: "from-strong-purple to-hot-pink" },
+    ]
+
+    function handleStart() {
+        setLoading(true)
+        setTimeout(() => router.push("/quiz"), 2800)
+    }
+
+    if (loading) {
+        return (
+            <div className="fixed inset-0 z-200 bg-strong-purple flex flex-col items-center justify-center gap-10">
+                <div className="flex gap-4 sm:gap-6">
+                    {loaderLetters.map((item, i) => (
+                        <div
+                            key={item.letter}
+                            className="flex flex-col items-center gap-3 animate-bounce"
+                            style={{ animationDelay: `${i * 0.15}s`, animationDuration: "0.8s" }}
+                        >
+                            <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-linear-to-br ${item.gradient}
+                                flex items-center justify-center shadow-lg`}
+                            >
+                                <span className="text-3xl sm:text-4xl font-extrabold text-white font-heading">
+                                    {item.letter}
+                                </span>
+                            </div>
+                            <span className="text-white/60 text-xs font-semibold">
+                                {item.label}
+                            </span>
+                        </div>
+                    ))}
+                </div>
+
+                <div className="text-center space-y-3">
+                    <p className="text-white/90 text-lg font-heading font-bold">
+                        {t("preQuiz.preparingQuiz")}
+                    </p>
+                    <div className="w-48 h-1.5 bg-white/15 rounded-full overflow-hidden mx-auto">
+                        <div className="h-full bg-linear-to-r from-cute-orange via-hot-pink to-girly-purple rounded-full animate-loader-bar" />
+                    </div>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="flex flex-col md:flex-row h-screen">
@@ -137,7 +186,7 @@ export default function WelcomeQuiz() {
                     </div>
 
                     <button
-                        onClick={() => router.push("/quiz")}
+                        onClick={handleStart}
                         className="px-10 py-3.5 rounded-full text-lg font-bold text-white
                             bg-linear-to-r from-hot-pink to-cute-orange
                             hover:from-cute-orange hover:to-hot-pink

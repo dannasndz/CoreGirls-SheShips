@@ -50,7 +50,7 @@ export default function CTASection() {
           {t("cta.description")}
         </p>
         <Link
-          href="/quiz"
+          href="/preQuiz"
           className="inline-flex items-center gap-3 px-10 py-5 rounded-full bg-linear-to-br from-girly-purple via-hot-pink to-cute-orange hover:from-cute-orange hover:via-hot-pink hover:to-girly-purple text-white font-bold text-2xl md:text-3xl transition-all duration-500 ease-in-out shadow-xl hover:shadow-2xl hover:scale-105"
         >
           {t("cta.startQuiz")}
