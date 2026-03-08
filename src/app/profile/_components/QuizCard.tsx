@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import { Sparkles } from "lucide-react";
-import { GLOW_COLOR, cardStyle, cardClass } from "./types";
-import { useI18n } from "@/lib/i18n";
 import { formatDate } from "./types";
+import { useI18n } from "@/lib/i18n";
 
 interface QuizCardProps {
   quizResult: {

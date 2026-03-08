@@ -1,18 +1,23 @@
+"use client";
+
 import Link from "next/link";
-import { FileText, Heart, MessageSquare, PenLine } from "lucide-react";
+import { FileText, Heart, MessageSquare } from "lucide-react";
 import { formatDate } from "./types";
 import type { PostItem } from "./types";
+import { useI18n } from "@/lib/i18n";
 
 interface PostsCardProps {
   posts: PostItem[];
 }
 
 export default function PostsCard({ posts }: PostsCardProps) {
+  const { t } = useI18n();
+
   return (
     <div>
       <div className="flex items-center gap-2.5 mb-4">
         <h2 className="text-lg font-extrabold text-dark-purple font-heading">
-          Posts
+          {t("profile.posts")}
         </h2>
         {posts.length > 0 && (
           <span className="text-xs font-bold text-hot-pink bg-hot-pink/10 px-2.5 py-0.5 rounded-full">
@@ -75,12 +80,12 @@ export default function PostsCard({ posts }: PostsCardProps) {
           <div className="w-12 h-12 rounded-2xl bg-hot-pink/10 flex items-center justify-center mx-auto mb-4">
             <FileText className="w-6 h-6 text-hot-pink" />
           </div>
-          <p className="text-dark-purple/50 text-sm mb-2">No posts yet</p>
+          <p className="text-dark-purple/50 text-sm mb-2">{t("profile.noPostsYet")}</p>
           <Link
             href="/community"
             className="inline-flex items-center gap-1.5 text-hot-pink text-sm font-semibold hover:underline"
           >
-            Start a conversation
+            {t("profile.startConversation")}
           </Link>
         </div>
       )}
