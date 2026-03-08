@@ -6,12 +6,20 @@ import Link from "next/link"
 import Image from "next/image"
 import { careers, categoryLabels, categoryColors } from "@/data/careers"
 import { StemType } from "@/types/quiz"
+import { Sparkles, BookOpen, Users, ArrowRight, RotateCcw, LinkIcon } from "lucide-react"
 
 const categoryDescriptions: Record<StemType, string> = {
     S: "You're driven by curiosity about how the world works. You love observing, experimenting, and discovering new things. Science is your superpower!",
     T: "You love building, coding, and creating digital experiences. Technology is your playground, and you're ready to shape the future!",
     E: "You're a natural problem-solver who loves designing and building things. Engineering lets you turn ideas into reality!",
     M: "You see patterns everywhere and love working with numbers and logic. Mathematics is the language you use to understand the world!",
+}
+
+const categoryGradients: Record<StemType, string> = {
+    S: "from-girly-purple to-strong-purple",
+    T: "from-hot-pink to-girly-purple",
+    E: "from-cute-orange to-hot-pink",
+    M: "from-strong-purple to-hot-pink",
 }
 
 const getCareerImage = (id: string) => {
@@ -35,16 +43,10 @@ function QuizResultContent() {
         return (
             <div className="min-h-screen flex items-center justify-center bg-cream">
                 <div className="text-center">
-                    <h1
-                        className="text-3xl font-extrabold text-dark-purple mb-4"
-                        style={{ fontFamily: "var(--font-fredoka)" }}
-                    >
+                    <h1 className="text-3xl font-extrabold text-dark-purple mb-4 font-heading">
                         No result found
                     </h1>
-                    <Link
-                        href="/quiz"
-                        className="text-girly-purple font-semibold underline"
-                    >
+                    <Link href="/quiz" className="text-girly-purple font-semibold underline">
                         Take the quiz again
                     </Link>
                 </div>
@@ -54,8 +56,7 @@ function QuizResultContent() {
 
     const totalAnswers = scores.S + scores.T + scores.E + scores.M
     const topType = career.category
-    const topScore = scores[topType]
-    const percentage = totalAnswers > 0 ? Math.round((topScore / totalAnswers) * 100) : 0
+    const percentage = totalAnswers > 0 ? Math.round((scores[topType] / totalAnswers) * 100) : 0
 
     const sortedScores = (Object.entries(scores) as [StemType, number][])
         .sort((a, b) => b[1] - a[1])
@@ -65,113 +66,97 @@ function QuizResultContent() {
         .slice(0, 3)
 
     return (
-        <div className="min-h-screen bg-cream">
-            <Link href="/" className="absolute top-6 left-6 z-10">
-                <Image
-                    src="/logo.png"
-                    alt="SheShips logo"
-                    width={48}
-                    height={48}
-                    className="object-contain"
-                />
-            </Link>
+        <div className="min-h-[calc(100vh-56px)] bg-cream">
+            {/* ==================== TOP ROW: Split layout ==================== */}
+            <div className="flex flex-col md:flex-row">
 
-            <div className="max-w-3xl mx-auto px-6 py-12 mt-8">
-                {/* Header */}
-                <div className="text-center mb-8">
-                    <p
-                        className="text-lg text-girly-purple font-semibold mb-2"
-                        style={{ fontFamily: "var(--font-baloo)" }}
-                    >
-                        Your quiz results are in!
-                    </p>
-                    <h1
-                        className="text-4xl md:text-5xl font-extrabold text-dark-purple"
-                        style={{ fontFamily: "var(--font-fredoka)" }}
-                    >
-                        You could be a...
-                    </h1>
+                {/* LEFT PANEL — Gradient with results text */}
+                <div className="relative md:w-[42%] md:min-h-[calc(100vh-56px)] md:sticky md:top-14
+                    bg-linear-to-br from-strong-purple via-hot-pink to-cute-orange
+                    flex flex-col justify-center px-8 py-16 md:py-0 md:px-12 overflow-hidden"
+                >
+                    <div className="absolute inset-0 bg-[url('/background-pattern.png')] bg-cover bg-center opacity-10" />
+
+                    <div className="relative z-10 max-w-md mx-auto md:mx-0 space-y-6 animate-funfact-in">
+                        <div className="space-y-2">
+                            <p className="text-white/70 text-lg">You could be a...</p>
+                            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white font-heading leading-tight">
+                                {career.name}
+                            </h1>
+                        </div>
+
+                        <p className="text-white/80 text-sm leading-relaxed">
+                            {categoryDescriptions[topType]}
+                        </p>
+
+                        <Link
+                            href="/quiz"
+                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full
+                                bg-white/15 border border-white/30 text-white font-bold text-sm
+                                hover:bg-white/25 hover:border-white/50
+                                backdrop-blur-sm transition-all duration-300"
+                        >
+                            <RotateCcw size={14} /> Retake Quiz
+                        </Link>
+                    </div>
                 </div>
 
-                {/* Career Card */}
-                <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-8">
-                    {/* Career Image */}
-                    <div className="relative h-52 md:h-64">
+                {/* RIGHT PANEL — Career info */}
+                <div className="md:w-[58%] bg-cream animate-funfact-in"
+                    style={{ animationDelay: "0.15s" }}
+                >
+                    {/* Career hero image */}
+                    <div className="relative h-56 md:h-72">
                         <Image
                             src={getCareerImage(career.id)}
                             alt={career.name}
                             fill
                             className="object-cover"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                        <div className="absolute bottom-6 left-8 right-8">
-                            <div className="flex items-center gap-3 mb-2">
-                                <span className={`${categoryColors[topType]} text-white text-xs font-bold px-3 py-1 rounded-full`}>
+                        <div className="absolute inset-0 bg-linear-to-t from-cream via-cream/20 to-transparent" />
+                        <div className="absolute bottom-5 left-6 right-6 flex items-end justify-between gap-3">
+                            <div className="flex items-center gap-1.5 shrink-0">
+                                <span className={`bg-linear-to-r ${categoryGradients[topType]} text-white text-[10px] font-bold px-2.5 py-1 rounded-full`}>
                                     {categoryLabels[topType]}
                                 </span>
                                 {career.growth && (
-                                    <span className="bg-cute-orange text-white text-xs font-bold px-3 py-1 rounded-full">
-                                        Trending Career
+                                    <span className="bg-linear-to-r from-cute-orange to-orange-400 text-white text-[10px] font-bold px-2.5 py-1 rounded-full">
+                                        Trending
                                     </span>
                                 )}
                             </div>
-                            <h2
-                                className="text-3xl md:text-4xl font-extrabold text-white drop-shadow-md"
-                                style={{ fontFamily: "var(--font-fredoka)" }}
-                            >
-                                {career.name}
-                            </h2>
                         </div>
                     </div>
 
-                    {/* Career Details */}
-                    <div className="p-8 flex flex-col gap-6">
-                        <p
-                            className="text-base text-dark-purple/80 leading-relaxed"
-                            style={{ fontFamily: "var(--font-baloo)" }}
-                        >
+                    {/* Info sections */}
+                    <div className="px-6 md:px-8 pb-10 flex flex-col gap-6">
+                        <p className="text-sm text-dark-purple/75 leading-relaxed">
                             {career.description}
                         </p>
 
-                        {/* Why this career */}
-                        <div className="bg-girly-purple/5 rounded-2xl p-6">
-                            <h3
-                                className="text-xl font-extrabold text-dark-purple mb-3"
-                                style={{ fontFamily: "var(--font-fredoka)" }}
-                            >
-                                Why this matches you
+                        {/* STEM Profile */}
+                        <div className={`bg-linear-to-br ${categoryGradients[topType]} rounded-2xl p-5`}>
+                            <h3 className="text-sm font-extrabold text-white mb-1 font-heading">
+                                Your STEM Profile
                             </h3>
-                            <p
-                                className="text-dark-purple/70 leading-relaxed mb-4"
-                                style={{ fontFamily: "var(--font-baloo)" }}
-                            >
-                                {categoryDescriptions[topType]} Based on your answers,{" "}
-                                <strong>{percentage}%</strong> of your choices aligned with{" "}
-                                <strong>{categoryLabels[topType]}</strong>.
+                            <p className="text-white/70 text-xs mb-4">
+                                <strong className="text-white">{percentage}%</strong> of your answers aligned with {categoryLabels[topType]}
                             </p>
-
-                            {/* Score Breakdown */}
-                            <div className="flex flex-col gap-2">
+                            <div className="flex flex-col gap-2.5">
                                 {sortedScores.map(([type, count]) => {
                                     const pct = totalAnswers > 0 ? Math.round((count / totalAnswers) * 100) : 0
                                     return (
-                                        <div key={type} className="flex items-center gap-3">
-                                            <span
-                                                className="text-sm font-bold text-dark-purple w-28"
-                                                style={{ fontFamily: "var(--font-fredoka)" }}
-                                            >
+                                        <div key={type} className="flex items-center gap-2.5">
+                                            <span className="text-[11px] font-bold text-white/85 w-22 font-heading">
                                                 {categoryLabels[type]}
                                             </span>
-                                            <div className="flex-1 h-3 bg-gray-200 rounded-full overflow-hidden">
+                                            <div className="flex-1 h-2 bg-white/15 rounded-full overflow-hidden">
                                                 <div
-                                                    className={`h-full rounded-full transition-all duration-700 ${categoryColors[type]}`}
+                                                    className="h-full rounded-full bg-white transition-all duration-1000 ease-out"
                                                     style={{ width: `${pct}%` }}
                                                 />
                                             </div>
-                                            <span
-                                                className="text-sm font-semibold text-dark-purple/60 w-10 text-right"
-                                                style={{ fontFamily: "var(--font-baloo)" }}
-                                            >
+                                            <span className="text-[11px] font-semibold text-white/60 w-8 text-right">
                                                 {pct}%
                                             </span>
                                         </div>
@@ -182,18 +167,18 @@ function QuizResultContent() {
 
                         {/* What to Study */}
                         <div>
-                            <h3
-                                className="text-xl font-extrabold text-dark-purple mb-3"
-                                style={{ fontFamily: "var(--font-fredoka)" }}
-                            >
-                                What to Study
-                            </h3>
-                            <div className="flex flex-wrap gap-2">
+                            <div className="flex items-center gap-2 mb-2.5">
+                                <BookOpen size={16} className="text-girly-purple" />
+                                <h3 className="text-sm font-extrabold text-dark-purple font-heading">
+                                    What to Study
+                                </h3>
+                            </div>
+                            <div className="flex flex-wrap gap-1.5">
                                 {career.studyPaths.map((path) => (
                                     <span
                                         key={path}
-                                        className="bg-girly-purple/10 text-girly-purple text-sm font-semibold px-4 py-2 rounded-full"
-                                        style={{ fontFamily: "var(--font-baloo)" }}
+                                        className="bg-girly-purple/10 text-girly-purple
+                                            text-xs font-semibold px-3 py-1.5 rounded-full"
                                     >
                                         {path}
                                     </span>
@@ -201,103 +186,161 @@ function QuizResultContent() {
                             </div>
                         </div>
 
+                        {/* Related Careers */}
+                        <div>
+                            <div className="flex items-center gap-2 mb-2.5">
+                                <LinkIcon size={16} className="text-hot-pink" />
+                                <h3 className="text-sm font-extrabold text-dark-purple font-heading">
+                                    Related Careers
+                                </h3>
+                            </div>
+                            <div className="flex flex-wrap gap-1.5">
+                                {career.relatedCareers.map((related) => (
+                                    <span
+                                        key={related}
+                                        className="bg-hot-pink/10 text-hot-pink
+                                            text-xs font-semibold px-3 py-1.5 rounded-full"
+                                    >
+                                        {related}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+
                         {/* Leaders */}
                         <div>
-                            <h3
-                                className="text-xl font-extrabold text-dark-purple mb-3"
-                                style={{ fontFamily: "var(--font-fredoka)" }}
-                            >
-                                Leaders in This Field
-                            </h3>
-                            {career.leaders.map((leader) => (
-                                <div
-                                    key={leader.name}
-                                    className="flex items-center gap-3 bg-cream rounded-2xl px-4 py-3"
-                                >
-                                    <div className="w-10 h-10 rounded-full bg-cute-orange/20 flex items-center justify-center text-lg">
-                                        👩‍🔬
-                                    </div>
-                                    <div>
-                                        <p
-                                            className="font-bold text-dark-purple text-sm"
-                                            style={{ fontFamily: "var(--font-fredoka)" }}
+                            <div className="flex items-center gap-2 mb-2.5">
+                                <Users size={16} className="text-cute-orange" />
+                                <h3 className="text-sm font-extrabold text-dark-purple font-heading">
+                                    Leaders in This Field
+                                </h3>
+                            </div>
+                            <div className="flex flex-col gap-2">
+                                {career.leaders.map((leader) => (
+                                    <div
+                                        key={leader.name}
+                                        className="flex items-center gap-3 bg-white rounded-xl px-4 py-3
+                                            ring-1 ring-gray-100 shadow-sm"
+                                    >
+                                        <div className={`w-9 h-9 rounded-full bg-linear-to-br ${categoryGradients[topType]}
+                                            flex items-center justify-center text-xs font-bold text-white font-heading shrink-0`}
                                         >
-                                            {leader.name}
-                                        </p>
-                                        <p
-                                            className="text-dark-purple/60 text-xs"
-                                            style={{ fontFamily: "var(--font-baloo)" }}
-                                        >
-                                            {leader.country}
-                                        </p>
+                                            {leader.name.charAt(0)}
+                                        </div>
+                                        <div>
+                                            <p className="font-bold text-dark-purple text-sm font-heading">
+                                                {leader.name}
+                                            </p>
+                                            <p className="text-dark-purple/50 text-xs">
+                                                {leader.country}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                {/* Other careers in this field */}
-                {otherCareers.length > 0 && (
-                    <div className="mb-8">
-                        <h3
-                            className="text-2xl font-extrabold text-dark-purple mb-4 text-center"
-                            style={{ fontFamily: "var(--font-fredoka)" }}
-                        >
+            {/* ==================== BOTTOM SECTION: Other careers + buttons ==================== */}
+            {otherCareers.length > 0 && (
+                <div
+                    className="bg-cream px-6 py-12 sm:px-10 md:px-16 animate-funfact-in"
+                    style={{ animationDelay: "0.3s" }}
+                >
+                    <div className="max-w-5xl mx-auto">
+                        <h3 className="text-2xl font-extrabold text-dark-purple mb-6 text-center font-heading">
                             Other {categoryLabels[topType]} Careers You Might Like
                         </h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                             {otherCareers.map((c) => (
                                 <div
                                     key={c.id}
-                                    className="bg-white rounded-2xl overflow-hidden shadow-md"
+                                    className="group bg-white rounded-2xl overflow-hidden shadow-md ring-1 ring-gray-100
+                                        hover:shadow-xl hover:ring-girly-purple/30
+                                        transition-all duration-300 cursor-pointer"
                                 >
-                                    <div className="relative h-28">
+                                    <div className="relative h-44 overflow-hidden">
                                         <Image
                                             src={getCareerImage(c.id)}
                                             alt={c.name}
                                             fill
-                                            className="object-cover"
+                                            className="object-cover transition-transform duration-500 group-hover:scale-110"
                                         />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                                        <p
-                                            className="absolute bottom-3 left-4 text-white font-extrabold text-sm drop-shadow"
-                                            style={{ fontFamily: "var(--font-fredoka)" }}
-                                        >
+                                        <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
+
+                                        {c.growth && (
+                                            <span className="absolute top-3 left-3 bg-white/80 text-cute-orange text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">
+                                                🔥 Trending
+                                            </span>
+                                        )}
+
+                                        <p className="absolute bottom-3 left-4 right-4 text-white font-extrabold text-base drop-shadow font-heading">
                                             {c.name}
                                         </p>
+
+                                        {/* Hover overlay */}
+                                        <div className="absolute inset-0 bg-linear-to-t from-strong-purple via-strong-purple/95 to-strong-purple/80
+                                            flex flex-col justify-end p-4
+                                            opacity-0 translate-y-4
+                                            group-hover:opacity-100 group-hover:translate-y-0
+                                            transition-all duration-300 ease-out"
+                                        >
+                                            <p className="text-white font-extrabold text-sm font-heading mb-1">
+                                                {c.name}
+                                            </p>
+                                            <p className="text-white/75 text-xs leading-snug line-clamp-3 mb-2">
+                                                {c.description}
+                                            </p>
+                                            <div className="flex flex-wrap gap-1">
+                                                {c.studyPaths.slice(0, 2).map((path) => (
+                                                    <span
+                                                        key={path}
+                                                        className="bg-white/15 text-white/90 text-[10px] font-semibold px-2 py-0.5 rounded-full"
+                                                    >
+                                                        {path}
+                                                    </span>
+                                                ))}
+                                                {c.studyPaths.length > 2 && (
+                                                    <span className="text-white/50 text-[10px] font-semibold px-1 py-0.5">
+                                                        +{c.studyPaths.length - 2} more
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                    </div>
-                )}
 
-                {/* Action buttons */}
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Link
-                        href={`/explore-careers?category=${topType}`}
-                        className="px-8 py-3 rounded-full bg-linear-to-r from-strong-purple to-girly-purple text-white font-semibold text-center hover:from-girly-purple hover:to-hot-pink transition-all duration-500 shadow-md"
-                        style={{ fontFamily: "var(--font-fredoka)" }}
-                    >
-                        Explore All {categoryLabels[topType]} Careers
-                    </Link>
-                    <Link
-                        href="/explore-careers"
-                        className="px-8 py-3 rounded-full border-2 border-girly-purple text-girly-purple font-semibold text-center hover:bg-girly-purple/10 transition-all duration-300"
-                        style={{ fontFamily: "var(--font-fredoka)" }}
-                    >
-                        Browse All Careers
-                    </Link>
-                    <Link
-                        href="/quiz"
-                        className="px-8 py-3 rounded-full border-2 border-dark-purple/20 text-dark-purple/60 font-semibold text-center hover:bg-dark-purple/5 transition-all duration-300"
-                        style={{ fontFamily: "var(--font-fredoka)" }}
-                    >
-                        Retake Quiz
-                    </Link>
+                        {/* Action buttons */}
+                        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                            <Link
+                                href={`/explore-careers?category=${topType}`}
+                                className="flex items-center justify-center gap-2 px-7 py-3 rounded-full
+                                    bg-linear-to-r from-cute-orange to-hot-pink
+                                    text-white font-bold text-sm
+                                    hover:from-hot-pink hover:to-cute-orange
+                                    transition-all duration-500 shadow-lg hover:shadow-xl
+                                    hover:scale-105 active:scale-95"
+                            >
+                                Explore {categoryLabels[topType]} Careers <ArrowRight size={16} />
+                            </Link>
+                            <Link
+                                href="/explore-careers"
+                                className="flex items-center justify-center gap-2 px-7 py-3 rounded-full
+                                    border-2 border-girly-purple text-girly-purple font-bold text-sm
+                                    hover:bg-girly-purple/10
+                                    transition-all duration-300"
+                            >
+                                Browse All Careers
+                            </Link>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     )
 }
@@ -306,7 +349,7 @@ export default function QuizResultPage() {
     return (
         <Suspense fallback={
             <div className="min-h-screen flex items-center justify-center bg-cream">
-                <p className="text-dark-purple text-lg">Loading your results...</p>
+                <p className="text-dark-purple/60 text-lg font-heading">Loading your results...</p>
             </div>
         }>
             <QuizResultContent />
