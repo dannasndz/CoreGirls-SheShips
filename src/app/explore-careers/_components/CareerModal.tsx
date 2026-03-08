@@ -32,7 +32,7 @@ export default function CareerModal({ career, onClose }: CareerModalProps) {
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+        className="bg-white rounded-3xl max-w-4xl w-full max-h-[85vh] overflow-y-auto shadow-2xl [scrollbar-width:thin] [scrollbar-color:rgba(168,85,247,0.2)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-track]:my-6 [&::-webkit-scrollbar-thumb]:bg-girly-purple/20 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-girly-purple/40"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header with image */}
