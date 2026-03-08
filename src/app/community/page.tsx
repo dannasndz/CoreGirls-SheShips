@@ -3,7 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useState, useCallback } from "react";
 import { AuthModal } from "@/components/auth-modal";
-import { Plus } from "lucide-react";
+import { Plus, Home, Heart, Users as UsersIcon, Calendar as CalendarIcon } from "lucide-react";
 import { PostData, GroupData, EventData, STEM_CATEGORIES } from "./_components/helpers";
 import { PostCard } from "./_components/post-card";
 import { CreatePostForm } from "./_components/create-post-form";
@@ -331,20 +331,56 @@ export default function CommunityPage() {
       )}
 
       {session && (
-        <div className="max-w-7xl mx-auto grid grid-cols-[220px_1fr_260px] gap-6 p-6">
-          <LeftSidebar
-            activeView={activeView}
-            onViewChange={setActiveView}
-            groups={groups}
-            onCreateGroup={() => setShowCreateGroup(true)}
-          />
+        <div className="max-w-7xl mx-auto p-4 sm:p-6">
+          {/* Mobile nav */}
+          <div className="flex gap-2 overflow-x-auto pb-3 lg:hidden scrollbar-none -mx-1 px-1">
+            {(
+              [
+                { key: "feed", label: "Home", icon: <Home size={16} /> },
+                { key: "liked", label: "Liked", icon: <Heart size={16} /> },
+                { key: "groups", label: "Groups", icon: <UsersIcon size={16} /> },
+                { key: "events", label: "Events", icon: <CalendarIcon size={16} /> },
+              ] as const
+            ).map((item) => (
+              <button
+                key={item.key}
+                onClick={() => setActiveView(item.key)}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition shrink-0 ${
+                  activeView === item.key
+                    ? "bg-girly-purple text-white"
+                    : "bg-white border border-light-pink text-dark-purple"
+                }`}
+              >
+                {item.icon}
+                {item.label}
+              </button>
+            ))}
+            <button
+              onClick={() => setShowCreateGroup(true)}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap bg-white border border-light-pink text-dark-purple transition shrink-0"
+            >
+              <Plus size={16} />
+              New Group
+            </button>
+          </div>
 
-          <main className="space-y-5">
+          <div className="grid grid-cols-1 lg:grid-cols-[220px_1fr_260px] gap-6">
+          {/* Desktop left sidebar */}
+          <div className="hidden lg:block">
+            <LeftSidebar
+              activeView={activeView}
+              onViewChange={setActiveView}
+              groups={groups}
+              onCreateGroup={() => setShowCreateGroup(true)}
+            />
+          </div>
+
+          <main className="space-y-5 min-w-0">
             {activeView === "feed" && (
               <>
-                <div className="rounded-2xl bg-white border border-light-pink p-6 shadow-sm flex items-start justify-between">
+                <div className="rounded-2xl bg-white border border-light-pink p-4 sm:p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div>
-                    <h1 className="text-3xl font-bold text-dark-purple font-[family-name:var(--font-fredoka)]">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-dark-purple font-[family-name:var(--font-fredoka)]">
                       Hi,{" "}
                       <span className="text-girly-purple">
                         {session.user.name}!
@@ -372,12 +408,12 @@ export default function CommunityPage() {
                   />
                 )}
 
-                <div className="flex gap-2">
+                <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none -mx-1 px-1">
                   {filterOptions.map((cat) => (
                     <button
                       key={cat}
                       onClick={() => setActiveCategory(cat)}
-                      className={`px-4 py-1.5 rounded-full text-sm font-medium transition ${
+                      className={`px-4 py-1.5 rounded-full text-sm font-medium transition whitespace-nowrap shrink-0 ${
                         activeCategory === cat
                           ? "bg-girly-purple text-white"
                           : "bg-white border border-light-pink text-dark-purple hover:bg-light-pink/30"
@@ -475,11 +511,15 @@ export default function CommunityPage() {
             )}
           </main>
 
-          <RightSidebar
-            tags={allTags}
-            upcomingEvents={upcomingEvents}
-            onViewAllEvents={() => setActiveView("events")}
-          />
+          {/* Desktop right sidebar */}
+          <div className="hidden lg:block">
+            <RightSidebar
+              tags={allTags}
+              upcomingEvents={upcomingEvents}
+              onViewAllEvents={() => setActiveView("events")}
+            />
+          </div>
+          </div>
         </div>
       )}
 

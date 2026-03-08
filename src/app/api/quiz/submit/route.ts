@@ -3,23 +3,21 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-const careerMap: Record<string, string> = {
-  A: "Software Developer",
-  B: "UX/UI Designer",
-  C: "Data Scientist",
-  D: "Project Manager",
-};
+type StemType = "S" | "T" | "E" | "M";
 
-function scoreAnswers(answers: Record<string, number>): string {
-  const tally: Record<string, number> = { A: 0, B: 0, C: 0, D: 0 };
+function scoreAnswers(answers: Record<string, StemType>): { topType: StemType; score: Record<StemType, number> } {
+  const score: Record<StemType, number> = { S: 0, T: 0, E: 0, M: 0 };
 
-  for (const optionIndex of Object.values(answers)) {
-    const key = ["A", "B", "C", "D"][optionIndex] ?? "A";
-    tally[key]++;
+  for (const type of Object.values(answers)) {
+    if (score[type] !== undefined) {
+      score[type]++;
+    }
   }
 
-  const topKey = Object.entries(tally).sort((a, b) => b[1] - a[1])[0][0];
-  return careerMap[topKey];
+  const topType = (Object.entries(score) as [StemType, number][])
+    .sort((a, b) => b[1] - a[1])[0][0];
+
+  return { topType, score };
 }
 
 export async function POST(req: NextRequest) {
@@ -32,7 +30,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { answers } = await req.json();
+    const { answers, career } = await req.json();
 
     if (!answers || typeof answers !== "object") {
       return NextResponse.json(
@@ -41,19 +39,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const career = scoreAnswers(answers);
+    const { topType, score } = scoreAnswers(answers);
 
     const result = await prisma.quizResult.upsert({
       where: { userId: session.user.id },
-      update: { answers, career },
+      update: { answers: { answers, score, topType }, career: career },
       create: {
         userId: session.user.id,
-        answers,
-        career,
+        answers: { answers, score, topType },
+        career: career,
       },
     });
 
-    return NextResponse.json({ data: { career: result.career }, error: null });
+    return NextResponse.json({ data: { career: result.career, score, topType }, error: null });
   } catch {
     return NextResponse.json(
       { data: null, error: "Internal server error" },
