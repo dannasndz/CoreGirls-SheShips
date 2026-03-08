@@ -93,7 +93,7 @@ function QuizResultContent() {
                         </p>
 
                         <Link
-                            href="/quiz"
+                            href="/preQuiz"
                             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full
                                 bg-white/15 border border-white/30 text-white font-bold text-sm
                                 hover:bg-white/25 hover:border-white/50

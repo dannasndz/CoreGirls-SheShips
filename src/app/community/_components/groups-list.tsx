@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Users, Plus } from "lucide-react";
 import { GroupData } from "./helpers";
+import { useI18n } from "@/lib/i18n";
 
 interface GroupsListProps {
   groups: GroupData[];
@@ -10,25 +11,27 @@ interface GroupsListProps {
 }
 
 export function GroupsList({ groups, onCreateGroup }: GroupsListProps) {
+  const { t } = useI18n();
+
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold text-dark-purple font-[family-name:var(--font-fredoka)]">
-          All Groups
+          {t("community.allGroups")}
         </h2>
         <button
           onClick={onCreateGroup}
           className="flex items-center gap-2 px-4 py-2 rounded-full border-2 border-girly-purple text-girly-purple font-semibold text-sm hover:bg-girly-purple hover:text-white transition"
         >
           <Plus size={16} />
-          New Group
+          {t("community.newGroup")}
         </button>
       </div>
 
       {groups.length === 0 && (
         <div className="rounded-2xl bg-white border border-[#E5E0D9] p-8 shadow-sm text-center">
           <p className="text-dark-purple/50 text-sm">
-            No groups yet. Create the first one!
+            {t("community.noGroups")}
           </p>
         </div>
       )}
@@ -54,8 +57,11 @@ export function GroupsList({ groups, onCreateGroup }: GroupsListProps) {
               </p>
             )}
             <p className="text-xs text-dark-purple/40">
-              {g._count.members} member{g._count.members !== 1 && "s"} &middot;{" "}
-              {g._count.posts} post{g._count.posts !== 1 && "s"}
+              {g._count.members}{" "}
+              {g._count.members !== 1 ? t("community.members") : t("community.member")}{" "}
+              &middot;{" "}
+              {g._count.posts}{" "}
+              {g._count.posts !== 1 ? t("community.posts") : t("community.post")}
             </p>
           </Link>
         ))}

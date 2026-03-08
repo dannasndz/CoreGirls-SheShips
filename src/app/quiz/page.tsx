@@ -240,7 +240,7 @@ export default function QuizPage() {
             </div>
 
             {/* Logo */}
-            <Link href="/" className="fixed top-3 left-3 z-50 sm:top-4 sm:left-4">
+            <Link href="/home" className="fixed top-3 left-3 z-50 sm:top-4 sm:left-4">
                 <Image
                     src="/logoBlanco.png"
                     alt="SheShips logo"
@@ -251,7 +251,7 @@ export default function QuizPage() {
             </Link>
 
             {/* Content */}
-            <div className="relative z-10 sm:h-full flex items-center justify-center px-4 pt-14 pb-4 sm:px-6 sm:pt-16 sm:pb-3 md:px-10">
+            <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-6 sm:px-6 sm:py-8 md:px-10">
                 <div className="w-full max-w-3xl flex flex-col sm:h-full
                     bg-white/10 backdrop-blur-xl border border-white/20
                     rounded-2xl sm:rounded-3xl shadow-2xl shadow-black/20

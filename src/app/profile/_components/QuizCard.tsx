@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { ParticleCard } from "@/components/MagicBento";
 import { Sparkles } from "lucide-react";
-import { formatDate, GLOW_COLOR, cardStyle, cardClass } from "./types";
+import { formatDate } from "./types";
 import { useI18n } from "@/lib/i18n";
 
 interface QuizCardProps {
@@ -17,43 +16,46 @@ export default function QuizCard({ quizResult }: QuizCardProps) {
   const { t } = useI18n();
 
   return (
-    <ParticleCard
-      className={cardClass}
-      style={cardStyle}
-      glowColor={GLOW_COLOR}
-      enableTilt={false}
-      clickEffect
-      particleCount={6}
-    >
-      <div className="p-2 flex flex-col justify-between h-full">
-        <div className="flex items-center gap-2 text-white text-s mb-2">
-          <Sparkles className="w-4 h-4" />
-          <span>{t("profile.careerQuiz")}</span>
-        </div>
-        {quizResult ? (
-          <>
-            <p className="text-2xl font-bold text-cute-orange font-[family-name:var(--font-fredoka)] leading-tight">
+    <div className="rounded-2xl bg-white border border-light-pink p-4 shadow-sm">
+      <h3 className="text-sm font-bold text-girly-purple mb-3 font-heading">
+        Career Quiz
+      </h3>
+
+      {quizResult ? (
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <Sparkles size={16} className="text-cute-orange shrink-0" />
+            <span className="text-sm font-semibold text-dark-purple truncate">
               {quizResult.career}
-            </p>
-            <p className="text-white text-s mt-2">
-              {t("profile.taken", { date: formatDate(quizResult.createdAt) })}
-            </p>
-          </>
-        ) : (
-          <div className="flex flex-col items-start gap-2">
-            <p className="text-white/80 text-sm">
-              {t("profile.discoverCareer")}
-            </p>
-            <Link
-              href="/preQuiz"
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-hot-pink to-cute-orange text-white text-sm font-semibold hover:brightness-110 transition-all duration-300"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              {t("profile.takeTheQuiz")}
-            </Link>
+            </span>
           </div>
-        )}
-      </div>
-    </ParticleCard>
+          <p className="text-xs text-dark-purple/40 mb-3">
+            Taken {formatDate(quizResult.createdAt)}
+          </p>
+          <Link
+            href="/quiz/result"
+            className="text-sm text-girly-purple font-medium hover:underline transition"
+          >
+            View results →
+          </Link>
+        </div>
+      ) : (
+        <div>
+          <p className="text-xs text-dark-purple/40 mb-3">
+            Discover your ideal STEM career path!
+          </p>
+          <Link
+            href="/preQuiz"
+            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full
+              bg-linear-to-r from-hot-pink to-cute-orange
+              text-white text-sm font-semibold
+              hover:brightness-110 transition-all duration-300"
+          >
+            <Sparkles size={14} />
+            Take the Quiz
+          </Link>
+        </div>
+      )}
+    </div>
   );
 }

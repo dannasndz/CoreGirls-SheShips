@@ -1,74 +1,93 @@
-import { ParticleCard } from "@/components/MagicBento";
-import { Calendar, CalendarDays, MapPin, Video } from "lucide-react";
-import { formatDate, GLOW_COLOR, cardStyle, cardClass } from "./types";
+import { CalendarDays, Clock } from "lucide-react";
+import { formatDate } from "./types";
 import type { EventItem } from "./types";
 
 interface EventsCardProps {
   title: string;
   events: EventItem[];
   emptyText: string;
+  gradient?: boolean;
 }
 
 export default function EventsCard({
   title,
   events,
   emptyText,
+  gradient = false,
 }: EventsCardProps) {
-  return (
-    <ParticleCard
-      className={cardClass}
-      style={cardStyle}
-      glowColor={GLOW_COLOR}
-      enableTilt={false}
-      clickEffect
-      particleCount={4}
-    >
-      <div className="p-2">
-        <div className="flex items-center gap-2 text-white text-s mb-3">
-          <Calendar className="w-4 h-4" />
-          <span>{title}</span>
-        </div>
-        {events.length > 0 ? (
-          <div className="space-y-2 max-h-[200px] overflow-y-auto pr-1 scrollbar-thin">
-            {events.map((ev) => (
-              <EventMini key={ev.id} event={ev} />
-            ))}
-          </div>
-        ) : (
-          <p className="text-girly-purple/40 text-sm">{emptyText}</p>
-        )}
-      </div>
-    </ParticleCard>
-  );
-}
-
-function EventMini({ event }: { event: EventItem }) {
-  return (
-    <div
-      className={`rounded-lg bg-white/8 px-3 py-2 ${event.cancelled ? "opacity-50" : ""}`}
-    >
-      <p className="text-white text-[13px] font-medium truncate">
-        {event.title}
-        {event.cancelled && (
-          <span className="ml-1.5 text-[10px] bg-red-500/20 text-red-300 px-1.5 py-0.5 rounded-full">
-            Cancelled
-          </span>
-        )}
-      </p>
-      <div className="flex items-center gap-3 mt-1 text-white/60 text-xs">
-        <span className="flex items-center gap-1">
-          <CalendarDays className="w-3 h-3" />
-          {formatDate(event.date)} {event.hour}
-        </span>
-        <span className="flex items-center gap-1 capitalize">
-          {event.modality === "remote" ? (
-            <Video className="w-3 h-3" />
+  if (gradient) {
+    return (
+      <div className="rounded-2xl overflow-hidden shadow-sm border border-light-pink">
+        <div className="bg-linear-to-br from-girly-purple to-light-pink p-4 text-white">
+          <h3 className="text-sm font-bold font-heading mb-2">
+            {title}
+          </h3>
+          {events.length > 0 ? (
+            <div className="space-y-2">
+              {events.slice(0, 3).map((ev) => (
+                <div key={ev.id} className="bg-white/15 rounded-lg p-2.5">
+                  <p className="text-xs font-semibold truncate">
+                    {ev.title}
+                    {ev.cancelled && (
+                      <span className="ml-1 text-[10px] bg-white/20 px-1.5 py-0.5 rounded-full">
+                        Cancelled
+                      </span>
+                    )}
+                  </p>
+                  <div className="flex gap-3 mt-1 text-[10px] text-white/80">
+                    <span className="flex items-center gap-1">
+                      <CalendarDays size={10} />
+                      {formatDate(ev.date)}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Clock size={10} />
+                      {ev.hour}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : (
-            <MapPin className="w-3 h-3" />
+            <p className="text-xs text-white/70">{emptyText}</p>
           )}
-          {event.modality}
-        </span>
+        </div>
       </div>
+    );
+  }
+
+  return (
+    <div className="rounded-2xl bg-white border border-light-pink p-4 shadow-sm">
+      <h3 className="text-sm font-bold text-girly-purple mb-3 font-heading">
+        {title}
+      </h3>
+
+      {events.length > 0 ? (
+        <div className="space-y-2">
+          {events.map((ev) => (
+            <div
+              key={ev.id}
+              className={`rounded-lg px-3 py-2 ${ev.cancelled ? "opacity-50" : ""}`}
+            >
+              <p className="text-sm text-dark-purple font-medium truncate">
+                {ev.title}
+                {ev.cancelled && (
+                  <span className="ml-1.5 text-[10px] bg-red-100 text-red-500 px-1.5 py-0.5 rounded-full font-bold">
+                    Cancelled
+                  </span>
+                )}
+              </p>
+              <div className="flex items-center gap-3 mt-1 text-xs text-dark-purple/40">
+                <span className="flex items-center gap-1">
+                  <CalendarDays size={12} />
+                  {formatDate(ev.date)} {ev.hour}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-xs text-dark-purple/40">{emptyText}</p>
+      )}
     </div>
   );
 }

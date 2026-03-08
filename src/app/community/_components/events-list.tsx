@@ -37,7 +37,7 @@ export function EventsList({
   attendingIds,
   currentUserId,
 }: EventsListProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [loadingAttend, setLoadingAttend] = useState<string | null>(null);
   const [loadingCancel, setLoadingCancel] = useState<string | null>(null);
 
@@ -150,7 +150,7 @@ export function EventsList({
                 <div className="flex flex-wrap gap-x-5 gap-y-1.5 text-sm text-dark-purple/60">
                   <span className="flex items-center gap-1.5">
                     <CalendarDays size={14} />
-                    {formatEventDate(event.date)}
+                    {formatEventDate(event.date, locale)}
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Clock size={14} />
@@ -295,7 +295,7 @@ export function EventsList({
               <div className="flex gap-4 text-sm text-dark-purple/40">
                 <span className="flex items-center gap-1">
                   <CalendarDays size={12} />
-                  {formatEventDate(event.date)}
+                  {formatEventDate(event.date, locale)}
                 </span>
                 <span className="flex items-center gap-1">
                   <Users size={12} />
