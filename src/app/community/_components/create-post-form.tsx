@@ -5,6 +5,13 @@ import { X, Hash, PenLine } from "lucide-react";
 import { STEM_CATEGORIES } from "./helpers";
 import { useI18n } from "@/lib/i18n";
 
+const categoryLabelKeys: Record<string, string> = {
+  Science: "exploreCareers.science",
+  Technology: "exploreCareers.technology",
+  Engineer: "exploreCareers.engineering",
+  Mathematics: "exploreCareers.mathematics",
+};
+
 interface CreatePostFormProps {
   onSubmit: (data: {
     title: string;
@@ -123,7 +130,7 @@ export function CreatePostForm({
                       : "bg-light-pink/20 text-hot-pink hover:bg-light-pink/30"
                   }`}
                 >
-                  {cat}
+                  {t(categoryLabelKeys[cat] ?? cat)}
                 </button>
               ))}
             </div>

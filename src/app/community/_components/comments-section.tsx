@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { ChevronDown, ChevronUp, Send } from "lucide-react";
 import { timeAgo, getInitial, getAvatarColor, CommentData } from "./helpers";
+import { useI18n } from "@/lib/i18n";
 
 interface CommentsSectionProps {
   apiBase: string;
@@ -10,6 +11,7 @@ interface CommentsSectionProps {
 }
 
 export function CommentsSection({ apiBase, onCommentAdded }: CommentsSectionProps) {
+  const { t, locale } = useI18n();
   const [comments, setComments] = useState<CommentData[]>([]);
   const [newComment, setNewComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -54,7 +56,7 @@ export function CommentsSection({ apiBase, onCommentAdded }: CommentsSectionProp
         className="flex items-center gap-1 text-sm text-dark-purple/50 hover:text-girly-purple transition"
       >
         <ChevronDown size={14} />
-        Show comments
+        {t("comments.show")}
       </button>
     );
   }
@@ -66,11 +68,11 @@ export function CommentsSection({ apiBase, onCommentAdded }: CommentsSectionProp
         className="flex items-center gap-1 text-sm text-dark-purple/50 hover:text-girly-purple transition"
       >
         <ChevronUp size={14} />
-        Hide comments
+        {t("comments.hide")}
       </button>
 
       {comments.length === 0 && (
-        <p className="text-sm text-dark-purple/40">No comments yet.</p>
+        <p className="text-sm text-dark-purple/40">{t("comments.none")}</p>
       )}
 
       <div className="space-y-2 max-h-60 overflow-y-auto">
@@ -87,7 +89,7 @@ export function CommentsSection({ apiBase, onCommentAdded }: CommentsSectionProp
                   {c.author.username}
                 </span>
                 <span className="text-[10px] text-dark-purple/40">
-                  {timeAgo(c.createdAt)}
+                  {timeAgo(c.createdAt, locale)}
                 </span>
               </div>
               <p className="text-sm text-dark-purple/70 mt-0.5">{c.content}</p>
@@ -101,7 +103,7 @@ export function CommentsSection({ apiBase, onCommentAdded }: CommentsSectionProp
           type="text"
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
-          placeholder="Write a comment..."
+          placeholder={t("comments.placeholder")}
           className="flex-1 rounded-lg border border-[#E5E0D9] bg-cream px-3 py-1.5 text-sm text-dark-purple placeholder:text-dark-purple/40 focus:outline-none focus:ring-2 focus:ring-girly-purple"
         />
         <button
