@@ -54,8 +54,6 @@ export default function QuizPage() {
     const isLastQuestion = current === total - 1
     const allAnswered = Object.keys(answers).length === total
 
-    const showFunFact = answers[current] !== undefined
-
     function handleAnswer(type: StemType) {
         setAnswers((prev) => ({ ...prev, [current]: type }))
     }
@@ -239,16 +237,10 @@ export default function QuizPage() {
 
                     {/* Fun fact banner */}
                     <div
-                        className={`
-                            rounded-xl sm:rounded-2xl bg-white/10 backdrop-blur-sm px-4 py-2 sm:px-6 sm:py-3
+                        key={current}
+                        className="rounded-xl sm:rounded-2xl bg-white/10 backdrop-blur-sm px-4 py-2 sm:px-6 sm:py-3
                             text-center text-white/80 text-[11px] sm:text-xs md:text-sm
-                            italic leading-relaxed
-                            transition-all duration-500 ease-in-out
-                            ${showFunFact
-                                ? "opacity-100 translate-y-0"
-                                : "opacity-0 translate-y-4 pointer-events-none"
-                            }
-                        `}
+                            italic leading-relaxed animate-funfact-in"
                     >
                         &ldquo;{currentQuestion.funFact}&rdquo;
                     </div>
