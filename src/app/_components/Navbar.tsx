@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
@@ -14,19 +14,38 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 
-const navLinks = [
+type NavLink = { label: string; href: string; highlight?: boolean };
+
+const baseLinks: NavLink[] = [
   { label: "Careers", href: "/explore-careers" },
   { label: "References", href: "/references" },
   { label: "Community", href: "/community" },
-  { label: "Take the Quiz", href: "/preQuiz", highlight: true },
 ];
+
+const quizLink: NavLink = { label: "Take the Quiz", href: "/preQuiz", highlight: true };
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [hasCompletedQuiz, setHasCompletedQuiz] = useState(false);
   const pathname = usePathname();
   const { data: session } = useSession();
 
+  useEffect(() => {
+    if (!session?.user) {
+      setHasCompletedQuiz(false);
+      return;
+    }
+    fetch("/api/quiz/status")
+      .then((res) => res.json())
+      .then((data) => setHasCompletedQuiz(data.hasCompleted))
+      .catch(() => {});
+  }, [session?.user]);
+
   if (pathname === "/quiz" || pathname === "/preQuiz") return null;
+
+  const navLinks = hasCompletedQuiz
+    ? baseLinks
+    : [...baseLinks, quizLink];
 
   return (
     <header className="w-full sticky top-0 z-50 bg-cream border-b border-[#E5E0D9] px-6 py-2">
@@ -108,7 +127,7 @@ export default function Navbar() {
           {session?.user && (
             <Link
               href="/profile"
-              className="w-9 h-9 rounded-full bg-gradient-to-br from-strong-purple to-girly-purple flex items-center justify-center hover:from-girly-purple hover:to-hot-pink transition-all duration-300 shadow-sm"
+              className="w-9 h-9 rounded-full bg-linear-to-br from-strong-purple to-girly-purple flex items-center justify-center hover:from-girly-purple hover:to-hot-pink transition-all duration-300 shadow-sm"
               aria-label="My Profile"
             >
               <User className="w-4.5 h-4.5 text-white" />
