@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Flame } from "lucide-react";
 import { Career } from "@/data/careers";
 
 const getCareerImage = (id: string) => {
@@ -38,8 +39,9 @@ export default function CareerCard({ career, onClick }: CareerCardProps) {
 
       {/* Growth badge */}
       {career.growth && (
-        <span className="absolute top-3 left-3 bg-white/80 text-cute-orange text-xs font-bold px-2 py-1 rounded-full backdrop-blur-sm flex items-center gap-1">
-          🔥 Trending
+        <span className="absolute top-3 left-3 bg-linear-to-br from-cute-orange/60 to-hot-pink/60 text-white text-xs font-semibold px-2 py-1 rounded-full backdrop-blur-sm flex items-center gap-1">
+          <Flame size={12} />
+          Growth
         </span>
       )}
 

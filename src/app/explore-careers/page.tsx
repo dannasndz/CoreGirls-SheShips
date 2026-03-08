@@ -6,6 +6,7 @@ import { careers, categoryLabels, Career } from "@/data/careers";
 import CareerCard from "./_components/CareerCard";
 import CareerModal from "./_components/CareerModal";
 import { Search, Flame, Filter, ChevronDown } from "lucide-react";
+import SplitText from "@/components/SplitText";
 import {
   Pagination,
   PaginationContent,
@@ -83,17 +84,26 @@ function ExploreCareersContent() {
   return (
     <div className="min-h-screen bg-cream pb-20">
       {/* Header */}
-      <div className="text-center pt-12 pb-8 px-6">
-        <h1
-          className="text-6xl md:text-7xl font-extrabold text-dark-purple"
-          style={{ fontFamily: "var(--font-fredoka)" }}
-        >
-          Who could that be?
-        </h1>
+      <div className="text-center pt-8 sm:pt-12 pb-6 sm:pb-8 px-4 sm:px-6">
+        <SplitText
+          text="Who could that be?"
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-dark-purple"
+          delay={40}
+          duration={1}
+          ease="power3.out"
+          splitType="chars"
+          from={{ opacity: 0, y: 40 }}
+          to={{ opacity: 1, y: 0 }}
+          threshold={0.1}
+          rootMargin="-50px"
+          textAlign="center"
+          tag="h1"
+          onLetterAnimationComplete={() => {}}
+        />
       </div>
 
       {/* Search + Filters */}
-      <div className="max-w-4xl mx-auto px-6 mb-6 flex flex-col sm:flex-row items-stretch gap-3">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-6 flex flex-col sm:flex-row items-stretch gap-3">
         {/* Search bar */}
         <div className="relative flex-1 w-full">
           <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-girly-purple" size={18} />
@@ -102,32 +112,32 @@ function ExploreCareersContent() {
             value={search}
             onChange={handleSearchChange}
             placeholder="Search careers, skills, or fields..."
-            className="w-full pl-12 pr-4 py-2.5 rounded-full border-2 border-girly-purple/30 bg-white text-dark-purple placeholder:text-dark-purple/40 focus:border-girly-purple focus:outline-none transition-colors text-base"
+            className="w-full pl-11 pr-4 py-2.5 rounded-full border-2 border-girly-purple/30 bg-white text-dark-purple placeholder:text-dark-purple/40 focus:border-girly-purple focus:outline-none transition-colors text-sm sm:text-base"
             style={{ fontFamily: "var(--font-baloo)" }}
           />
         </div>
 
         {/* Filters - always in one row */}
-        <div className="flex flex-row items-center gap-3 justify-center sm:justify-start">
+        <div className="flex flex-row items-center gap-2 sm:gap-3 justify-center sm:justify-start">
           {/* TOP Growth button */}
           <button
             onClick={() => handleFilterChange("growth")}
-            className={`inline-flex items-center cursor-pointer gap-2 px-5 py-2.5 rounded-full font-bold text-sm whitespace-nowrap transition-all duration-300 ${
+            className={`inline-flex items-center cursor-pointer gap-1 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-full font-bold text-xs sm:text-sm whitespace-nowrap transition-all duration-300 ${
               activeFilter === "growth"
                 ? "bg-linear-to-br from-cute-orange to-hot-pink text-white shadow-lg scale-105"
                 : "bg-linear-to-r from-cute-orange/15 to-hot-pink/15 text-cute-orange hover:from-cute-orange/25 hover:to-hot-pink/25 border border-cute-orange/30"
             }`}
             style={{ fontFamily: "var(--font-fredoka)" }}
           >
-            <Flame size={16} />
-            TOP Growth 2026
+            <Flame size={14} className="sm:w-4 sm:h-4" />
+            <span className="hidden xs:inline">TOP</span> Growth 2026
           </button>
 
           {/* STEM Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
-                className={`inline-flex items-center cursor-pointer gap-2 px-5 py-2.5 rounded-full font-bold text-sm whitespace-nowrap transition-all duration-300 ${
+                className={`inline-flex items-center cursor-pointer gap-1 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-full font-bold text-xs sm:text-sm whitespace-nowrap transition-all duration-300 ${
                   activeFilter && ["S", "T", "E", "M"].includes(activeFilter)
                     ? "bg-girly-purple text-white shadow-lg"
                     : "bg-girly-purple/15 text-girly-purple hover:bg-girly-purple/25"
@@ -175,7 +185,7 @@ function ExploreCareersContent() {
 
       {/* Disclaimer for TOP filter */}
       {activeFilter === "growth" && (
-        <div className="max-w-6xl mx-auto px-6 mb-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-2">
           <p
             className="text-center text-sm text-dark-purple/40 italic"
             style={{ fontFamily: "var(--font-baloo)" }}
@@ -185,39 +195,9 @@ function ExploreCareersContent() {
         </div>
       )}
 
-      {/* Career grid */}
-      <div className="max-w-8xl mx-auto px-8 sm:px-8 lg:px-60">
-        {filtered.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5">
-            {paginatedCareers.map((career) => (
-              <CareerCard
-                key={career.id}
-                career={career}
-                onClick={setSelectedCareer}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-20">
-            <p
-              className="text-2xl text-dark-purple/50 font-semibold"
-              style={{ fontFamily: "var(--font-fredoka)" }}
-            >
-              No careers found
-            </p>
-            <p
-              className="text-lg text-dark-purple/40 mt-2"
-              style={{ fontFamily: "var(--font-baloo)" }}
-            >
-              Try a different search or filter
-            </p>
-          </div>
-        )}
-      </div>
-
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="max-w-6xl mx-auto px-6 mt-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-6">
           <Pagination>
             <PaginationContent>
               <PaginationItem>
@@ -261,6 +241,36 @@ function ExploreCareersContent() {
           </Pagination>
         </div>
       )}
+
+      {/* Career grid */}
+      <div className="w-full px-4 sm:px-6 md:px-8">
+        {filtered.length > 0 ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5">
+            {paginatedCareers.map((career) => (
+              <CareerCard
+                key={career.id}
+                career={career}
+                onClick={setSelectedCareer}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-20">
+            <p
+              className="text-2xl text-dark-purple/50 font-semibold"
+              style={{ fontFamily: "var(--font-fredoka)" }}
+            >
+              No careers found
+            </p>
+            <p
+              className="text-lg text-dark-purple/40 mt-2"
+              style={{ fontFamily: "var(--font-baloo)" }}
+            >
+              Try a different search or filter
+            </p>
+          </div>
+        )}
+      </div>
 
       {/* Modal */}
       {selectedCareer && (
