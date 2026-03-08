@@ -9,19 +9,25 @@ export default function Footer() {
     <footer className="bg-dark-purple text-white py-16 px-6 md:px-16 lg:px-24">
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-          {/* Team info */}
+          {/* Project + Team info */}
           <div className="flex flex-col gap-4">
             <h3
               className="text-3xl font-extrabold text-hot-pink"
               style={{ fontFamily: "var(--font-fredoka)" }}
             >
-              {t("footer.coreGirls")}
+              {t("footer.projectName")}
             </h3>
             <p
               className="text-base text-white/70 leading-relaxed"
               style={{ fontFamily: "var(--font-baloo)" }}
             >
-              {t("footer.teamDescription")}
+              {t("footer.projectDescription")}
+            </p>
+            <p
+              className="text-sm text-white/50 leading-relaxed"
+              style={{ fontFamily: "var(--font-baloo)" }}
+            >
+              {t("footer.coreGirls")} — {t("footer.teamDescription")}
             </p>
             <div
               className="flex flex-col gap-1 text-white/80"

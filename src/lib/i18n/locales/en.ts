@@ -101,6 +101,9 @@ const en = {
     coreGirls: "Core Girls",
     teamDescription:
       "We are a team of three passionate women from Mexico who believe every girl deserves to see herself in STEM.",
+    projectName: "+Más Mujeres",
+    projectDescription:
+      "Our project was born to inspire, inform, and connect girls and women with the world of STEM.",
     sheships: "💜 #SheShips",
     hackathonTitle: "Global Hackathon 8M",
     hackathonSuffix: "— Build. Share. Launch.",
