@@ -55,8 +55,8 @@ export default function Navbar() {
     <header className="w-full sticky top-0 z-50 bg-cream border-b border-[#E5E0D9] px-6 py-2">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          {/* Logo */}
-          <Link href="/" className="flex items-center shrink-0">
+          {/* Logo — siempre lleva al home */}
+          <Link href="/home" className="flex items-center shrink-0">
             <Image
               src="/logo.png"
               alt="SheShips logo"

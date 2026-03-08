@@ -240,7 +240,7 @@ export default function QuizPage() {
             </div>
 
             {/* Logo */}
-            <Link href="/" className="fixed top-3 left-3 z-50 sm:top-4 sm:left-4">
+            <Link href="/home" className="fixed top-3 left-3 z-50 sm:top-4 sm:left-4">
                 <Image
                     src="/logoBlanco.png"
                     alt="SheShips logo"

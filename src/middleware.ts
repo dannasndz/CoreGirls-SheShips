@@ -6,15 +6,6 @@ const protectedPaths = ["/api/forum", "/api/quiz/submit", "/api/groups", "/api/e
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Home: redirect to /community if session exists, otherwise allow home
-  if (pathname === "/") {
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-    if (token) {
-      return NextResponse.redirect(new URL("/community", req.url));
-    }
-    return NextResponse.next();
-  }
-
   const isProtected = protectedPaths.some((path) => pathname.startsWith(path));
 
   // Allow GET on forum posts and groups without auth
@@ -39,5 +30,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/api/forum/:path*", "/api/quiz/submit", "/api/groups/:path*", "/api/events/:path*"],
+  matcher: ["/api/forum/:path*", "/api/quiz/submit", "/api/groups/:path*", "/api/events/:path*"],
 };

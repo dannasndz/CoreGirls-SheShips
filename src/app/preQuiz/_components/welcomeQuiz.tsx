@@ -126,7 +126,7 @@ export default function WelcomeQuiz() {
                 </div>
                 <div className="absolute inset-0 bg-strong-purple/40" />
 
-                <Link href="/" className="absolute top-6 left-6 z-20">
+                <Link href="/home" className="absolute top-6 left-6 z-20">
                     <Image
                         src="/logoBlanco.png"
                         alt="SheShips logo"
