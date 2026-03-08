@@ -135,8 +135,8 @@ export default function WelcomeQuiz() {
                     <button
                         onClick={() => router.push("/quiz")}
                         className="px-10 py-3.5 rounded-full text-lg font-bold text-white
-                            bg-linear-to-r from-cute-orange to-orange-400
-                            hover:from-hot-pink hover:to-cute-orange
+                            bg-linear-to-r from-hot-pink to-cute-orange
+                            hover:from-cute-orange hover:to-hot-pink
                             transition-all duration-500 ease-in-out
                             shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 cursor-pointer"
                     >
