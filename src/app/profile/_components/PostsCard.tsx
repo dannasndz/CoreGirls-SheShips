@@ -6,6 +6,13 @@ import { formatDate } from "./types";
 import type { PostItem } from "./types";
 import { useI18n } from "@/lib/i18n";
 
+const categoryLabelKeys: Record<string, string> = {
+  Science: "exploreCareers.science",
+  Technology: "exploreCareers.technology",
+  Engineer: "exploreCareers.engineering",
+  Mathematics: "exploreCareers.mathematics",
+};
+
 interface PostsCardProps {
   posts: PostItem[];
 }
@@ -56,7 +63,7 @@ export default function PostsCard({ posts }: PostsCardProps) {
                       key={cat}
                       className="bg-girly-purple/8 text-girly-purple text-[10px] font-semibold px-2 py-0.5 rounded-full"
                     >
-                      {cat}
+                      {categoryLabelKeys[cat] ? t(categoryLabelKeys[cat]) : cat}
                     </span>
                   ))}
                 </div>
