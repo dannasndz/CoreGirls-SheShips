@@ -18,6 +18,7 @@ function getStageNumber(stageName: string) {
 export default function QuizPage() {
     const [current, setCurrent] = useState(0)
     const [answers, setAnswers] = useState<Record<number, StemType>>({})
+    const [progress, setProgress] = useState(0)
 
     const total = questions.length
     const currentQuestion = questions[current]
@@ -30,11 +31,18 @@ export default function QuizPage() {
     }
 
     function next() {
-        if (current < total - 1) setCurrent(current + 1)
+        if (current < total - 1) {
+            const nextIndex = current + 1
+            setCurrent(nextIndex)
+            if (nextIndex > progress) setProgress(nextIndex)
+        }
     }
 
     function back() {
-        if (current > 0) setCurrent(current - 1)
+        if (current > 0) {
+            setCurrent(current - 1)
+            setProgress(current - 1)
+        }
     }
 
     return (
@@ -81,7 +89,7 @@ export default function QuizPage() {
             {/* Content */}
             <div className="relative z-10 sm:h-full flex flex-col max-w-3xl mx-auto px-4 pt-14 pb-4 sm:px-6 sm:pt-16 sm:pb-3 md:px-10">
                 <ProgressBar
-                    current={current + 1}
+                    current={progress}
                     total={total}
                     stageName={currentQuestion.stage}
                     stageNumber={getStageNumber(currentQuestion.stage)}
