@@ -5,17 +5,20 @@ import RoleModelsSection from "./_components/RoleModelsSection";
 import CTASection from "./_components/CTASection";
 import Footer from "./_components/Footer";
 import SplashCursor from "@/components/SplashCursor";
+import HomeRedirect from "./_components/HomeRedirect";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-cream">
-      <SplashCursor />
-      <HeroSection />
-      <STEMSection />
-      <CareerGuideSection />
-      <RoleModelsSection />
-      <CTASection />
-      <Footer />
-    </main>
+    <HomeRedirect>
+      <main className="min-h-screen bg-cream">
+        <SplashCursor />
+        <HeroSection />
+        <STEMSection />
+        <CareerGuideSection />
+        <RoleModelsSection />
+        <CTASection />
+        <Footer />
+      </main>
+    </HomeRedirect>
   );
 }
