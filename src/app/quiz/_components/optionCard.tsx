@@ -14,7 +14,7 @@ export default function OptionCard({ option, label, imageSrc, selected, onSelect
         <div
             onClick={() => onSelect(option.type)}
             className={`
-                flex flex-col rounded-2xl overflow-hidden cursor-pointer
+                flex flex-col rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer
                 hover:shadow-xl active:scale-[0.98]
                 transition-all duration-300 ease-in-out
                 ${selected
@@ -23,7 +23,7 @@ export default function OptionCard({ option, label, imageSrc, selected, onSelect
                 }
             `}
         >
-            <div className="relative h-[40vh] bg-white/90">
+            <div className="relative h-44 sm:h-[35vh] md:h-[40vh] bg-white/90">
                 <Image
                     src={imageSrc}
                     alt={option.text}
@@ -34,16 +34,16 @@ export default function OptionCard({ option, label, imageSrc, selected, onSelect
             </div>
 
             <div className={`
-                w-full px-4 py-3 min-h-24 text-white text-center shrink-0
+                w-full px-3 py-2 sm:px-4 sm:py-3 min-h-20 sm:min-h-24 text-white text-center flex-1
                 flex flex-col items-center justify-center
                 bg-linear-to-r from-cute-orange to-orange-400
                 transition-opacity duration-300
                 ${selected ? "opacity-100" : "opacity-90 hover:opacity-100"}
             `}>
-                <p className="text-base font-bold mb-0.5">
+                <p className="text-sm sm:text-base md:text-lg font-bold mb-0.5">
                     {label}
                 </p>
-                <p className="text-xs leading-snug">
+                <p className="text-[11px] sm:text-xs md:text-lg leading-snug">
                     {option.text}
                 </p>
             </div>

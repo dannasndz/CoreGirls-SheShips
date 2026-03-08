@@ -9,8 +9,6 @@ import ProgressBar from "@/app/quiz/_components/progressBar"
 import { StemType } from "@/types/quiz"
 import Grainient from '@/components/Grainient';
 
-
-
 const STAGES = [...new Set(questions.map((q) => q.stage))]
 
 function getStageNumber(stageName: string) {
@@ -27,11 +25,8 @@ export default function QuizPage() {
 
     const showFunFact = answers[current] !== undefined
 
-
-
     function handleAnswer(type: StemType) {
         setAnswers((prev) => ({ ...prev, [current]: type }))
-
     }
 
     function next() {
@@ -43,7 +38,7 @@ export default function QuizPage() {
     }
 
     return (
-        <div className="relative h-screen overflow-hidden">
+        <div className="relative min-h-screen sm:h-screen sm:overflow-hidden">
             {/* Background */}
             <div className="fixed inset-0 -z-10">
                 <Grainient
@@ -73,18 +68,18 @@ export default function QuizPage() {
             </div>
 
             {/* Logo */}
-            <Link href="/" className="fixed top-4 left-4 z-50">
+            <Link href="/" className="fixed top-3 left-3 z-50 sm:top-4 sm:left-4">
                 <Image
                     src="/logoBlanco.png"
                     alt="SheShips logo"
-                    width={48}
-                    height={48}
-                    className="object-contain"
+                    width={40}
+                    height={40}
+                    className="object-contain sm:w-12 sm:h-12"
                 />
             </Link>
 
             {/* Content */}
-            <div className="relative z-10 h-full flex flex-col max-w-3xl mx-auto px-6 pt-16 pb-3 md:px-10">
+            <div className="relative z-10 sm:h-full flex flex-col max-w-3xl mx-auto px-4 pt-14 pb-4 sm:px-6 sm:pt-16 sm:pb-3 md:px-10">
                 <ProgressBar
                     current={current + 1}
                     total={total}
@@ -92,7 +87,7 @@ export default function QuizPage() {
                     stageNumber={getStageNumber(currentQuestion.stage)}
                 />
 
-                <div className="mt-2">
+                <div className="mt-2 sm:flex-1 sm:min-h-0 sm:flex sm:flex-col">
                     <Question
                         data={currentQuestion}
                         selectedAnswer={answers[current]}
@@ -101,22 +96,21 @@ export default function QuizPage() {
                 </div>
 
                 {/* Navigation */}
-                <div className="flex items-center justify-between py-3">
+                <div className="flex items-center justify-between py-3 sm:py-2">
                     <button
                         onClick={back}
                         disabled={current === 0}
-                        className="flex items-center gap-1 text-white/80 font-semibold hover:text-white transition-colors disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
+                        className="flex items-center gap-1 text-white/80 font-semibold text-sm sm:text-base hover:text-white transition-colors disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
                     >
-                        <span className="text-lg">&larr;</span> Back
+                        <span>&larr;</span> Back
                     </button>
 
-                    {/* Stage dot indicators */}
-                    <div className="flex gap-2">
+                    <div className="flex gap-1.5 sm:gap-2">
                         {STAGES.map((_, i) => (
                             <div
                                 key={i}
                                 className={`
-                                    w-2.5 h-2.5 rounded-full transition-all duration-300
+                                    w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-all duration-300
                                     ${i === currentStageIndex
                                         ? "bg-white scale-110"
                                         : i < currentStageIndex
@@ -131,23 +125,23 @@ export default function QuizPage() {
                     <button
                         onClick={next}
                         disabled={answers[current] === undefined}
-                        className="flex items-center gap-1 px-6 py-2.5 rounded-full
+                        className="flex items-center gap-1 px-4 py-2 sm:px-6 sm:py-2.5 rounded-full
                             bg-linear-to-r from-cute-orange to-hot-pink
-                            text-white font-semibold text-sm
+                            text-white font-semibold text-xs sm:text-sm
                             hover:from-hot-pink hover:to-cute-orange
                             transition-all duration-500 ease-in-out shadow-md
                             disabled:opacity-40 disabled:pointer-events-none
                             cursor-pointer"
                     >
-                        Next <span className="text-base">&rarr;</span>
+                        Next <span>&rarr;</span>
                     </button>
                 </div>
 
                 {/* Fun fact banner */}
                 <div
                     className={`
-                        rounded-2xl bg-white/10 backdrop-blur-sm px-6 py-3
-                        text-center text-white/80 text-xs md:text-sm
+                        rounded-xl sm:rounded-2xl bg-white/10 backdrop-blur-sm px-4 py-2 sm:px-6 sm:py-3
+                        text-center text-white/80 text-[11px] sm:text-xs md:text-sm
                         italic leading-relaxed
                         transition-all duration-500 ease-in-out
                         ${showFunFact

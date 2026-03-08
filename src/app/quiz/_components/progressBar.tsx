@@ -11,14 +11,14 @@ export default function ProgressBar({ current, total, stageName, stageNumber }: 
     const percentage = Math.round((current / total) * 100)
 
     return (
-        <div className="w-full space-y-2">
-            <div className="flex justify-between items-baseline text-sm md:text-base">
-                <span className="text-light-pink font-semibold">
+        <div className="w-full space-y-1 sm:space-y-2 shrink-0">
+            <div className="flex justify-between items-baseline text-xs sm:text-sm md:text-base">
+                <span className="text-white font-extrabold">
                     Stage {stageNumber}:{" "}
-                    <span className="text-white font-bold">{stageName}</span>
+                    <span className="text-white font-semibold">{stageName}</span>
                 </span>
                 <span className="text-white/50 font-light">
-                    {percentage}% complete
+                    {percentage}%
                 </span>
             </div>
 
