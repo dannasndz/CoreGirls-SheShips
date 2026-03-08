@@ -2,18 +2,21 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
 import Link from "next/link"
 import Image from "next/image"
-import SplashScreen from "@/components/SplashCursor"
 import SplitText from "@/components/SplitText";
 import LiquidChrome from '@/components/LiquidChrome';
 import { Clock, ClipboardList, Sparkles } from "lucide-react"
 import { useI18n } from "@/lib/i18n"
+import { AuthModal } from "@/components/auth-modal"
 
 export default function WelcomeQuiz() {
     const router = useRouter()
+    const { data: session, status } = useSession()
     const { t } = useI18n()
     const [loading, setLoading] = useState(false)
+    const [showAuthModal, setShowAuthModal] = useState(false)
 
     const stemPaths = [
         {
@@ -58,6 +61,17 @@ export default function WelcomeQuiz() {
     ]
 
     function handleStart() {
+        if (status === "loading") return
+        if (!session?.user) {
+            setShowAuthModal(true)
+            return
+        }
+        setLoading(true)
+        setTimeout(() => router.push("/quiz"), 2800)
+    }
+
+    function handleAuthSuccess() {
+        setShowAuthModal(false)
         setLoading(true)
         setTimeout(() => router.push("/quiz"), 2800)
     }
@@ -251,6 +265,12 @@ export default function WelcomeQuiz() {
                     </div>
                 </div>
             </div>
+
+            <AuthModal
+                open={showAuthModal}
+                onClose={() => setShowAuthModal(false)}
+                onSuccess={handleAuthSuccess}
+            />
         </div>
     )
 }
