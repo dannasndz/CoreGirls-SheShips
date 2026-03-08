@@ -52,13 +52,3 @@ export function formatDate(dateStr: string) {
     day: "numeric",
   });
 }
-
-export const GLOW_COLOR = "236, 72, 153";
-
-export const cardStyle = {
-  backgroundColor: "var(--strong-purple)",
-  "--glow-color": GLOW_COLOR,
-  borderColor: "rgba(168, 85, 247, 0.3)",
-} as React.CSSProperties;
-
-export const cardClass = "magic-bento-card magic-bento-card--border-glow";
