@@ -40,19 +40,18 @@ export async function POST(req: NextRequest) {
     }
 
     const { topType, score } = scoreAnswers(answers);
-    const careerName = career || topType;
 
     const result = await prisma.quizResult.upsert({
       where: { userId: session.user.id },
-      update: { answers: { answers, score, career: careerName }, career: careerName },
+      update: { answers: { answers, score, topType }, career: career },
       create: {
         userId: session.user.id,
-        answers: { answers, score, career: careerName },
-        career: careerName,
+        answers: { answers, score, topType },
+        career: career,
       },
     });
 
-    return NextResponse.json({ data: { career: result.career, score }, error: null });
+    return NextResponse.json({ data: { career: result.career, score, topType }, error: null });
   } catch {
     return NextResponse.json(
       { data: null, error: "Internal server error" },
