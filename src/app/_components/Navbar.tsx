@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -15,11 +16,14 @@ const navLinks = [
   { label: "Careers", href: "/explore-careers" },
   { label: "References", href: "/references" },
   { label: "Community", href: "/community" },
-  { label: "Take the Quiz", href: "/quiz", highlight: true },
+  { label: "Take the Quiz", href: "/preQuiz", highlight: true },
 ];
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
+
+  if (pathname === "/quiz" || pathname === "/preQuiz") return null;
 
   return (
     <header className="w-full sticky top-0 z-50 bg-cream border-b border-[#E5E0D9] px-6 py-2">
