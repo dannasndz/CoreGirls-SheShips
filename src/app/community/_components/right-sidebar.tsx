@@ -13,7 +13,7 @@ export function RightSidebar({ tags, upcomingEvents, onViewAllEvents }: RightSid
   return (
     <aside className="space-y-6">
       {/* Trending Topics */}
-      <div className="rounded-2xl bg-white border border-light-pink p-4 shadow-sm">
+      <div className="rounded-2xl bg-white border border-[#E5E0D9] p-4 shadow-sm">
         <h3 className="text-sm font-bold text-girly-purple mb-3 font-[family-name:var(--font-fredoka)]">
           Trending Topics
         </h3>
@@ -36,7 +36,7 @@ export function RightSidebar({ tags, upcomingEvents, onViewAllEvents }: RightSid
       </div>
 
       {/* Upcoming Events */}
-      <div className="rounded-2xl overflow-hidden shadow-sm border border-light-pink">
+      <div className="rounded-2xl overflow-hidden shadow-sm border border-[#E5E0D9]">
         <div className="bg-gradient-to-br from-girly-purple to-light-pink p-4 text-white">
           <h3 className="text-sm font-bold font-[family-name:var(--font-fredoka)] mb-2">
             Upcoming Events

@@ -1,6 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { CalendarPlus, ChevronDown } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { EventData } from "./helpers";
 
 interface EventModalProps {
@@ -27,7 +35,8 @@ export function CreateEventModal({
   const [location, setLocation] = useState("");
   const [meetingLink, setMeetingLink] = useState("");
   const [externalLink, setExternalLink] = useState("");
-  const [date, setDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const [hour, setHour] = useState("");
   const [participantsLimit, setParticipantsLimit] = useState("");
   const [organizerMode, setOrganizerMode] = useState<OrganizerMode>("self");
@@ -37,7 +46,6 @@ export function CreateEventModal({
 
   const isEdit = !!editEvent;
 
-  // Pre-fill when editing
   useEffect(() => {
     if (editEvent && open) {
       setTitle(editEvent.title);
@@ -46,7 +54,7 @@ export function CreateEventModal({
       setLocation(editEvent.location ?? "");
       setMeetingLink(editEvent.meetingLink ?? "");
       setExternalLink(editEvent.externalLink ?? "");
-      setDate(editEvent.date.slice(0, 10)); // "YYYY-MM-DD"
+      setSelectedDate(new Date(editEvent.date));
       setHour(editEvent.hour);
       setParticipantsLimit(
         editEvent.participantsLimit ? String(editEvent.participantsLimit) : ""
@@ -68,6 +76,9 @@ export function CreateEventModal({
   const resolvedOrganizer =
     organizerMode === "self" ? currentUsername ?? "" : organizerName;
 
+  const formatDate = (d: Date) =>
+    d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+
   const resetForm = () => {
     setTitle("");
     setDescription("");
@@ -75,7 +86,8 @@ export function CreateEventModal({
     setLocation("");
     setMeetingLink("");
     setExternalLink("");
-    setDate("");
+    setSelectedDate(undefined);
+    setCalendarOpen(false);
     setHour("");
     setParticipantsLimit("");
     setOrganizerMode("self");
@@ -86,13 +98,7 @@ export function CreateEventModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (
-      !title.trim() ||
-      !description.trim() ||
-      !date ||
-      !hour ||
-      !resolvedOrganizer.trim()
-    ) {
+    if (!title.trim() || !description.trim() || !selectedDate || !hour || !resolvedOrganizer.trim()) {
       setError("Please fill in all required fields.");
       return;
     }
@@ -107,6 +113,7 @@ export function CreateEventModal({
 
     setSaving(true);
     try {
+      const dateStr = selectedDate.toISOString().slice(0, 10);
       const payload = {
         title,
         description,
@@ -114,7 +121,7 @@ export function CreateEventModal({
         location: needsLocation ? location : null,
         meetingLink: needsLink ? meetingLink : null,
         externalLink: externalLink.trim() || null,
-        date,
+        date: dateStr,
         hour,
         participantsLimit: participantsLimit ? Number(participantsLimit) : null,
         organizerName: resolvedOrganizer,
@@ -150,13 +157,21 @@ export function CreateEventModal({
   };
 
   const inputClass =
-    "w-full rounded-lg border border-light-pink bg-cream px-3 py-2 text-dark-purple placeholder:text-dark-purple/40 focus:outline-none focus:ring-2 focus:ring-girly-purple text-sm";
+    "w-full rounded-lg border border-[#E5E0D9] bg-cream px-3 py-2 text-dark-purple placeholder:text-dark-purple/40 focus:outline-none focus:ring-2 focus:ring-girly-purple text-sm";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark-purple/50 backdrop-blur-sm">
-      <div className="w-full max-w-3xl mx-4 rounded-2xl bg-white p-6 shadow-xl border border-light-pink max-h-[90vh] overflow-y-auto">
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-dark-purple/50 backdrop-blur-sm p-6"
+      onClick={handleClose}
+    >
+      <div
+        className="w-full max-w-xl rounded-2xl bg-white p-5 sm:p-6 md:p-8 shadow-xl border border-[#E5E0D9] max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
         <div className="flex justify-between items-center mb-5">
-          <h2 className="text-xl font-bold text-girly-purple font-[family-name:var(--font-fredoka)]">
+          <h2 className="text-xl font-bold text-girly-purple font-[family-name:var(--font-fredoka)] inline-flex items-center gap-2">
+            <CalendarPlus size={22} className="text-girly-purple" />
             {isEdit ? "Edit Event" : "Create an Event"}
           </h2>
           <button
@@ -167,83 +182,62 @@ export function CreateEventModal({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="grid grid-cols-2 gap-5">
-            {/* Left column */}
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-dark-purple mb-1">
-                  Event Title *
-                </label>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g. Women in AI Workshop"
-                  className={inputClass}
-                  required
-                />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Row 1: Title */}
+          <div>
+            <label className="block text-sm font-medium text-dark-purple mb-1">
+              Event Title *
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="e.g. Women in AI Workshop"
+              className={inputClass}
+              required
+            />
+          </div>
+
+          {/* Row 2: Description */}
+          <div>
+            <label className="block text-sm font-medium text-dark-purple mb-1">
+              Description *
+            </label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="What's this event about?"
+              rows={3}
+              className={`${inputClass} resize-none`}
+              required
+            />
+          </div>
+
+          {/* Row 3: Modality + Link */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-dark-purple mb-2">
+                Modality *
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {(["in-person", "remote", "hybrid"] as Modality[]).map((m) => (
+                  <button
+                    key={m}
+                    type="button"
+                    onClick={() => setModality(m)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition ${modality === m
+                        ? "bg-girly-purple text-white"
+                        : "bg-girly-purple/10 text-strong-purple hover:bg-girly-purple/20"
+                      }`}
+                  >
+                    {m === "in-person" ? "In Person" : m === "remote" ? "Remote" : "Hybrid"}
+                  </button>
+                ))}
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-dark-purple mb-1">
-                  Description *
-                </label>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="What's this event about?"
-                  rows={3}
-                  className={`${inputClass} resize-none`}
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-dark-purple mb-2">
-                  Modality *
-                </label>
-                <div className="flex gap-2">
-                  {(["in-person", "remote", "hybrid"] as Modality[]).map(
-                    (m) => (
-                      <button
-                        key={m}
-                        type="button"
-                        onClick={() => setModality(m)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition ${
-                          modality === m
-                            ? "bg-girly-purple text-white"
-                            : "bg-light-pink/30 text-dark-purple hover:bg-light-pink/50"
-                        }`}
-                      >
-                        {m === "in-person"
-                          ? "In Person"
-                          : m === "remote"
-                            ? "Remote"
-                            : "Hybrid"}
-                      </button>
-                    )
-                  )}
-                </div>
-              </div>
-
-              {needsLocation && (
-                <div>
-                  <label className="block text-sm font-medium text-dark-purple mb-1">
-                    Location *
-                  </label>
-                  <input
-                    type="text"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    placeholder="e.g. 123 Main St, City"
-                    className={inputClass}
-                  />
-                </div>
-              )}
-
+            </div>
+            <div>
               {needsLink && (
-                <div>
+                <>
                   <label className="block text-sm font-medium text-dark-purple mb-1">
                     Meeting Link *
                   </label>
@@ -254,112 +248,173 @@ export function CreateEventModal({
                     placeholder="e.g. https://zoom.us/j/..."
                     className={inputClass}
                   />
-                </div>
+                </>
               )}
-            </div>
-
-            {/* Right column */}
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
+              {needsLocation && !needsLink && (
+                <>
                   <label className="block text-sm font-medium text-dark-purple mb-1">
-                    Date *
+                    Location *
                   </label>
-                  <input
-                    type="date"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    className={inputClass}
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-dark-purple mb-1">
-                    Time *
-                  </label>
-                  <input
-                    type="time"
-                    value={hour}
-                    onChange={(e) => setHour(e.target.value)}
-                    className={inputClass}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-dark-purple mb-1">
-                  Participants Limit (optional)
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  value={participantsLimit}
-                  onChange={(e) => setParticipantsLimit(e.target.value)}
-                  placeholder="Leave empty for unlimited"
-                  className={inputClass}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-dark-purple mb-2">
-                  Organizer *
-                </label>
-                <div className="flex gap-2 mb-2">
-                  <button
-                    type="button"
-                    onClick={() => setOrganizerMode("self")}
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition ${
-                      organizerMode === "self"
-                        ? "bg-girly-purple text-white"
-                        : "bg-light-pink/30 text-dark-purple hover:bg-light-pink/50"
-                    }`}
-                  >
-                    Myself ({currentUsername})
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setOrganizerMode("custom")}
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition ${
-                      organizerMode === "custom"
-                        ? "bg-girly-purple text-white"
-                        : "bg-light-pink/30 text-dark-purple hover:bg-light-pink/50"
-                    }`}
-                  >
-                    Someone else
-                  </button>
-                </div>
-                {organizerMode === "custom" && (
                   <input
                     type="text"
-                    value={organizerName}
-                    onChange={(e) => setOrganizerName(e.target.value)}
-                    placeholder="e.g. SheShips Community"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    placeholder="e.g. 123 Main St, City"
                     className={inputClass}
                   />
-                )}
-              </div>
+                </>
+              )}
+            </div>
+          </div>
 
-              <div>
-                <label className="block text-sm font-medium text-dark-purple mb-1">
-                  External Info Link (optional)
-                </label>
-                <input
-                  type="url"
-                  value={externalLink}
-                  onChange={(e) => setExternalLink(e.target.value)}
-                  placeholder="e.g. https://eventbrite.com/..."
-                  className={inputClass}
-                />
+          {/* Extra location row for hybrid */}
+          {needsLocation && needsLink && (
+            <div>
+              <label className="block text-sm font-medium text-dark-purple mb-1">
+                Location *
+              </label>
+              <input
+                type="text"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="e.g. 123 Main St, City"
+                className={inputClass}
+              />
+            </div>
+          )}
+
+          {/* Row 4: Date + Time */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-dark-purple mb-1">
+                Date *
+              </label>
+              <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    className={`${inputClass} text-left cursor-pointer flex items-center justify-between`}
+                  >
+                    <span className={selectedDate ? "" : "text-dark-purple/40"}>
+                      {selectedDate
+                        ? formatDate(selectedDate)
+                        : "Select a date..."}
+                    </span>
+                    <ChevronDown size={14} className="text-dark-purple/40" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0 z-[200]" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate}
+                    captionLayout="dropdown"
+                    defaultMonth={selectedDate}
+                    onSelect={(date) => {
+                      setSelectedDate(date);
+                      setCalendarOpen(false);
+                    }}
+                    disabled={{ before: new Date() }}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-dark-purple mb-1">
+                Time *
+              </label>
+              <Input
+                type="time"
+                value={hour}
+                onChange={(e) => setHour(e.target.value)}
+                className="rounded-lg border-[#E5E0D9] bg-cream text-dark-purple focus-visible:ring-girly-purple/50 focus-visible:border-girly-purple h-[38px] appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Row 5: Organizer + Participants */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-dark-purple mb-2">
+                Organizer *
+              </label>
+              <div className="flex gap-2 mb-2">
+                <button
+                  type="button"
+                  onClick={() => setOrganizerMode("self")}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition ${organizerMode === "self"
+                      ? "bg-girly-purple text-white"
+                      : "bg-girly-purple/10 text-strong-purple hover:bg-girly-purple/20"
+                    }`}
+                >
+                  Myself
+                </button>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button
+                      type="button"
+                      onClick={() => setOrganizerMode("custom")}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium transition ${organizerMode === "custom"
+                          ? "bg-girly-purple text-white"
+                          : "bg-girly-purple/10 text-strong-purple hover:bg-girly-purple/20"
+                        }`}
+                    >
+                      {organizerMode === "custom" && organizerName
+                        ? organizerName
+                        : "Custom"}
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 p-3 z-[200]" align="start">
+                    <label className="block text-xs font-medium text-dark-purple mb-1.5">
+                      Organizer name
+                    </label>
+                    <input
+                      type="text"
+                      value={organizerName}
+                      onChange={(e) => setOrganizerName(e.target.value)}
+                      placeholder="e.g. SheShips Community"
+                      className={inputClass}
+                      autoFocus
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
             </div>
+            <div>
+              <label className="block text-sm font-medium text-dark-purple mb-1">
+                Participants Limit
+              </label>
+              <input
+                type="number"
+                min="1"
+                value={participantsLimit}
+                onChange={(e) => setParticipantsLimit(e.target.value)}
+                placeholder="Unlimited"
+                className={inputClass}
+              />
+            </div>
+          </div>
+
+          {/* Row 6: External Link */}
+          <div>
+            <label className="block text-sm font-medium text-dark-purple mb-1">
+              External Info Link (optional)
+            </label>
+            <input
+              type="url"
+              value={externalLink}
+              onChange={(e) => setExternalLink(e.target.value)}
+              placeholder="e.g. https://eventbrite.com/..."
+              className={inputClass}
+            />
           </div>
 
           {error && (
             <p className="text-sm text-red-500 font-medium">{error}</p>
           )}
 
-          <div className="flex gap-2 justify-end pt-2 border-t border-light-pink/50">
+          {/* Actions */}
+          <div className="flex gap-2 justify-end pt-2 border-t border-[#E5E0D9]/50">
             <button
               type="button"
               onClick={handleClose}
@@ -372,11 +427,7 @@ export function CreateEventModal({
               disabled={saving}
               className="px-4 py-2 rounded-lg bg-girly-purple text-white text-sm font-semibold hover:bg-strong-purple transition disabled:opacity-50"
             >
-              {saving
-                ? "Saving..."
-                : isEdit
-                  ? "Save Changes"
-                  : "Create Event"}
+              {saving ? "Saving..." : isEdit ? "Save Changes" : "Create Event"}
             </button>
           </div>
         </form>

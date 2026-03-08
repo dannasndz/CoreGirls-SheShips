@@ -13,7 +13,7 @@ export function GroupsList({ groups, onCreateGroup }: GroupsListProps) {
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-dark-purple font-[family-name:var(--font-fredoka)]">
+        <h2 className="text-3xl font-bold text-dark-purple font-[family-name:var(--font-fredoka)]">
           All Groups
         </h2>
         <button
@@ -26,7 +26,7 @@ export function GroupsList({ groups, onCreateGroup }: GroupsListProps) {
       </div>
 
       {groups.length === 0 && (
-        <div className="rounded-2xl bg-white border border-light-pink p-8 shadow-sm text-center">
+        <div className="rounded-2xl bg-white border border-[#E5E0D9] p-8 shadow-sm text-center">
           <p className="text-dark-purple/50 text-sm">
             No groups yet. Create the first one!
           </p>
@@ -38,18 +38,18 @@ export function GroupsList({ groups, onCreateGroup }: GroupsListProps) {
           <Link
             key={g.id}
             href={`/community/groups/${g.id}`}
-            className="rounded-2xl bg-white border border-light-pink p-5 shadow-sm hover:border-girly-purple transition space-y-2"
+            className="rounded-2xl bg-white borderborder-[#E5E0D9] p-5 shadow-sm hover:border-girly-purple transition space-y-2"
           >
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-girly-purple/10 flex items-center justify-center">
                 <Users size={20} className="text-girly-purple" />
               </div>
-              <h3 className="text-sm font-bold text-dark-purple truncate">
+              <h3 className="text-xl font-bold text-dark-purple truncate">
                 {g.name}
               </h3>
             </div>
             {g.description && (
-              <p className="text-xs text-dark-purple/60 line-clamp-2">
+              <p className="text-lg text-dark-purple/60 line-clamp-2">
                 {g.description}
               </p>
             )}

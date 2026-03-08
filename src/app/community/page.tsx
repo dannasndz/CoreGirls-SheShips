@@ -331,40 +331,35 @@ export default function CommunityPage() {
       )}
 
       {session && (
-        <div className="max-w-7xl mx-auto p-4 sm:p-6">
-          {/* Mobile nav */}
-          <div className="flex gap-2 overflow-x-auto pb-3 lg:hidden scrollbar-none -mx-1 px-1">
-            {(
-              [
-                { key: "feed", label: "Home", icon: <Home size={16} /> },
-                { key: "liked", label: "Liked", icon: <Heart size={16} /> },
-                { key: "groups", label: "Groups", icon: <UsersIcon size={16} /> },
-                { key: "events", label: "Events", icon: <CalendarIcon size={16} /> },
-              ] as const
-            ).map((item) => (
-              <button
-                key={item.key}
-                onClick={() => setActiveView(item.key)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition shrink-0 ${
-                  activeView === item.key
-                    ? "bg-girly-purple text-white"
-                    : "bg-white border border-light-pink text-dark-purple"
-                }`}
-              >
-                {item.icon}
-                {item.label}
-              </button>
-            ))}
-            <button
-              onClick={() => setShowCreateGroup(true)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap bg-white border border-light-pink text-dark-purple transition shrink-0"
-            >
-              <Plus size={16} />
-              New Group
-            </button>
-          </div>
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 pt-3 sm:pt-4 md:pt-6 pb-20 lg:pb-6">
+          {/* Mobile bottom nav - X/Twitter style */}
+          <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[#E5E0D9] lg:hidden safe-area-pb">
+            <div className="flex items-center justify-around py-2">
+              {(
+                [
+                  { key: "feed", label: "Home", icon: <Home size={22} /> },
+                  { key: "liked", label: "Liked", icon: <Heart size={22} /> },
+                  { key: "groups", label: "Groups", icon: <UsersIcon size={22} /> },
+                  { key: "events", label: "Events", icon: <CalendarIcon size={22} /> },
+                ] as const
+              ).map((item) => (
+                <button
+                  key={item.key}
+                  onClick={() => setActiveView(item.key)}
+                  className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition ${
+                    activeView === item.key
+                      ? "text-girly-purple"
+                      : "text-dark-purple/40"
+                  }`}
+                >
+                  {item.icon}
+                  <span className="text-[10px] font-semibold">{item.label}</span>
+                </button>
+              ))}
+            </div>
+          </nav>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[220px_1fr_260px] gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-[220px_1fr_260px] gap-4 md:gap-6">
           {/* Desktop left sidebar */}
           <div className="hidden lg:block">
             <LeftSidebar
@@ -375,18 +370,18 @@ export default function CommunityPage() {
             />
           </div>
 
-          <main className="space-y-5 min-w-0">
+          <main className="space-y-3 sm:space-y-4 md:space-y-5 min-w-0">
             {activeView === "feed" && (
               <>
-                <div className="rounded-2xl bg-white border border-light-pink p-4 sm:p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="rounded-2xl bg-white border border-[#E5E0D9] p-3 sm:p-4 md:p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-dark-purple font-[family-name:var(--font-fredoka)]">
+                    <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-dark-purple font-[family-name:var(--font-fredoka)]">
                       Hi,{" "}
                       <span className="text-girly-purple">
                         {session.user.name}!
                       </span>
                     </h1>
-                    <p className="text-dark-purple/70 mt-1 text-sm max-w-xs">
+                    <p className="text-dark-purple/70 mt-0.5 sm:mt-1 text-xs sm:text-sm max-w-xs">
                       There are {posts.length} discussion
                       {posts.length !== 1 && "s"} in your circles of interest.
                       Ready to learn something new today?
@@ -394,7 +389,7 @@ export default function CommunityPage() {
                   </div>
                   <button
                     onClick={() => setShowCreatePost(!showCreatePost)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-full border-2 border-girly-purple text-girly-purple font-semibold text-sm hover:bg-girly-purple hover:text-white transition shrink-0"
+                    className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border-2 border-girly-purple text-girly-purple font-semibold text-xs sm:text-sm hover:bg-girly-purple hover:text-white transition shrink-0"
                   >
                     <Plus size={18} />
                     Create Post
@@ -408,15 +403,15 @@ export default function CommunityPage() {
                   />
                 )}
 
-                <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none -mx-1 px-1">
+                <div className="flex gap-1.5 sm:gap-2 overflow-x-auto pb-1 scrollbar-none -mx-1 px-1">
                   {filterOptions.map((cat) => (
                     <button
                       key={cat}
                       onClick={() => setActiveCategory(cat)}
-                      className={`px-4 py-1.5 rounded-full text-sm font-medium transition whitespace-nowrap shrink-0 ${
+                      className={`px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium transition whitespace-nowrap shrink-0 ${
                         activeCategory === cat
                           ? "bg-girly-purple text-white"
-                          : "bg-white border border-light-pink text-dark-purple hover:bg-light-pink/30"
+                          : "bg-white border border-[#E5E0D9] text-dark-purple hover:text-hot-pink hover:bg-light-pink/20"
                       }`}
                     >
                       {cat}
@@ -425,7 +420,7 @@ export default function CommunityPage() {
                 </div>
 
                 {loadingPosts && (
-                  <div className="rounded-2xl bg-white border border-light-pink p-8 shadow-sm text-center">
+                  <div className="rounded-2xl bg-white border border-[#E5E0D9] p-8 shadow-sm text-center">
                     <p className="text-girly-purple text-sm font-medium animate-pulse">
                       Loading posts...
                     </p>
@@ -433,7 +428,7 @@ export default function CommunityPage() {
                 )}
 
                 {!loadingPosts && filteredPosts.length === 0 && (
-                  <div className="rounded-2xl bg-white border border-light-pink p-8 shadow-sm text-center">
+                  <div className="rounded-2xl bg-white border border-[#E5E0D9] p-8 shadow-sm text-center">
                     <p className="text-dark-purple/50 text-sm">
                       {activeCategory === "All"
                         ? "No posts yet. Be the first to share something!"
@@ -455,12 +450,12 @@ export default function CommunityPage() {
 
             {activeView === "liked" && (
               <>
-                <h2 className="text-xl font-bold text-dark-purple font-[family-name:var(--font-fredoka)]">
+                <h2 className="text-3xl font-bold text-dark-purple font-[family-name:var(--font-fredoka)]">
                   Liked Posts
                 </h2>
 
                 {loadingLiked && (
-                  <div className="rounded-2xl bg-white border border-light-pink p-8 shadow-sm text-center">
+                  <div className="rounded-2xl bg-white border border-[#E5E0D9] p-8 shadow-sm text-center">
                     <p className="text-girly-purple text-sm font-medium animate-pulse">
                       Loading liked posts...
                     </p>
@@ -468,7 +463,7 @@ export default function CommunityPage() {
                 )}
 
                 {!loadingLiked && likedPosts.length === 0 && (
-                  <div className="rounded-2xl bg-white border border-light-pink p-8 shadow-sm text-center">
+                  <div className="rounded-2xl bg-white border border-[#E5E0D9] p-8 shadow-sm text-center">
                     <p className="text-dark-purple/50 text-sm">
                       You haven&apos;t liked any posts yet.
                     </p>

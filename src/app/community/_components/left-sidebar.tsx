@@ -22,51 +22,47 @@ export function LeftSidebar({
 }: LeftSidebarProps) {
   return (
     <aside className="space-y-6">
-      <div className="rounded-2xl bg-white border border-light-pink p-4 shadow-sm">
+      <div className="rounded-2xl bg-white border border-[#E5E0D9] p-4 shadow-sm">
         <h3 className="text-sm font-bold text-girly-purple mb-3 font-[family-name:var(--font-fredoka)]">
           Navigation
         </h3>
         <nav className="space-y-1">
           <button
             onClick={() => onViewChange("feed")}
-            className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-sm w-full text-left transition ${
-              activeView === "feed"
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-sm w-full text-left transition ${activeView === "feed"
                 ? "bg-girly-purple/10 text-girly-purple"
-                : "text-dark-purple hover:bg-light-pink/30"
-            }`}
+                : "text-dark-purple hover:bg-girly-purple/10"
+              }`}
           >
             <Home size={18} />
             Home
           </button>
           <button
             onClick={() => onViewChange("liked")}
-            className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-sm w-full text-left transition ${
-              activeView === "liked"
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-sm w-full text-left transition ${activeView === "liked"
                 ? "bg-girly-purple/10 text-girly-purple"
-                : "text-dark-purple hover:bg-light-pink/30"
-            }`}
+                : "text-dark-purple hover:bg-girly-purple/10"
+              }`}
           >
             <Heart size={18} />
             Liked Posts
           </button>
           <button
             onClick={() => onViewChange("groups")}
-            className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-sm w-full text-left transition ${
-              activeView === "groups"
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-sm w-full text-left transition ${activeView === "groups"
                 ? "bg-girly-purple/10 text-girly-purple"
-                : "text-dark-purple hover:bg-light-pink/30"
-            }`}
+                : "text-dark-purple hover:bg-girly-purple/10"
+              }`}
           >
             <Users size={18} />
             Groups
           </button>
           <button
             onClick={() => onViewChange("events")}
-            className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-sm w-full text-left transition ${
-              activeView === "events"
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-sm w-full text-left transition ${activeView === "events"
                 ? "bg-girly-purple/10 text-girly-purple"
-                : "text-dark-purple hover:bg-light-pink/30"
-            }`}
+                : "text-dark-purple hover:bg-girly-purple/10"
+              }`}
           >
             <Calendar size={18} />
             Events
@@ -74,10 +70,10 @@ export function LeftSidebar({
         </nav>
       </div>
 
-      <div className="rounded-2xl bg-white border border-light-pink p-4 shadow-sm">
+      <div className="rounded-2xl bg-white border border-[#E5E0D9] p-4 shadow-sm">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-sm font-bold text-girly-purple font-[family-name:var(--font-fredoka)]">
-            My groups
+            My Groups
           </h3>
           <button
             onClick={onCreateGroup}
@@ -110,6 +106,8 @@ export function LeftSidebar({
         )}
       </div>
 
+
+      {/* Logout
       <button
         onClick={() => signOut()}
         className="flex items-center gap-2 text-sm text-dark-purple/60 hover:text-hot-pink transition px-2"
@@ -117,6 +115,7 @@ export function LeftSidebar({
         <LogOut size={16} />
         Log out
       </button>
+      */ }
     </aside>
   );
 }

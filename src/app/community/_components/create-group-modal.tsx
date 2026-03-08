@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { UsersRound } from "lucide-react";
 
 interface CreateGroupModalProps {
   open: boolean;
@@ -44,9 +45,10 @@ export function CreateGroupModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark-purple/50 backdrop-blur-sm">
-      <div className="w-full max-w-sm mx-4 rounded-2xl bg-white p-6 shadow-xl border border-light-pink">
+      <div className="w-full max-w-sm mx-4 rounded-2xl bg-white p-6 shadow-xl border border-[#E5E0D9]">
         <div className="flex justify-between items-center mb-5">
-          <h2 className="text-xl font-bold text-girly-purple font-[family-name:var(--font-fredoka)]">
+          <h2 className="text-xl font-bold text-girly-purple font-[family-name:var(--font-fredoka)] inline-flex items-center gap-2">
+            <UsersRound size={22} className="text-girly-purple" />
             Create a Group
           </h2>
           <button
@@ -66,7 +68,7 @@ export function CreateGroupModal({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Web Devs Sisters"
-              className="w-full rounded-lg border border-light-pink bg-cream px-3 py-2 text-dark-purple placeholder:text-dark-purple/40 focus:outline-none focus:ring-2 focus:ring-girly-purple text-sm"
+              className="w-full rounded-lg border border-[#E5E0D9] bg-cream px-3 py-2 text-dark-purple placeholder:text-dark-purple/40 focus:outline-none focus:ring-2 focus:ring-girly-purple text-sm"
               required
             />
           </div>
@@ -79,7 +81,7 @@ export function CreateGroupModal({
               onChange={(e) => setDescription(e.target.value)}
               placeholder="What's this group about?"
               rows={2}
-              className="w-full rounded-lg border border-light-pink bg-cream px-3 py-2 text-dark-purple placeholder:text-dark-purple/40 focus:outline-none focus:ring-2 focus:ring-girly-purple text-sm resize-none"
+              className="w-full rounded-lg borderborder-[#E5E0D9] bg-cream px-3 py-2 text-dark-purple placeholder:text-dark-purple/40 focus:outline-none focus:ring-2 focus:ring-girly-purple text-sm resize-none"
             />
           </div>
           <div className="flex gap-2 justify-end">
