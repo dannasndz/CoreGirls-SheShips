@@ -377,7 +377,7 @@ export default function CommunityPage() {
                 <div className="rounded-2xl bg-white border border-[#E5E0D9] p-3 sm:p-4 md:p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div>
                     <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-dark-purple font-[family-name:var(--font-fredoka)]">
-                      {t("community.hi", { name: session.user.name ?? "" })}
+                      {t("community.hi", { name: "" })}<span className="text-strong-purple">{session.user.name}</span>
                     </h1>
                     <p className="text-dark-purple/70 mt-0.5 sm:mt-1 text-xs sm:text-sm max-w-xs">
                       {t("community.discussionCount", { count: String(posts.length) })}

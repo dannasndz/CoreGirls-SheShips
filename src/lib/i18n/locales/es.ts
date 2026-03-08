@@ -205,7 +205,7 @@ const es = {
     description:
       "Conéctate con otras mujeres en tecnología. Comparte historias, haz preguntas e inspírense mutuamente.",
     loginToContinue: "Inicia sesión para continuar",
-    hi: "¡Hola, {name}!",
+    hi: "Hola, ",
     discussionCount:
       "Hay {count} discusión(es) en tus círculos de interés. ¿Lista para aprender algo nuevo hoy?",
     createPost: "Crear Publicación",
