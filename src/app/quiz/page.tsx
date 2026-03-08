@@ -1,12 +1,14 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { questions } from "@/data/quizQuestions"
 import Question from "@/app/quiz/_components/question"
 import ProgressBar from "@/app/quiz/_components/progressBar"
-import { StemType } from "@/types/quiz"
+import { StemType, Score } from "@/types/quiz"
+import { careers } from "@/data/careers"
 
 const STAGES = [...new Set(questions.map((q) => q.stage))]
 
@@ -14,21 +16,41 @@ function getStageNumber(stageName: string) {
     return STAGES.indexOf(stageName) + 1
 }
 
+function pickCareer(answers: Record<number, StemType>) {
+    const score: Score = { S: 0, T: 0, E: 0, M: 0 }
+    for (const type of Object.values(answers)) {
+        score[type]++
+    }
+
+    const topType = (Object.entries(score) as [StemType, number][])
+        .sort((a, b) => b[1] - a[1])[0][0]
+
+    const categoryCareers = careers.filter((c) => c.category === topType)
+    const growthCareers = categoryCareers.filter((c) => c.growth)
+    const pool = growthCareers.length > 0 ? growthCareers : categoryCareers
+
+    // Deterministic pick based on total score hash
+    const hash = Object.values(answers).reduce((acc, t) => acc + t.charCodeAt(0), 0)
+    const picked = pool[hash % pool.length]
+
+    return { career: picked, score, topType }
+}
+
 export default function QuizPage() {
+    const router = useRouter()
     const [current, setCurrent] = useState(0)
     const [answers, setAnswers] = useState<Record<number, StemType>>({})
 
     const total = questions.length
     const currentQuestion = questions[current]
     const currentStageIndex = STAGES.indexOf(currentQuestion.stage)
+    const isLastQuestion = current === total - 1
+    const allAnswered = Object.keys(answers).length === total
 
     const showFunFact = answers[current] !== undefined
 
-
-
     function handleAnswer(type: StemType) {
         setAnswers((prev) => ({ ...prev, [current]: type }))
-
     }
 
     function next() {
@@ -37,6 +59,18 @@ export default function QuizPage() {
 
     function back() {
         if (current > 0) setCurrent(current - 1)
+    }
+
+    function finish() {
+        const { career, score } = pickCareer(answers)
+        const params = new URLSearchParams({
+            career: career.id,
+            S: String(score.S),
+            T: String(score.T),
+            E: String(score.E),
+            M: String(score.M),
+        })
+        router.push(`/quiz/result?${params.toString()}`)
     }
 
     return (
@@ -83,7 +117,7 @@ export default function QuizPage() {
                         <div
                             key={i}
                             className={`
-                                w-2.5 h-2.5 rounded-full transition-all duration-300 
+                                w-2.5 h-2.5 rounded-full transition-all duration-300
                                 ${i === currentStageIndex
                                     ? "bg-strong-purple scale-110"
                                     : i < currentStageIndex
@@ -95,19 +129,33 @@ export default function QuizPage() {
                     ))}
                 </div>
 
-                <button
-                    onClick={next}
-                    disabled={answers[current] === undefined}
-                    className="flex items-center gap-1 px-6 py-2.5 rounded-full
-                        bg-linear-to-r from-strong-purple to-girly-purple
-                        text-white font-semibold text-sm
-                        hover:from-girly-purple hover:to-hot-pink
-                        transition-all duration-500 ease-in-out shadow-md
-                        disabled:opacity-40 disabled:pointer-events-none
-                        cursor-pointer"
-                >
-                    Next <span className="text-base">&rarr;</span>
-                </button>
+                {isLastQuestion && allAnswered ? (
+                    <button
+                        onClick={finish}
+                        className="flex items-center gap-1 px-6 py-2.5 rounded-full
+                            bg-linear-to-r from-hot-pink to-cute-orange
+                            text-white font-semibold text-sm
+                            hover:from-cute-orange hover:to-hot-pink
+                            transition-all duration-500 ease-in-out shadow-md
+                            cursor-pointer"
+                    >
+                        See Results <span className="text-base">&#10024;</span>
+                    </button>
+                ) : (
+                    <button
+                        onClick={next}
+                        disabled={answers[current] === undefined}
+                        className="flex items-center gap-1 px-6 py-2.5 rounded-full
+                            bg-linear-to-r from-strong-purple to-girly-purple
+                            text-white font-semibold text-sm
+                            hover:from-girly-purple hover:to-hot-pink
+                            transition-all duration-500 ease-in-out shadow-md
+                            disabled:opacity-40 disabled:pointer-events-none
+                            cursor-pointer"
+                    >
+                        Next <span className="text-base">&rarr;</span>
+                    </button>
+                )}
             </div>
 
             {/* Fun fact banner */}

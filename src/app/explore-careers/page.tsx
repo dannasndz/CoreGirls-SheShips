@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { careers, categoryLabels, Career } from "@/data/careers";
 import CareerCard from "./_components/CareerCard";
 import CareerModal from "./_components/CareerModal";
@@ -29,9 +30,14 @@ const stemFilters = [
   { label: "Mathematics", value: "M" },
 ];
 
-export default function ExploreCareersPage() {
+function ExploreCareersContent() {
+  const searchParams = useSearchParams();
+  const initialCategory = searchParams.get("category");
+
   const [search, setSearch] = useState("");
-  const [activeFilter, setActiveFilter] = useState<string | null>(null);
+  const [activeFilter, setActiveFilter] = useState<string | null>(
+    initialCategory && ["S", "T", "E", "M"].includes(initialCategory) ? initialCategory : null
+  );
   const [selectedCareer, setSelectedCareer] = useState<Career | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -264,5 +270,13 @@ export default function ExploreCareersPage() {
         />
       )}
     </div>
+  );
+}
+
+export default function ExploreCareersPage() {
+  return (
+    <Suspense>
+      <ExploreCareersContent />
+    </Suspense>
   );
 }
