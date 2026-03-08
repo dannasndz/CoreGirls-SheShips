@@ -78,33 +78,33 @@ export default function WelcomeQuiz() {
 
     if (loading) {
         return (
-            <div className="fixed inset-0 z-200 bg-strong-purple flex flex-col items-center justify-center gap-10">
-                <div className="flex gap-4 sm:gap-6">
+            <div className="fixed inset-0 z-200 bg-strong-purple flex flex-col items-center justify-center gap-6 sm:gap-10 px-4">
+                <div className="flex gap-2 sm:gap-4 md:gap-6">
                     {loaderLetters.map((item, i) => (
                         <div
                             key={item.letter}
-                            className="flex flex-col items-center gap-3 animate-bounce"
+                            className="flex flex-col items-center gap-2 sm:gap-3 animate-bounce"
                             style={{ animationDelay: `${i * 0.15}s`, animationDuration: "0.8s" }}
                         >
-                            <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-linear-to-br ${item.gradient}
+                            <div className={`w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl sm:rounded-2xl bg-linear-to-br ${item.gradient}
                                 flex items-center justify-center shadow-lg`}
                             >
-                                <span className="text-3xl sm:text-4xl font-extrabold text-white font-heading">
+                                <span className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white font-heading">
                                     {item.letter}
                                 </span>
                             </div>
-                            <span className="text-white/60 text-xs font-semibold">
+                            <span className="text-white/60 text-[10px] sm:text-xs font-semibold max-w-[3rem] sm:max-w-none text-center">
                                 {item.label}
                             </span>
                         </div>
                     ))}
                 </div>
 
-                <div className="text-center space-y-3">
-                    <p className="text-white/90 text-lg font-heading font-bold">
+                <div className="text-center space-y-2 sm:space-y-3">
+                    <p className="text-white/90 text-base sm:text-lg font-heading font-bold">
                         {t("preQuiz.preparingQuiz")}
                     </p>
-                    <div className="w-48 h-1.5 bg-white/15 rounded-full overflow-hidden mx-auto">
+                    <div className="w-40 sm:w-48 h-1.5 bg-white/15 rounded-full overflow-hidden mx-auto">
                         <div className="h-full bg-linear-to-r from-cute-orange via-hot-pink to-girly-purple rounded-full animate-loader-bar" />
                     </div>
                 </div>
@@ -113,9 +113,9 @@ export default function WelcomeQuiz() {
     }
 
     return (
-        <div className="flex flex-col md:flex-row h-screen">
+        <div className="flex flex-col md:flex-row min-h-screen md:h-screen overflow-y-auto md:overflow-hidden">
             {/* Left — Purple welcome panel */}
-            <div className="md:w-1/2 flex items-center justify-center px-8 py-16 md:py-0 relative overflow-hidden">
+            <div className="md:w-1/2 flex items-center justify-center px-4 sm:px-6 md:px-8 py-16 md:py-0 min-h-[50vh] md:min-h-0 relative overflow-hidden">
                 <div className="absolute inset-0">
                     <LiquidChrome
                         baseColor={[0.4, 0.2, 0.7]}
@@ -126,25 +126,25 @@ export default function WelcomeQuiz() {
                 </div>
                 <div className="absolute inset-0 bg-strong-purple/40" />
 
-                <Link href="/home" className="absolute top-6 left-6 z-20">
+                <Link href="/home" className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20">
                     <Image
                         src="/logoBlanco.png"
                         alt="SheShips logo"
-                        width={48}
-                        height={48}
-                        className="object-contain"
+                        width={40}
+                        height={40}
+                        className="object-contain w-9 h-9 sm:w-12 sm:h-12"
                     />
                 </Link>
 
-                <div className="max-w-md space-y-8 text-center md:text-left relative z-10">
-                    <div className="space-y-4">
-                        <p className="text-light-pink/80 font-semibold tracking-wide uppercase text-sm">
+                <div className="max-w-md space-y-6 sm:space-y-8 text-center md:text-left relative z-10 w-full">
+                    <div className="space-y-3 sm:space-y-4">
+                        <p className="text-light-pink/80 font-semibold tracking-wide uppercase text-xs sm:text-sm">
                             {t("preQuiz.label")}
                         </p>
-                        <h1 className="text-6xl md:text-7xl font-extrabold text-white font-heading leading-tight">
+                        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white font-heading leading-tight">
                             <SplitText
                                 text={t("preQuiz.welcome")}
-                                className="text-6xl md:text-7xl font-extrabold text-white font-heading leading-tight"
+                                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white font-heading leading-tight"
                                 delay={40}
                                 duration={1}
                                 ease="power3.out"
@@ -152,14 +152,14 @@ export default function WelcomeQuiz() {
                                 onLetterAnimationComplete={() => { }}
                             />
                         </h1>
-                        <p className="text-lg text-white/80 leading-relaxed">
+                        <p className="text-base sm:text-lg text-white/80 leading-relaxed">
                             {t("preQuiz.description")}
                         </p>
                     </div>
 
-                    <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-white/60">
-                        <span className="flex items-center gap-1.5 bg-white/10 rounded-full px-4 py-1.5">
-                            <Clock size={14} />
+                    <div className="flex flex-wrap justify-center md:justify-start gap-2 sm:gap-4 text-xs sm:text-sm text-white/60">
+                        <span className="flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1 sm:px-4 sm:py-1.5">
+                            <Clock size={14} className="shrink-0" />
                             <SplitText
                                 text={t("preQuiz.fiveMin")}
                                 className="text-sm text-white/60"
@@ -171,8 +171,8 @@ export default function WelcomeQuiz() {
                                 onLetterAnimationComplete={() => { }}
                             />
                         </span>
-                        <span className="flex items-center gap-1.5 bg-white/10 rounded-full px-4 py-1.5">
-                            <ClipboardList size={14} />
+                        <span className="flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1 sm:px-4 sm:py-1.5">
+                            <ClipboardList size={14} className="shrink-0" />
                             <SplitText
                                 text={t("preQuiz.fifteenQuestions")}
                                 className="text-sm text-white/60"
@@ -184,8 +184,8 @@ export default function WelcomeQuiz() {
                                 onLetterAnimationComplete={() => { }}
                             />
                         </span>
-                        <span className="flex items-center gap-1.5 bg-white/10 rounded-full px-4 py-1.5">
-                            <Sparkles size={14} />
+                        <span className="flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1 sm:px-4 sm:py-1.5">
+                            <Sparkles size={14} className="shrink-0" />
                             <SplitText
                                 text={t("preQuiz.noWrongAnswers")}
                                 className="text-sm text-white/60"
@@ -201,7 +201,7 @@ export default function WelcomeQuiz() {
 
                     <button
                         onClick={handleStart}
-                        className="px-10 py-3.5 rounded-full text-lg font-bold text-white
+                        className="w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-3.5 rounded-full text-base sm:text-lg font-bold text-white
                             bg-linear-to-r from-hot-pink to-cute-orange
                             hover:from-cute-orange hover:to-hot-pink
                             transition-all duration-500 ease-in-out
@@ -213,53 +213,49 @@ export default function WelcomeQuiz() {
             </div>
 
             {/* Right — STEM paths preview */}
-            <div className="md:w-1/2 bg-cream flex items-center justify-center px-8 py-16 md:py-0 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-girly-purple/5 -translate-y-1/3 translate-x-1/3" />
-                <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-cute-orange/5 translate-y-1/3 -translate-x-1/3" />
+            <div className="md:w-1/2 bg-cream flex items-center justify-center px-4 sm:px-6 md:px-8 py-12 sm:py-16 md:py-0 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-48 sm:w-64 h-48 sm:h-64 rounded-full bg-girly-purple/5 -translate-y-1/3 translate-x-1/3" />
+                <div className="absolute bottom-0 left-0 w-36 sm:w-48 h-36 sm:h-48 rounded-full bg-cute-orange/5 translate-y-1/3 -translate-x-1/3" />
 
                 <div className="max-w-md w-full relative z-10">
-                    <p className="text-dark-purple/40 text-xs font-semibold tracking-[0.3em] uppercase mb-3">
+                    <p className="text-dark-purple/40 text-[10px] sm:text-xs font-semibold tracking-[0.2em] sm:tracking-[0.3em] uppercase mb-2 sm:mb-3">
                         {t("preQuiz.pathAwaits")}
                     </p>
-                    <h2 className="text-3xl md:text-4xl font-bold text-strong-purple font-heading leading-tight mb-10">
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-strong-purple font-heading leading-tight mb-6 sm:mb-10">
                         {t("preQuiz.whatDiscover")}
                     </h2>
 
-                    <div className="space-y-5">
-                        {stemPaths.map((path, i) => (
+                    <div className="space-y-4 sm:space-y-5">
+                        {stemPaths.map((path) => (
                             <div
                                 key={path.letter}
-                                className="group flex items-center gap-5 cursor-default"
+                                className="group flex items-center gap-3 sm:gap-5 cursor-default"
                             >
                                 <div className={`
-                                    shrink-0 w-14 h-14 rounded-2xl bg-linear-to-br ${path.gradient}
+                                    shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-linear-to-br ${path.gradient}
                                     flex items-center justify-center
                                     shadow-md group-hover:shadow-lg group-hover:scale-105
                                     transition-all duration-300
                                 `}>
-                                    <span className="text-2xl font-extrabold text-white font-heading">
+                                    <span className="text-xl sm:text-2xl font-extrabold text-white font-heading">
                                         {path.letter}
                                     </span>
                                 </div>
 
                                 <div className="flex-1 min-w-0">
-                                    <p className={`font-bold text-base ${path.textColor} font-heading`}>
+                                    <p className={`font-bold text-sm sm:text-base ${path.textColor} font-heading`}>
                                         {path.title}
                                     </p>
-                                    <p className="text-dark-purple/45 text-sm leading-snug">
+                                    <p className="text-dark-purple/45 text-xs sm:text-sm leading-snug">
                                         {path.description}
                                     </p>
                                 </div>
-
-                                {i < stemPaths.length - 1 && (
-                                    <div className="absolute left-7 mt-18 w-px h-5 bg-light-pink/60" />
-                                )}
                             </div>
                         ))}
                     </div>
 
-                    <div className="mt-10 border-l-2 border-light-pink pl-5">
-                        <p className="text-dark-purple/50 text-sm italic leading-relaxed">
+                    <div className="mt-6 sm:mt-10 border-l-2 border-light-pink pl-4 sm:pl-5">
+                        <p className="text-dark-purple/50 text-xs sm:text-sm italic leading-relaxed">
                             &ldquo;{t("preQuiz.quote")}&rdquo;
                         </p>
                     </div>
