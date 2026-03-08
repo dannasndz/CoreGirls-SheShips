@@ -9,6 +9,7 @@ type Props = {
 }
 
 const optionLabels = ["Option A", "Option B", "Option C", "Option D"]
+const optionLetters = ["A", "B", "C", "D"]
 
 export default function Question({ data, selectedAnswer, onAnswer }: Props) {
     return (
@@ -30,6 +31,7 @@ export default function Question({ data, selectedAnswer, onAnswer }: Props) {
                         key={index}
                         option={option}
                         label={optionLabels[index]}
+                        imageSrc={`/quiz/Q${data.id}A${optionLetters[index]}.png`}
                         selected={selectedAnswer === option.type}
                         onSelect={onAnswer}
                     />

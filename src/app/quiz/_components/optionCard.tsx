@@ -1,14 +1,16 @@
+import Image from "next/image"
 import { Option } from "@/types/quiz"
 import { SpeakButton } from "@/components/speak-button"
 
 type Props = {
     option: Option
     label: string
+    imageSrc: string
     selected: boolean
     onSelect: (type: Option["type"]) => void
 }
 
-export default function OptionCard({ option, label, selected, onSelect }: Props) {
+export default function OptionCard({ option, label, imageSrc, selected, onSelect }: Props) {
     return (
         <div
             onClick={() => onSelect(option.type)}
@@ -22,7 +24,15 @@ export default function OptionCard({ option, label, selected, onSelect }: Props)
                 }
             `}
         >
-            <div className="flex-1 min-h-44 bg-gray-100" />
+            <div className="flex-1 bg-gray-100">
+                <Image
+                    src={imageSrc}
+                    alt={option.text}
+                    width={500}
+                    height={500}
+                    className="w-full h-auto"
+                />
+            </div>
 
             <div className={`
                 w-full p-5 min-h-28 text-white text-center

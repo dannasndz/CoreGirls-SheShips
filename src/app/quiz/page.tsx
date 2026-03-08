@@ -1,6 +1,8 @@
 "use client"
 
-import {  useState } from "react"
+import { useState } from "react"
+import Link from "next/link"
+import Image from "next/image"
 import { questions } from "@/data/quizQuestions"
 import Question from "@/app/quiz/_components/question"
 import ProgressBar from "@/app/quiz/_components/progressBar"
@@ -35,10 +37,21 @@ export default function QuizPage() {
 
     function back() {
         if (current > 0) setCurrent(current - 1)
-    } 
+    }
 
     return (
-        <div className="max-w-3xl mx-auto px-6 py-8 md:px-10 md:py-10 overflow-x-hidden">
+        <>
+        <Link href="/" className="absolute top-6 left-6">
+            <Image
+                src="/logo.png"
+                alt="SheShips logo"
+                width={48}
+                height={48}
+                className="object-contain"
+            />
+        </Link>
+
+        <div className="max-w-3xl mx-auto px-6 py-8 mt-10 md:px-10 md:py-10 overflow-x-hidden">
             <ProgressBar
                 current={current + 1}
                 total={total}
@@ -113,5 +126,6 @@ export default function QuizPage() {
                 &ldquo;{currentQuestion.funFact}&rdquo;
             </div>
         </div>
+        </>
     )
 }
