@@ -11,6 +11,7 @@ const en = {
   // Hero Section
   hero: {
     sloganAlt: "Meet the woman shaping our world, and join them",
+    subtitle: "Take our quiz and discover your path in STEM",
     takeTheQuiz: "Take the Quiz",
     explore: "Explore",
     bannerAlt: "Women shaping the world",

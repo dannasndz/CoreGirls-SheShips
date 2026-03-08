@@ -11,6 +11,7 @@ const es = {
   // Hero Section
   hero: {
     sloganAlt: "Conoce a las mujeres que están cambiando el mundo y únete a ellas",
+    subtitle: "Realiza nuestro quiz y descubre tu camino en STEM",
     takeTheQuiz: "Haz el Quiz",
     explore: "Explorar",
     bannerAlt: "Mujeres que están cambiando el mundo",

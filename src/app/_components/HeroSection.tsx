@@ -5,20 +5,24 @@ import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
 
 export default function HeroSection() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   return (
-    <section className="flex flex-col-reverse md:flex-row items-center justify-between gap-12 px-8 md:px-16 lg:px-24 py-10 md:py-0 md:min-h-[calc(100vh-60px)]">
+    <section className="flex flex-col-reverse md:flex-row items-center justify-between gap-16 px-8 md:px-16 lg:px-24 py-10 md:py-0 md:min-h-[calc(100vh-60px)]">
       {/* Left: Slogan + Buttons */}
-      <div className="flex flex-col items-center md:items-start gap-6 w-full md:w-1/2">
+      <div className="flex flex-col items-center md:items-start gap-5 w-full md:w-1/2">
         <Image
-          src="/slogan.svg"
+          src={locale === "es" ? "/slogan-es.svg" : "/slogan.svg"}
           alt={t("hero.sloganAlt")}
           width={480}
           height={420}
           className="w-[85%] sm:w-[75%] md:w-full object-contain"
           priority
         />
+
+        <p className="text-lg md:text-xl text-gray-700 font-semibold text-center md:text-left italic -mt-4">
+          {t("hero.subtitle")}
+        </p>
 
         <div className="flex flex-row gap-4 flex-wrap justify-center md:justify-start">
           <Link
