@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { User } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -22,6 +24,7 @@ const navLinks = [
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
+  const { data: session } = useSession();
 
   if (pathname === "/quiz" || pathname === "/preQuiz") return null;
 
@@ -100,6 +103,17 @@ export default function Navbar() {
               EN
             </button>
           </div>
+
+          {/* Profile icon */}
+          {session?.user && (
+            <Link
+              href="/profile"
+              className="w-9 h-9 rounded-full bg-gradient-to-br from-strong-purple to-girly-purple flex items-center justify-center hover:from-girly-purple hover:to-hot-pink transition-all duration-300 shadow-sm"
+              aria-label="My Profile"
+            >
+              <User className="w-4.5 h-4.5 text-white" />
+            </Link>
+          )}
         </div>
       </div>
 
@@ -131,6 +145,16 @@ export default function Navbar() {
               )}
             </Link>
           ))}
+          {session?.user && (
+            <Link
+              href="/profile"
+              onClick={() => setMobileOpen(false)}
+              className="px-4 py-3 rounded-full text-base font-semibold text-strong-purple hover:bg-girly-purple/10 transition-colors flex items-center gap-2"
+            >
+              <User className="w-5 h-5" />
+              My Profile
+            </Link>
+          )}
         </nav>
       </div>
     </header>

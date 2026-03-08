@@ -34,8 +34,10 @@ export default function RootLayout({
       <body
         className={`${fredokaOne.variable} ${baloo2.variable} antialiased`}
       >
-        <Navbar />
-        <SessionProvider>{children}</SessionProvider>
+        <SessionProvider>
+          <Navbar />
+          {children}
+        </SessionProvider>
       </body>
     </html>
   );
