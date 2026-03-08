@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import {  useState } from "react"
 import { questions } from "@/data/quizQuestions"
 import Question from "@/app/quiz/_components/question"
 import ProgressBar from "@/app/quiz/_components/progressBar"
@@ -22,8 +22,11 @@ export default function QuizPage() {
 
     const showFunFact = answers[current] !== undefined
 
+
+
     function handleAnswer(type: StemType) {
         setAnswers((prev) => ({ ...prev, [current]: type }))
+
     }
 
     function next() {
@@ -32,7 +35,7 @@ export default function QuizPage() {
 
     function back() {
         if (current > 0) setCurrent(current - 1)
-    }
+    } 
 
     return (
         <div className="max-w-3xl mx-auto px-6 py-8 md:px-10 md:py-10 overflow-x-hidden">
