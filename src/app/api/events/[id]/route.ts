@@ -81,6 +81,7 @@ export async function PUT(
       hour,
       participantsLimit,
       organizerName,
+      estado,
     } = body;
 
     if (!title?.trim() || !description?.trim() || !modality || !date || !hour || !organizerName?.trim()) {
@@ -98,20 +99,26 @@ export async function PUT(
       );
     }
 
+    const updateData: Record<string, unknown> = {
+      title: title.trim(),
+      description: description.trim(),
+      modality,
+      location: location?.trim() || null,
+      meetingLink: meetingLink?.trim() || null,
+      externalLink: externalLink?.trim() || null,
+      date: new Date(date),
+      hour: hour.trim(),
+      participantsLimit: participantsLimit ? Number(participantsLimit) : null,
+      organizerName: organizerName.trim(),
+    };
+
+    if (estado && ["BORRADOR", "PUBLICADO", "CANCELADO", "CERRADO"].includes(estado)) {
+      updateData.estado = estado;
+    }
+
     const event = await prisma.event.update({
       where: { id },
-      data: {
-        title: title.trim(),
-        description: description.trim(),
-        modality,
-        location: location?.trim() || null,
-        meetingLink: meetingLink?.trim() || null,
-        externalLink: externalLink?.trim() || null,
-        date: new Date(date),
-        hour: hour.trim(),
-        participantsLimit: participantsLimit ? Number(participantsLimit) : null,
-        organizerName: organizerName.trim(),
-      },
+      data: updateData as any,
       include: {
         createdBy: { select: { id: true, username: true } },
         _count: { select: { attendees: true } },

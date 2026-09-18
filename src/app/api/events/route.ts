@@ -8,6 +8,7 @@ import { prisma } from "@/lib/prisma";
 export async function GET() {
   try {
     const events = await prisma.event.findMany({
+      where: { estado: "PUBLICADO" },
       orderBy: { date: "asc" },
       include: {
         createdBy: { select: { id: true, username: true } },
@@ -47,6 +48,7 @@ export async function POST(req: NextRequest) {
       hour,
       participantsLimit,
       organizerName,
+      estado,
     } = body;
 
     if (!title?.trim() || !description?.trim() || !modality || !date || !hour || !organizerName?.trim()) {
@@ -78,6 +80,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const eventEstado = estado === "BORRADOR" ? "BORRADOR" : "PUBLICADO";
+
     const event = await prisma.event.create({
       data: {
         title: title.trim(),
@@ -90,6 +94,7 @@ export async function POST(req: NextRequest) {
         hour: hour.trim(),
         participantsLimit: participantsLimit ? Number(participantsLimit) : null,
         organizerName: organizerName.trim(),
+        estado: eventEstado,
         createdById: session.user.id,
       },
       include: {

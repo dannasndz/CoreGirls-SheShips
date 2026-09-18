@@ -161,6 +161,8 @@ const es = {
     signupPrompt:
       "Crea una cuenta gratuita para descubrir tu carrera STEM ideal",
     loginPrompt: "Inicia sesión para ver tu carrera STEM ideal",
+    email: "Correo electrónico",
+    emailPlaceholder: "tu@correo.com",
     username: "Usuario",
     usernamePlaceholder: "Elige un nombre de usuario",
     password: "Contraseña",
@@ -387,6 +389,8 @@ const es = {
   auth: {
     welcomeBack: "¡Bienvenida de nuevo!",
     joinSheShips: "Únete a SheShips",
+    email: "Correo electrónico",
+    emailPlaceholder: "tu@correo.com",
     username: "Usuario",
     usernamePlaceholder: "Ingresa tu nombre de usuario",
     password: "Contraseña",

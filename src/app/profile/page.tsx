@@ -132,11 +132,11 @@ export default function ProfilePage() {
                 {events.slice(0, 3).map((ev) => (
                   <div
                     key={ev.id}
-                    className={`px-3 py-2.5 rounded-xl bg-white/15 ${ev.cancelled ? "opacity-50" : ""}`}
+                    className={`px-3 py-2.5 rounded-xl bg-white/15 ${ev.estado === "CANCELADO" ? "opacity-50" : ""}`}
                   >
                     <p className="text-sm text-white font-medium truncate">
                       {ev.title}
-                      {ev.cancelled && (
+                      {ev.estado === "CANCELADO" && (
                         <span className="ml-1 text-[9px] bg-red-400/30 text-red-200 px-1.5 py-0.5 rounded-full">
                           {t("events.cancelled")}
                         </span>

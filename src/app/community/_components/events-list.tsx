@@ -126,13 +126,13 @@ export function EventsList({
                       >
                         {modalityLabel[event.modality] ?? event.modality}
                       </span>
-                      {event.cancelled && (
+                      {event.estado === "CANCELADO" && (
                         <span className="px-2.5 py-0.5 rounded-full text-sm font-semibold bg-red-100 text-red-600">
                           {t("events.cancelled")}
                         </span>
                       )}
                     </div>
-                    <p className={`text-lg ${event.cancelled ? "text-dark-purple/40 line-through" : "text-dark-purple/70"}`}>
+                    <p className={`text-lg ${event.estado === "CANCELADO" ? "text-dark-purple/40 line-through" : "text-dark-purple/70"}`}>
                       {event.description}
                     </p>
                   </div>
@@ -200,7 +200,7 @@ export function EventsList({
                 </p>
 
                 <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-[#E5E0D9]/50">
-                  {!event.cancelled && (
+                  {event.estado !== "CANCELADO" && (
                     <button
                       onClick={() => handleAttend(event.id)}
                       disabled={
@@ -224,10 +224,10 @@ export function EventsList({
                             : t("events.attend")}
                     </button>
                   )}
-                  {currentUserId && !event.cancelled && (
+                  {currentUserId && event.estado !== "CANCELADO" && (
                     <button
                       onClick={() => onShareToForum(event)}
-                      className="px-4 py-1.5 rounded-full text-sm font-medium borderborder-[#E5E0D9] text-dark-purple/60 hover:border-girly-purple hover:text-girly-purple transition"
+                      className="px-4 py-1.5 rounded-full text-sm font-medium border border-[#E5E0D9] text-dark-purple/60 hover:border-girly-purple hover:text-girly-purple transition"
                     >
                       {t("events.shareToForum")}
                     </button>
@@ -237,14 +237,14 @@ export function EventsList({
                       onClick={() => handleCancel(event.id)}
                       disabled={loadingCancel === event.id}
                       className={`px-4 py-1.5 rounded-full text-sm font-medium transition ${
-                        event.cancelled
+                        event.estado === "CANCELADO"
                           ? "border border-green-300 text-green-600 hover:bg-green-50"
                           : "border border-red-200 text-red-500 hover:bg-red-50"
                       }`}
                     >
                       {loadingCancel === event.id
                         ? "..."
-                        : event.cancelled
+                        : event.estado === "CANCELADO"
                           ? t("events.reactivateEvent")
                           : t("events.cancelEvent")}
                     </button>
@@ -276,7 +276,7 @@ export function EventsList({
                   >
                     {modalityLabel[event.modality] ?? event.modality}
                   </span>
-                  {event.cancelled && (
+                  {event.estado === "CANCELADO" && (
                     <span className="px-2 py-0.5 rounded-full text-sm font-semibold bg-red-100 text-red-600">
                       {t("events.cancelled")}
                     </span>

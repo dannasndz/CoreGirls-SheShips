@@ -80,7 +80,7 @@ export interface EventData {
   hour: string;
   participantsLimit: number | null;
   organizerName: string;
-  cancelled: boolean;
+  estado: string;
   createdAt: string;
   createdBy: { id: string; username: string };
   _count: { attendees: number };

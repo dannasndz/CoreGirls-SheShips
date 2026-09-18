@@ -42,7 +42,7 @@ export interface EventItem {
   date: string;
   hour: string;
   modality: string;
-  cancelled: boolean;
+  estado: string;
 }
 
 export function formatDate(dateStr: string) {

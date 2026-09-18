@@ -4,16 +4,16 @@ import { verifyPassword } from "@/lib/hash";
 
 export async function POST(req: NextRequest) {
   try {
-    const { username, password } = await req.json();
+    const { email, password } = await req.json();
 
-    if (!username || !password) {
+    if (!email || !password) {
       return NextResponse.json(
-        { data: null, error: "Username and password are required" },
+        { data: null, error: "Email and password are required" },
         { status: 400 }
       );
     }
 
-    const user = await prisma.user.findUnique({ where: { username } });
+    const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
       return NextResponse.json(
         { data: null, error: "Invalid credentials" },
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json(
-      { data: { id: user.id, username: user.username }, error: null },
+      { data: { id: user.id, email: user.email, username: user.username }, error: null },
       { status: 200 }
     );
   } catch {

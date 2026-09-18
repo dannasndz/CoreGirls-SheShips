@@ -34,9 +34,11 @@ export async function POST(
       );
     }
 
+    const newEstado = event.estado === "CANCELADO" ? "PUBLICADO" : "CANCELADO";
+
     const updated = await prisma.event.update({
       where: { id },
-      data: { cancelled: !event.cancelled },
+      data: { estado: newEstado },
       include: {
         createdBy: { select: { id: true, username: true } },
         _count: { select: { attendees: true } },

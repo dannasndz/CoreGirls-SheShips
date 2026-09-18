@@ -161,6 +161,8 @@ const en = {
     signupPrompt:
       "Create a free account to discover your perfect STEM career match",
     loginPrompt: "Log in to see your perfect STEM career match",
+    email: "Email",
+    emailPlaceholder: "you@email.com",
     username: "Username",
     usernamePlaceholder: "Pick a username",
     password: "Password",
@@ -387,6 +389,8 @@ const en = {
   auth: {
     welcomeBack: "Welcome back!",
     joinSheShips: "Join SheShips",
+    email: "Email",
+    emailPlaceholder: "you@email.com",
     username: "Username",
     usernamePlaceholder: "Enter your username",
     password: "Password",

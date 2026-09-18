@@ -7,23 +7,201 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id        String   @id @default(cuid())
-  username  String   @unique
-  password  String
-  createdAt DateTime @default(now())
+// ============================================================
+// ENUMS
+// ============================================================
 
-  posts            Post[]
-  likes            Like[]
-  comments         Comment[]
-  quizResult       QuizResult?
-  groupMemberships GroupMember[]
-  groupPosts       GroupPost[]
-  groupPostLikes   GroupPostLike[]
+enum UserType {
+  ALUMNA
+  ACADEMICA
+  EGRESADA
+}
+
+enum AccountStatus {
+  PENDING   // recién registrada, esperando revisión de admin
+  VERIFIED  // aprobada por admin (RF-08)
+  REJECTED  // rechazada por admin, con motivo
+}
+
+enum Campus {
+  ENSENADA
+  MEXICALI
+  TECATE
+  TIJUANA
+  PLAYAS_DE_ROSARITO
+  SAN_QUINTIN
+  SAN_FELIPE
+}
+
+enum AreaSTEM {
+  CIENCIA
+  TECNOLOGIA
+  INGENIERIA
+  MATEMATICAS
+}
+
+enum EstadoEvento {
+  BORRADOR
+  PUBLICADO
+  CANCELADO
+  CERRADO
+}
+
+// ============================================================
+// USUARIO
+// ============================================================
+
+model User {
+  id       String   @id @default(cuid())
+  username String   @unique // handle público, no se usa para iniciar sesión
+  email    String   @unique // credencial de login (RF-06)
+  password String
+  userType UserType
+
+  // --- Datos generales (RF-02), para los 3 tipos ---
+  fullName    String
+  birthDate   DateTime
+  institution String   @default("UABC")
+
+  // --- Estado de cuenta / verificación (RF-05, RF-07, RF-08) ---
+  accountStatus            AccountStatus @default(PENDING)
+  rejectionReason          String?
+  emailVerified            Boolean       @default(false)
+  emailVerificationToken   String?       @unique
+  emailVerificationExpires DateTime?
+  passwordResetToken       String?       @unique
+  passwordResetExpires     DateTime?
+
+  isAdmin Boolean @default(false)
+
+  // --- Datos de perfil comunes (RF-09, RF-10) ---
+  description String?
+  interests   Json?   @default("[]")
+
+  // --- Campos específicos por tipo (RF-03, RF-10) ---
+  campus Campus? // Alumna, Académica, Egresada
+  carrera String? // Alumna, Egresada
+
+  semestre Int? // solo Alumna
+  clubs    Json? @default("[]") // solo Alumna
+  fechaIngresoAlumna DateTime? // solo Alumna
+
+  sector   String?   // solo Académica (descripción libre)
+  areaSTEM AreaSTEM? // solo Académica, para filtros del mapa (RF-17)
+  fechaInicioLabor DateTime? // solo Académica
+
+  ocupacion   String?   // solo Egresada
+  fechaEgreso DateTime? // solo Egresada
+  ubicacion   String?   // solo Egresada
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // --- Relaciones ---
+  documentos          Documento[]
+  certificados        Certificado[]
+  practicas          PracticaProfesional[]
+  proyectos          Proyecto[]
+  referentesManuales ReferenteManual[]
+
+  posts             Post[]
+  likes             Like[]
+  comments          Comment[]
+  quizResult        QuizResult?
+  groupMemberships  GroupMember[]
+  groupPosts        GroupPost[]
+  groupPostLikes    GroupPostLike[]
   groupPostComments GroupPostComment[]
   events            Event[]
   eventAttendances  EventAttendee[]
 }
+
+// ============================================================
+// REGISTRO: documento oficial + certificados (RF-04, RF-12)
+// ============================================================
+
+model Documento {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  tipo       String   // "constancia_estudios" | "comprobante_matricula" | etc.
+  fileUrl    String
+  fileType   String   // "pdf" | "jpg" | "png"
+  uploadedAt DateTime @default(now())
+}
+
+model Certificado {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  nombre     String
+  fileUrl    String
+  uploadedAt DateTime @default(now())
+}
+
+// ============================================================
+// PERFIL: historial de prácticas (RF-13, solo Alumna)
+// ============================================================
+
+model PracticaProfesional {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  empresa     String
+  area        String
+  fechaInicio DateTime
+  fechaFin    DateTime?
+}
+
+// ============================================================
+// PROYECTOS (RF-14 + RF-28 fusionados): un solo modelo general,
+// visible tanto en el perfil de quien lo crea como en Comunidad.
+// No se restringe por tipo de usuario a nivel de esquema, para
+// poder habilitar la creación a otros tipos más adelante; el
+// permiso de quién puede crear uno se controla en la app.
+// ============================================================
+
+model Proyecto {
+  id                String    @id @default(cuid())
+  nombre            String
+  descripcion       String
+  areaSTEM          AreaSTEM?
+  estado            String    // "abierto" | "en_progreso" | "concluido" | "cerrado"
+  anio              Int?
+  fecha             DateTime?
+  lugar             String?
+  modalidad         String?   // "presencial" | "virtual" | "hibrido"
+  cupoMaximo        Int?
+  perfilInteresadas String?
+
+  encargadaId String
+  encargada   User   @relation(fields: [encargadaId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+// ============================================================
+// MAPA DE REFERENTES: entradas manuales por admin (RF-19)
+// Las Académicas verificadas se muestran en el mapa directamente
+// desde User (campus + areaSTEM); esto es solo para las externas.
+// ============================================================
+
+model ReferenteManual {
+  id          String   @id @default(cuid())
+  nombre      String
+  campus      Campus
+  areaSTEM    AreaSTEM
+  sector      String?
+  fotoUrl     String?
+  descripcion String?
+  addedById   String
+  addedBy     User     @relation(fields: [addedById], references: [id])
+  createdAt   DateTime @default(now())
+}
+
+// ============================================================
+// COMUNIDAD (ya existente, sin cambios estructurales)
+// ============================================================
 
 model Post {
   id         String   @id @default(cuid())
@@ -73,8 +251,8 @@ model Group {
 }
 
 model GroupMember {
-  id       String @id @default(cuid())
-  role     String @default("member")
+  id       String   @id @default(cuid())
+  role     String   @default("member")
   joinedAt DateTime @default(now())
 
   userId  String
@@ -95,9 +273,9 @@ model GroupPost {
   updatedAt  DateTime @updatedAt
 
   authorId String
-  author   User            @relation(fields: [authorId], references: [id])
+  author   User               @relation(fields: [authorId], references: [id])
   groupId  String
-  group    Group           @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  group    Group              @relation(fields: [groupId], references: [id], onDelete: Cascade)
   likes    GroupPostLike[]
   comments GroupPostComment[]
 }
@@ -124,20 +302,24 @@ model GroupPostComment {
   post     GroupPost @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
+// ============================================================
+// EVENTOS (RF-20 a RF-24) — se agrega `estado` para borrador/publicado
+// ============================================================
+
 model Event {
-  id               String   @id @default(cuid())
-  title            String
-  description      String
-  modality         String   // "in-person", "remote", "hybrid"
-  location         String?  // required if in-person or hybrid
-  meetingLink      String?  // required if remote or hybrid
-  externalLink     String?  // optional link to external info page
-  date             DateTime
-  hour             String   // e.g. "14:00"
+  id                String       @id @default(cuid())
+  title             String
+  description       String
+  modality          String       // "in-person", "remote", "hybrid"
+  location          String?      // required if in-person or hybrid
+  meetingLink       String?      // required if remote or hybrid
+  externalLink      String?      // optional link to external info page
+  date              DateTime
+  hour              String       // e.g. "14:00"
   participantsLimit Int?
-  organizerName    String
-  cancelled        Boolean  @default(false)
-  createdAt        DateTime @default(now())
+  organizerName     String
+  estado            EstadoEvento @default(BORRADOR)
+  createdAt         DateTime     @default(now())
 
   createdById String
   createdBy   User            @relation(fields: [createdById], references: [id])

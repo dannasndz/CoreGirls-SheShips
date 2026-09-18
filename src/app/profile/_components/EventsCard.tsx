@@ -28,7 +28,7 @@ export default function EventsCard({
                 <div key={ev.id} className="bg-white/15 rounded-lg p-2.5">
                   <p className="text-xs font-semibold truncate">
                     {ev.title}
-                    {ev.cancelled && (
+                    {ev.estado === "CANCELADO" && (
                       <span className="ml-1 text-[10px] bg-white/20 px-1.5 py-0.5 rounded-full">
                         Cancelled
                       </span>
@@ -66,11 +66,11 @@ export default function EventsCard({
           {events.map((ev) => (
             <div
               key={ev.id}
-              className={`rounded-lg px-3 py-2 ${ev.cancelled ? "opacity-50" : ""}`}
+              className={`rounded-lg px-3 py-2 ${ev.estado === "CANCELADO" ? "opacity-50" : ""}`}
             >
               <p className="text-sm text-dark-purple font-medium truncate">
                 {ev.title}
-                {ev.cancelled && (
+                {ev.estado === "CANCELADO" && (
                   <span className="ml-1.5 text-[10px] bg-red-100 text-red-500 px-1.5 py-0.5 rounded-full font-bold">
                     Cancelled
                   </span>

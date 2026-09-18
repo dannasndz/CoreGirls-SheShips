@@ -244,7 +244,7 @@ export default function CommunityPage() {
       if (data.data) {
         setEvents((prev) =>
           prev.map((e) =>
-            e.id === eventId ? { ...e, cancelled: data.data.cancelled } : e
+            e.id === eventId ? { ...e, estado: data.data.estado } : e
           )
         );
       }
@@ -289,7 +289,7 @@ export default function CommunityPage() {
   };
 
   const allTags = Array.from(new Set(posts.flatMap((p) => p.tags ?? [])));
-  const upcomingEvents = events.filter((e) => new Date(e.date) >= new Date() && !e.cancelled);
+  const upcomingEvents = events.filter((e) => new Date(e.date) >= new Date() && e.estado !== "CANCELADO");
 
   const filteredPosts =
     activeCategory === "All"
