@@ -2,14 +2,12 @@
 
 import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useSession } from "next-auth/react"
 import Link from "next/link"
 import Image from "next/image"
 import { questions as questionsEn } from "@/data/quizQuestions"
 import { questionsEs } from "@/data/quizQuestions.es"
 import Question from "@/app/quiz/_components/question"
 import ProgressBar from "@/app/quiz/_components/progressBar"
-import QuizAuthModal from "@/app/quiz/_components/quizAuthModal"
 import { StemType, Score } from "@/types/quiz"
 import { careers as careersEn } from "@/data/careers"
 import { careersEs } from "@/data/careers.es"
@@ -42,15 +40,12 @@ function pickCareer(answers: Record<number, StemType>, careers: typeof careersEn
 
 export default function QuizPage() {
     const router = useRouter()
-    const { data: session, status } = useSession()
     const { t, locale } = useI18n()
     const [current, setCurrent] = useState(0)
     const [answers, setAnswers] = useState<Record<number, StemType>>({})
     const [progress, setProgress] = useState(0)
-    const [showAuthModal, setShowAuthModal] = useState(false)
     const [showLoader, setShowLoader] = useState(false)
     const [loaderMessage, setLoaderMessage] = useState(0)
-    const pendingFinish = useRef(false)
     const resultUrl = useRef("")
 
     const questions = questionsMap[locale]
@@ -122,20 +117,7 @@ export default function QuizPage() {
     }
 
     function finish() {
-        if (session) {
-            navigateToResults()
-        } else {
-            pendingFinish.current = true
-            setShowAuthModal(true)
-        }
-    }
-
-    function handleAuthSuccess() {
-        setShowAuthModal(false)
-        if (pendingFinish.current) {
-            pendingFinish.current = false
-            navigateToResults()
-        }
+        navigateToResults()
     }
 
     if (showLoader) {
@@ -205,12 +187,6 @@ export default function QuizPage() {
 
     return (
         <div className="relative min-h-screen sm:h-screen sm:overflow-hidden">
-            <QuizAuthModal
-                open={showAuthModal}
-                onClose={() => { setShowAuthModal(false); pendingFinish.current = false }}
-                onSuccess={handleAuthSuccess}
-            />
-
             {/* Background */}
             <div className="fixed inset-0 -z-10">
                 <Grainient

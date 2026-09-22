@@ -23,12 +23,6 @@ function scoreAnswers(answers: Record<string, StemType>): { topType: StemType; s
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json(
-        { data: null, error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
 
     const { answers, career } = await req.json();
 
@@ -40,6 +34,12 @@ export async function POST(req: NextRequest) {
     }
 
     const { topType, score } = scoreAnswers(answers);
+
+    // Usuarias sin sesión pueden hacer el quiz: se calcula el resultado
+    // pero no se guarda hasta que inicien sesión.
+    if (!session?.user?.id) {
+      return NextResponse.json({ data: { career, score, topType }, error: null });
+    }
 
     const result = await prisma.quizResult.upsert({
       where: { userId: session.user.id },

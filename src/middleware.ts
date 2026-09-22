@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-const protectedPaths = ["/api/forum", "/api/quiz/submit", "/api/groups", "/api/events"];
+const protectedPaths = ["/api/forum", "/api/groups", "/api/events"];
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -30,5 +30,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/api/forum/:path*", "/api/quiz/submit", "/api/groups/:path*", "/api/events/:path*"],
+  matcher: ["/api/forum/:path*", "/api/groups/:path*", "/api/events/:path*"],
 };
