@@ -13,7 +13,7 @@ export async function GET(
       where: { postId },
       orderBy: { createdAt: "asc" },
       include: {
-        author: { select: { id: true, username: true } },
+        author: { select: { id: true, username: true, avatarUrl: true } },
       },
     });
 
@@ -57,7 +57,7 @@ export async function POST(
         postId,
       },
       include: {
-        author: { select: { id: true, username: true } },
+        author: { select: { id: true, username: true, avatarUrl: true } },
       },
     });
 

@@ -13,7 +13,7 @@ export async function GET() {
       prisma.post.findMany({
         orderBy: { createdAt: "desc" },
         include: {
-          author: { select: { id: true, username: true } },
+          author: { select: { id: true, username: true, avatarUrl: true } },
           _count: { select: { likes: true, comments: true } },
           likes: { select: { userId: true } },
         },
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
         authorId: session.user.id,
       },
       include: {
-        author: { select: { id: true, username: true } },
+        author: { select: { id: true, username: true, avatarUrl: true } },
       },
     });
 

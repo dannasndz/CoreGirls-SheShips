@@ -11,7 +11,7 @@ export async function GET(
       where: { id },
       include: {
         members: {
-          include: { user: { select: { id: true, username: true } } },
+          include: { user: { select: { id: true, username: true, avatarUrl: true } } },
           orderBy: { joinedAt: "asc" },
         },
         _count: { select: { members: true, posts: true } },

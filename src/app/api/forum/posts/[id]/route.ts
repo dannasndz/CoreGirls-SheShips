@@ -12,7 +12,7 @@ export async function GET(
     const post = await prisma.post.findUnique({
       where: { id },
       include: {
-        author: { select: { id: true, username: true } },
+        author: { select: { id: true, username: true, avatarUrl: true } },
         _count: { select: { likes: true } },
       },
     });
@@ -71,7 +71,7 @@ export async function PUT(
         ...(content && { content }),
       },
       include: {
-        author: { select: { id: true, username: true } },
+        author: { select: { id: true, username: true, avatarUrl: true } },
       },
     });
 

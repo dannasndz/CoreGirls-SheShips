@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
 import { ChevronDown, ChevronUp, Send } from "lucide-react";
-import { timeAgo, getInitial, getAvatarColor, CommentData } from "./helpers";
+import { timeAgo, CommentData } from "./helpers";
+import { UserAvatar } from "./user-avatar";
 import { useI18n } from "@/lib/i18n";
 
 interface CommentsSectionProps {
@@ -78,16 +80,15 @@ export function CommentsSection({ apiBase, onCommentAdded }: CommentsSectionProp
       <div className="space-y-2 max-h-60 overflow-y-auto">
         {comments.map((c) => (
           <div key={c.id} className="flex gap-2">
-            <div
-              className={`w-7 h-7 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 ${getAvatarColor(c.author.username)}`}
-            >
-              {getInitial(c.author.username)}
-            </div>
+            <UserAvatar user={c.author} size={28} />
             <div className="flex-1 bg-cream rounded-lg px-3 py-2">
               <div className="flex items-baseline gap-2">
-                <span className="text-sm font-semibold text-dark-purple">
+                <Link
+                  href={`/profile/${c.author.id}`}
+                  className="text-sm font-semibold text-dark-purple hover:text-girly-purple hover:underline transition"
+                >
                   {c.author.username}
-                </span>
+                </Link>
                 <span className="text-[10px] text-dark-purple/40">
                   {timeAgo(c.createdAt, locale)}
                 </span>

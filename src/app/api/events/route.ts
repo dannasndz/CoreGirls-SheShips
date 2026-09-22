@@ -11,7 +11,7 @@ export async function GET() {
       where: { estado: "PUBLICADO" },
       orderBy: { date: "asc" },
       include: {
-        createdBy: { select: { id: true, username: true } },
+        createdBy: { select: { id: true, username: true, avatarUrl: true } },
         _count: { select: { attendees: true } },
       },
     });
@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
         createdById: session.user.id,
       },
       include: {
-        createdBy: { select: { id: true, username: true } },
+        createdBy: { select: { id: true, username: true, avatarUrl: true } },
         _count: { select: { attendees: true } },
       },
     });

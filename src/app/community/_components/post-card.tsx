@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Heart, MessageCircle, MoreHorizontal } from "lucide-react";
-import { timeAgo, getInitial, getAvatarColor, PostData } from "./helpers";
+import { timeAgo, PostData } from "./helpers";
 import { CommentsSection } from "./comments-section";
+import { UserAvatar } from "./user-avatar";
 import { useI18n } from "@/lib/i18n";
 
 const categoryLabelKeys: Record<string, string> = {
@@ -28,15 +30,14 @@ export function PostCard({ post, onLike, commentsApiBase }: PostCardProps) {
       {/* Author header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 sm:gap-3">
-          <div
-            className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm ${getAvatarColor(post.author.username)}`}
-          >
-            {getInitial(post.author.username)}
-          </div>
+          <UserAvatar user={post.author} size={40} />
           <div>
-            <p className="text-xs sm:text-sm font-semibold text-dark-purple">
+            <Link
+              href={`/profile/${post.author.id}`}
+              className="text-xs sm:text-sm font-semibold text-dark-purple hover:text-girly-purple hover:underline transition"
+            >
               {post.author.username}
-            </p>
+            </Link>
             <p className="text-xs text-dark-purple/50">
               {timeAgo(post.createdAt, locale)}
             </p>

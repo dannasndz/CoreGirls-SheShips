@@ -49,7 +49,7 @@ export interface PostData {
   categories: string[];
   tags: string[];
   createdAt: string;
-  author: { id: string; username: string };
+  author: { id: string; username: string; avatarUrl?: string | null };
   likedByMe: boolean;
   _count: { likes: number; comments: number };
 }
@@ -65,7 +65,7 @@ export interface CommentData {
   id: string;
   content: string;
   createdAt: string;
-  author: { id: string; username: string };
+  author: { id: string; username: string; avatarUrl?: string | null };
 }
 
 export interface EventData {
@@ -82,7 +82,7 @@ export interface EventData {
   organizerName: string;
   estado: string;
   createdAt: string;
-  createdBy: { id: string; username: string };
+  createdBy: { id: string; username: string; avatarUrl?: string | null };
   _count: { attendees: number };
 }
 

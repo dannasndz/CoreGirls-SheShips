@@ -77,8 +77,16 @@ export default function EditProfileForm({
     setError("");
     setUploadingAvatar(true);
     try {
-      const url = await uploadFile(file);
+      const url = await uploadFile(file, {
+        userId: profile.id,
+        category: "images",
+      });
       setAvatarUrl(url);
+      await fetch("/api/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ avatarUrl: url }),
+      });
     } catch {
       setError(t("profile.uploadError"));
     } finally {

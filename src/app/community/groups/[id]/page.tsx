@@ -5,14 +5,15 @@ import { useEffect, useState, useCallback, use } from "react";
 import { AuthModal } from "@/components/auth-modal";
 import Link from "next/link";
 import { ArrowLeft, Plus } from "lucide-react";
-import { PostData, getInitial, getAvatarColor } from "../../_components/helpers";
+import { PostData } from "../../_components/helpers";
 import { PostCard } from "../../_components/post-card";
 import { CreatePostForm } from "../../_components/create-post-form";
+import { UserAvatar } from "../../_components/user-avatar";
 
 interface GroupMember {
   id: string;
   role: string;
-  user: { id: string; username: string };
+  user: { id: string; username: string; avatarUrl?: string | null };
 }
 
 interface GroupDetail {
@@ -273,15 +274,14 @@ export default function GroupPage({
                 <ul className="space-y-2">
                   {group.members.map((m) => (
                     <li key={m.id} className="flex items-center gap-2">
-                      <div
-                        className={`w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold ${getAvatarColor(m.user.username)}`}
-                      >
-                        {getInitial(m.user.username)}
-                      </div>
+                      <UserAvatar user={m.user} size={28} />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-dark-purple truncate">
+                        <Link
+                          href={`/profile/${m.user.id}`}
+                          className="block text-sm text-dark-purple truncate hover:text-girly-purple hover:underline transition"
+                        >
                           {m.user.username}
-                        </p>
+                        </Link>
                       </div>
                       {m.role === "admin" && (
                         <span className="text-[10px] font-semibold text-girly-purple bg-girly-purple/10 px-1.5 py-0.5 rounded-full">

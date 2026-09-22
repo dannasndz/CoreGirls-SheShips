@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
   Plus,
   MapPin,
@@ -12,6 +13,7 @@ import {
   Pencil,
 } from "lucide-react";
 import { EventData, formatEventDate } from "./helpers";
+import { UserAvatar } from "./user-avatar";
 import { useI18n } from "@/lib/i18n";
 
 interface EventsListProps {
@@ -195,9 +197,13 @@ export function EventsList({
                   </span>
                 </div>
 
-                <p className="text-sm text-dark-purple/40">
+                <Link
+                  href={`/profile/${event.createdBy.id}`}
+                  className="inline-flex items-center gap-2 text-sm text-dark-purple/40 hover:text-girly-purple transition"
+                >
+                  <UserAvatar user={event.createdBy} size={22} linked={false} />
                   {t("events.organizedBy", { name: event.organizerName })}
-                </p>
+                </Link>
 
                 <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-[#E5E0D9]/50">
                   {event.estado !== "CANCELADO" && (

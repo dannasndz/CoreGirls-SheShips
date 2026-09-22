@@ -12,8 +12,10 @@ const inputBase =
 
 export default function CertificatesManager({
   initial,
+  userId,
 }: {
   initial: CertificateItem[];
+  userId: string;
 }) {
   const { t } = useI18n();
   const [items, setItems] = useState<CertificateItem[]>(initial);
@@ -28,7 +30,10 @@ export default function CertificatesManager({
     setBusy(true);
     setError("");
     try {
-      const fileUrl = await uploadFile(file);
+      const fileUrl = await uploadFile(file, {
+        userId,
+        category: "documents",
+      });
       const res = await fetch("/api/profile/certificates", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -42,8 +47,8 @@ export default function CertificatesManager({
       setItems((prev) => [data.data, ...prev]);
       setNombre("");
       setFile(null);
-    } catch {
-      setError(t("profile.uploadError"));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t("profile.uploadError"));
     } finally {
       setBusy(false);
     }

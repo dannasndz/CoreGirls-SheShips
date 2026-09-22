@@ -73,7 +73,10 @@ export default function EditProfilePage() {
           }}
         />
 
-        <CertificatesManager initial={profile.certificados} />
+        <CertificatesManager
+          initial={profile.certificados}
+          userId={profile.id}
+        />
 
         {profile.userType === "ALUMNA" && (
           <PracticesManager initial={profile.practicas} />

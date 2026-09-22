@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+import { del } from "@vercel/blob";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { buildProfileUpdate } from "@/lib/profile";
@@ -174,7 +175,7 @@ export async function PUT(req: NextRequest) {
   try {
     const current = await prisma.user.findUnique({
       where: { id: session.user.id },
-      select: { userType: true },
+      select: { userType: true, avatarUrl: true },
     });
 
     if (!current) {
@@ -192,6 +193,20 @@ export async function PUT(req: NextRequest) {
       data,
       select: profileSelect,
     });
+
+    const newAvatarUrl = data.avatarUrl as string | null | undefined;
+    if (
+      newAvatarUrl !== undefined &&
+      current.avatarUrl &&
+      current.avatarUrl !== newAvatarUrl &&
+      current.avatarUrl.includes("blob.vercel-storage.com")
+    ) {
+      try {
+        await del(current.avatarUrl);
+      } catch (blobErr) {
+        console.error("Avatar blob delete error:", blobErr);
+      }
+    }
 
     return NextResponse.json({ data: updated, error: null });
   } catch (err) {

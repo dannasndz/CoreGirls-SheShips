@@ -17,7 +17,7 @@ export async function GET(
         where: { groupId },
         orderBy: { createdAt: "desc" },
         include: {
-          author: { select: { id: true, username: true } },
+          author: { select: { id: true, username: true, avatarUrl: true } },
           _count: { select: { likes: true, comments: true } },
           likes: { select: { userId: true } },
         },
@@ -94,7 +94,7 @@ export async function POST(
         groupId,
       },
       include: {
-        author: { select: { id: true, username: true } },
+        author: { select: { id: true, username: true, avatarUrl: true } },
       },
     });
 
