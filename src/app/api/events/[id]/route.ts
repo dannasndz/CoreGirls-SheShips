@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@/generated/prisma/client";
 
 export async function GET(
   _req: NextRequest,
@@ -99,7 +100,7 @@ export async function PUT(
       );
     }
 
-    const updateData: Record<string, unknown> = {
+    const updateData: Prisma.EventUncheckedUpdateInput = {
       title: title.trim(),
       description: description.trim(),
       modality,
@@ -118,7 +119,7 @@ export async function PUT(
 
     const event = await prisma.event.update({
       where: { id },
-      data: updateData as any,
+      data: updateData,
       include: {
         createdBy: { select: { id: true, username: true } },
         _count: { select: { attendees: true } },

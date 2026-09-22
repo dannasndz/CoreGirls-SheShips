@@ -75,6 +75,7 @@ model User {
   isAdmin Boolean @default(false)
 
   // --- Datos de perfil comunes (RF-09, RF-10) ---
+  avatarUrl   String?
   description String?
   interests   Json?   @default("[]")
 
@@ -88,9 +89,11 @@ model User {
 
   sector   String?   // solo Académica (descripción libre)
   areaSTEM AreaSTEM? // solo Académica, para filtros del mapa (RF-17)
+  materias Json?     @default("[]") // solo Académica
   fechaInicioLabor DateTime? // solo Académica
 
   ocupacion   String?   // solo Egresada
+  fechaIngreso DateTime? // solo Egresada
   fechaEgreso DateTime? // solo Egresada
   ubicacion   String?   // solo Egresada
 

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/hash";
-import { UserType, Campus } from "@/generated/prisma/client";
+import { UserType, Campus, Prisma } from "@/generated/prisma/client";
 
 const VALID_USER_TYPES = Object.values(UserType);
 const VALID_CAMPUSES = Object.values(Campus);
@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const createData: Record<string, unknown> = {
+    const createData: Prisma.UserUncheckedCreateInput = {
       username,
       email,
       password: await hashPassword(password),
@@ -112,7 +112,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const user = await prisma.user.create({ data: createData as any });
+    const user = await prisma.user.create({ data: createData });
 
     return NextResponse.json(
       { data: { id: user.id, email: user.email, username: user.username }, error: null },

@@ -1,7 +1,34 @@
 export interface ProfileData {
   id: string;
   username: string;
+  email: string;
+  userType: string;
+  fullName: string;
+  birthDate: string;
+  institution: string;
+  accountStatus: string;
+  isAdmin: boolean;
+  avatarUrl: string | null;
+  description: string | null;
+  interests: string[];
+  campus: string | null;
+  carrera: string | null;
+  semestre: number | null;
+  clubs: string[];
+  fechaIngresoAlumna: string | null;
+  sector: string | null;
+  areaSTEM: string | null;
+  materias: string[];
+  fechaInicioLabor: string | null;
+  ocupacion: string | null;
+  fechaIngreso: string | null;
+  fechaEgreso: string | null;
+  ubicacion: string | null;
   createdAt: string;
+  updatedAt: string;
+  certificados: CertificateItem[];
+  practicas: PracticeItem[];
+  proyectos: ProjectItem[];
   quizResult: {
     career: string;
     answers: unknown;
@@ -19,6 +46,36 @@ export interface ProfileData {
     events: number;
     eventAttendances: number;
   };
+}
+
+export interface CertificateItem {
+  id: string;
+  nombre: string;
+  fileUrl: string;
+  uploadedAt: string;
+}
+
+export interface PracticeItem {
+  id: string;
+  empresa: string;
+  area: string;
+  fechaInicio: string;
+  fechaFin: string | null;
+}
+
+export interface ProjectItem {
+  id: string;
+  nombre: string;
+  descripcion: string;
+  areaSTEM: string | null;
+  estado: string;
+  anio: number | null;
+  fecha: string | null;
+  lugar: string | null;
+  modalidad: string | null;
+  cupoMaximo: number | null;
+  perfilInteresadas: string | null;
+  createdAt: string;
 }
 
 export interface PostItem {

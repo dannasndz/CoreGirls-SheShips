@@ -5,10 +5,26 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/lib/i18n";
 import Link from "next/link";
-import { Loader2, LogOut, User, CalendarDays, Users, Sparkles, CalendarDays as CalendarIcon, Clock, MessageCircle } from "lucide-react";
+import Image from "next/image";
+import {
+  Loader2,
+  LogOut,
+  User,
+  CalendarDays,
+  Users,
+  Sparkles,
+  CalendarDays as CalendarIcon,
+  Clock,
+  MessageCircle,
+  Pencil,
+} from "lucide-react";
 import type { ProfileData } from "./_components/types";
 import { formatDate } from "./_components/types";
 import PostsCard from "./_components/PostsCard";
+import ProfileDetails from "./_components/ProfileDetails";
+import CertificatesList from "./_components/CertificatesList";
+import PracticesList from "./_components/PracticesList";
+import ProjectsList from "./_components/ProjectsList";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
@@ -80,13 +96,24 @@ export default function ProfilePage() {
 
           {/* Profile */}
           <div className="flex items-center gap-3.5 pt-2 pb-1">
-            <div className="w-13 h-13 rounded-full bg-linear-to-br from-cute-orange via-hot-pink to-light-pink
+            <div className="w-13 h-13 rounded-full overflow-hidden bg-linear-to-br from-cute-orange via-hot-pink to-light-pink
               flex items-center justify-center ring-2 ring-white/20 shadow-lg shrink-0">
-              <User className="w-6 h-6 text-white" />
+              {profile.avatarUrl ? (
+                <Image
+                  src={profile.avatarUrl}
+                  alt={profile.fullName}
+                  width={52}
+                  height={52}
+                  className="w-full h-full object-cover"
+                  unoptimized
+                />
+              ) : (
+                <User className="w-6 h-6 text-white" />
+              )}
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <h1 className="text-lg font-extrabold text-white font-heading leading-tight truncate">
-                {profile.username}
+                {profile.fullName || profile.username}
               </h1>
               <p className="text-white/70 flex items-center gap-1.5 text-[11px] mt-0.5">
                 <CalendarDays className="w-3 h-3" />
@@ -94,6 +121,16 @@ export default function ProfilePage() {
               </p>
             </div>
           </div>
+
+          <Link
+            href="/profile/edit"
+            className="flex items-center justify-center gap-2 px-4 py-2 rounded-full
+              bg-white/15 border border-white/20 text-white text-sm font-semibold
+              hover:bg-white/25 transition-all duration-300"
+          >
+            <Pencil size={14} />
+            {t("profile.editProfile")}
+          </Link>
 
           <div className="w-full h-px bg-white/20" />
 
@@ -209,17 +246,17 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* RIGHT — Posts feed */}
+      {/* RIGHT — Profile + Posts feed */}
       <div className="flex-1 min-w-0 bg-cream">
-        <div className="px-6 sm:px-10 lg:px-14 pt-8 pb-12 animate-funfact-in">
+        <div className="px-6 sm:px-10 lg:px-14 pt-8 pb-12 animate-funfact-in space-y-5">
 
           {/* Welcome banner */}
-          <div className="relative overflow-hidden rounded-2xl bg-linear-to-r from-strong-purple to-girly-purple p-5 sm:p-6 mb-6">
+          <div className="relative overflow-hidden rounded-2xl bg-linear-to-r from-strong-purple to-girly-purple p-5 sm:p-6">
             <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-hot-pink/20 blur-2xl" />
             <div className="absolute -bottom-6 right-12 w-24 h-24 rounded-full bg-cute-orange/15 blur-2xl" />
             <div className="relative z-10">
               <h2 className="text-white text-lg sm:text-xl font-extrabold font-heading">
-                {t("profile.hey", { username: profile.username })}
+                {t("profile.hey", { username: profile.fullName || profile.username })}
               </h2>
               <p className="text-white/60 text-sm mt-1">
                 {t("profile.latestActivity")}
@@ -234,6 +271,40 @@ export default function ProfilePage() {
                 {t("profile.goToCommunity")}
               </Link>
             </div>
+          </div>
+
+          <ProfileDetails
+            data={{
+              fullName: profile.fullName,
+              username: profile.username,
+              userType: profile.userType,
+              avatarUrl: profile.avatarUrl,
+              accountStatus: profile.accountStatus,
+              institution: profile.institution,
+              campus: profile.campus,
+              carrera: profile.carrera,
+              semestre: profile.semestre,
+              sector: profile.sector,
+              areaSTEM: profile.areaSTEM,
+              materias: profile.materias,
+              ocupacion: profile.ocupacion,
+              ubicacion: profile.ubicacion,
+              fechaIngreso: profile.fechaIngreso,
+              fechaEgreso: profile.fechaEgreso,
+              fechaIngresoAlumna: profile.fechaIngresoAlumna,
+              fechaInicioLabor: profile.fechaInicioLabor,
+              clubs: profile.clubs,
+              description: profile.description,
+              interests: profile.interests,
+            }}
+          />
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <CertificatesList certificados={profile.certificados} />
+            {profile.userType === "ALUMNA" && (
+              <PracticesList practicas={profile.practicas} />
+            )}
+            <ProjectsList proyectos={profile.proyectos} />
           </div>
 
           <PostsCard posts={profile.posts} />
