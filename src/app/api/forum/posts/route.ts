@@ -5,29 +5,42 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
+    const { searchParams } = new URL(req.url);
+    const rawLimit = Number(searchParams.get("limit"));
+    const limit = Number.isFinite(rawLimit) && rawLimit > 0 ? Math.min(rawLimit, 50) : 20;
+    const cursor = searchParams.get("cursor");
+
     // Run session + posts fetch in parallel to avoid sequential cold-start penalty
     const [session, posts] = await Promise.all([
       getServerSession(authOptions),
       prisma.post.findMany({
-        orderBy: { createdAt: "desc" },
+        take: limit + 1,
+        ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
         include: {
-          author: { select: { id: true, username: true, avatarUrl: true } },
+          author: {
+            select: { id: true, username: true, avatarUrl: true, userType: true },
+          },
           _count: { select: { likes: true, comments: true } },
           likes: { select: { userId: true } },
         },
       }),
     ]);
 
+    const hasMore = posts.length > limit;
+    const pageItems = hasMore ? posts.slice(0, limit) : posts;
+    const nextCursor = hasMore ? pageItems[pageItems.length - 1].id : null;
+
     const userId = session?.user?.id;
-    const data = posts.map((p) => ({
+    const data = pageItems.map((p) => ({
       ...p,
       likedByMe: userId ? p.likes.some((l) => l.userId === userId) : false,
       likes: undefined,
     }));
 
-    return NextResponse.json({ data, error: null });
+    return NextResponse.json({ data, nextCursor, error: null });
   } catch (err) {
     console.error("GET /api/forum/posts error:", err);
     return NextResponse.json(
@@ -73,7 +86,9 @@ export async function POST(req: NextRequest) {
         authorId: session.user.id,
       },
       include: {
-        author: { select: { id: true, username: true, avatarUrl: true } },
+        author: {
+          select: { id: true, username: true, avatarUrl: true, userType: true },
+        },
       },
     });
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { AuthModal } from "@/components/auth-modal";
 import { Plus, Home, Heart, Users as UsersIcon, Calendar as CalendarIcon } from "lucide-react";
 import { PostData, GroupData, EventData, STEM_CATEGORIES } from "./_components/helpers";
@@ -17,6 +17,7 @@ import { EventsList } from "./_components/events-list";
 
 type View = "feed" | "groups" | "liked" | "events";
 const filterOptions = ["All", ...STEM_CATEGORIES];
+const PAGE_SIZE = 20;
 
 export default function CommunityPage() {
   const { data: session, status } = useSession();
@@ -36,19 +37,51 @@ export default function CommunityPage() {
   const [loadingEvents, setLoadingEvents] = useState(true);
   const [likedPosts, setLikedPosts] = useState<PostData[]>([]);
   const [loadingLiked, setLoadingLiked] = useState(false);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   const fetchPosts = useCallback(async () => {
     setLoadingPosts(true);
     try {
-      const res = await fetch("/api/forum/posts");
+      const res = await fetch(`/api/forum/posts?limit=${PAGE_SIZE}`);
       const data = await res.json();
-      if (data.data) setPosts(data.data);
+      if (data.data) {
+        setPosts(data.data);
+        setNextCursor(data.nextCursor ?? null);
+        setHasMore(Boolean(data.nextCursor));
+      }
     } catch {
       // ignore
     } finally {
       setLoadingPosts(false);
     }
   }, []);
+
+  const loadMore = useCallback(async () => {
+    if (!nextCursor || loadingMore) return;
+    setLoadingMore(true);
+    try {
+      const res = await fetch(
+        `/api/forum/posts?limit=${PAGE_SIZE}&cursor=${nextCursor}`
+      );
+      const data = await res.json();
+      if (data.data) {
+        setPosts((prev) => {
+          const seen = new Set(prev.map((p) => p.id));
+          const more = (data.data as PostData[]).filter((p) => !seen.has(p.id));
+          return [...prev, ...more];
+        });
+        setNextCursor(data.nextCursor ?? null);
+        setHasMore(Boolean(data.nextCursor));
+      }
+    } catch {
+      // ignore
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [nextCursor, loadingMore]);
 
   const fetchLikedPosts = useCallback(async () => {
     setLoadingLiked(true);
@@ -137,6 +170,21 @@ export default function CommunityPage() {
       fetchAttendingIds();
     }
   }, [activeView, status, fetchAttendingIds]);
+
+  // Carga infinita: observa el centinela al final del feed
+  useEffect(() => {
+    if (activeView !== "feed" || !hasMore) return;
+    const el = loadMoreRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) loadMore();
+      },
+      { rootMargin: "250px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [activeView, hasMore, loadMore]);
 
   const handleLike = async (postId: string) => {
     setPosts((prev) =>
@@ -446,7 +494,7 @@ export default function CommunityPage() {
                   </div>
                 )}
 
-                {!loadingPosts && filteredPosts.length === 0 && (
+                {!loadingPosts && !hasMore && filteredPosts.length === 0 && (
                   <div className="rounded-2xl bg-white border border-[#E5E0D9] p-8 shadow-sm text-center">
                     <p className="text-dark-purple/50 text-sm">
                       {activeCategory === "All"
@@ -473,6 +521,23 @@ export default function CommunityPage() {
                     onUpdated={handlePostUpdated}
                   />
                 ))}
+
+                {/* Centinela para carga infinita */}
+                <div ref={loadMoreRef} />
+
+                {loadingMore && (
+                  <div className="rounded-2xl bg-white border border-[#E5E0D9] p-6 shadow-sm text-center">
+                    <p className="text-girly-purple text-sm font-medium animate-pulse">
+                      {t("community.loadingMore")}
+                    </p>
+                  </div>
+                )}
+
+                {!hasMore && !loadingPosts && filteredPosts.length > 0 && (
+                  <p className="py-5 text-center text-sm text-dark-purple/40">
+                    {t("community.endOfFeed")}
+                  </p>
+                )}
               </>
             )}
 

@@ -49,7 +49,12 @@ export interface PostData {
   categories: string[];
   tags: string[];
   createdAt: string;
-  author: { id: string; username: string; avatarUrl?: string | null };
+  author: {
+    id: string;
+    username: string;
+    avatarUrl?: string | null;
+    userType?: string;
+  };
   likedByMe: boolean;
   _count: { likes: number; comments: number };
 }

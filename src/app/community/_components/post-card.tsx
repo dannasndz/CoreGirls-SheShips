@@ -118,15 +118,22 @@ export function PostCard({
     <article className="rounded-2xl bg-white border border-[#E5E0D9] p-3 sm:p-4 md:p-5 shadow-sm space-y-2 sm:space-y-3">
       {/* Author header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <UserAvatar user={post.author} size={40} />
-          <div>
-            <Link
-              href={`/profile/${post.author.id}`}
-              className="text-xs sm:text-sm font-semibold text-dark-purple hover:text-girly-purple hover:underline transition"
-            >
-              {post.author.username}
-            </Link>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 min-w-0">
+              <Link
+                href={`/profile/${post.author.id}`}
+                className="text-xs sm:text-sm font-semibold text-dark-purple hover:text-girly-purple hover:underline transition truncate"
+              >
+                {post.author.username}
+              </Link>
+              {post.author.userType && (
+                <span className="shrink-0 rounded-full bg-girly-purple/10 text-girly-purple px-1.5 py-0.5 text-[10px] font-semibold">
+                  {t(`profile.userTypes.${post.author.userType}`)}
+                </span>
+              )}
+            </div>
             <p className="text-xs text-dark-purple/50">
               {timeAgo(post.createdAt, locale)}
             </p>
@@ -245,7 +252,7 @@ export function PostCard({
           <h2 className="text-sm sm:text-base md:text-xl font-bold text-dark-purple">
             {post.title}
           </h2>
-          <p className="-mt-2 text-xs sm:text-sm md:text-lg text-dark-purple/70 leading-relaxed">
+          <p className="-mt-2 text-xs sm:text-sm md:text-lg text-dark-purple/70 leading-relaxed line-clamp-3">
             {post.content}
           </p>
           {error && <p className="text-xs text-red-500 font-medium">{error}</p>}

@@ -20,7 +20,9 @@ export async function GET() {
       include: {
         post: {
           include: {
-            author: { select: { id: true, username: true } },
+            author: {
+              select: { id: true, username: true, avatarUrl: true, userType: true },
+            },
             _count: { select: { likes: true, comments: true } },
           },
         },
