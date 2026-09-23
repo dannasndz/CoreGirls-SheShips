@@ -10,7 +10,7 @@ const en = {
 
   // Hero Section
   hero: {
-    sloganAlt: "Meet the woman shaping our world, and join them",
+    sloganAlt: "More M, more women in STEM.",
     subtitle: "Take our quiz and discover your path in STEM",
     takeTheQuiz: "Take the Quiz",
     explore: "Explore",
@@ -101,7 +101,7 @@ const en = {
     coreGirls: "Core Girls",
     teamDescription:
       "We are a team of three passionate women from Mexico who believe every girl deserves to see herself in STEM.",
-    projectName: "+Más Mujeres",
+    projectName: "+Mujeres STEM",
     projectDescription:
       "Our project was born to inspire, inform, and connect girls and women with the world of STEM.",
     sheships: "💜 #SheShips",
@@ -337,7 +337,7 @@ const en = {
     myself: "Myself",
     custom: "Custom",
     organizerNameLabel: "Organizer name",
-    organizerNamePlaceholder: "e.g. SheShips Community",
+    organizerNamePlaceholder: "e.g. +Mujeres STEM Community",
     participantsLimit: "Participants Limit",
     unlimited: "Unlimited",
     externalLink: "External Info Link (optional)",
@@ -388,7 +388,7 @@ const en = {
   // Auth Modal
   auth: {
     welcomeBack: "Welcome back!",
-    joinSheShips: "Join SheShips",
+    joinSheShips: "Join +Mujeres STEM",
     email: "Email",
     emailPlaceholder: "you@email.com",
     username: "Username",
@@ -456,15 +456,16 @@ const en = {
     delete: "Delete",
     confirmDelete: "Are you sure you want to delete this item?",
     viewFile: "View file",
-    practices: "Internships & social service",
-    noPractices: "No internships registered yet",
-    addPractice: "Add internship",
-    editPractice: "Edit internship",
+    practices: "Experiences",
+    noPractices: "No experiences registered yet",
+    addPractice: "Add experience",
+    editPractice: "Edit experience",
     company: "Company / Institution",
     area: "Area",
     startDate: "Start date",
     endDate: "End date",
-    inProgress: "In progress",
+    endDateHint: "Leave it empty if the experience is ongoing.",
+    inProgress: "Present",
     projects: "Projects",
     noProjects: "No projects yet",
     accountStatus: "Account status",
@@ -488,6 +489,8 @@ const en = {
     selectPlaceholder: "Select an option",
     updated: "Profile updated successfully.",
     updateError: "Could not update the profile.",
+    dateInFuture: "The date cannot be in the future.",
+    endBeforeStart: "The end date cannot be before the start date.",
     uploadError:
       "Could not upload the file. Check the format (PDF, JPG, PNG) and the 5 MB size limit.",
     publicProfile: "Public profile",

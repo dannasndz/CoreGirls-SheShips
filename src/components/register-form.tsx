@@ -28,7 +28,6 @@ export function RegisterForm({ onSuccess, onError }: RegisterFormProps) {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [institution, setInstitution] = useState("UABC");
   const [campus, setCampus] = useState("");
 
   // Type-specific
@@ -40,17 +39,33 @@ export function RegisterForm({ onSuccess, onError }: RegisterFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     onError("");
+
+    const cleanUsername = username.trim();
+    if (!/^[a-zA-Z0-9._]{3,30}$/.test(cleanUsername)) {
+      onError(
+        "El nombre de usuario debe tener entre 3 y 30 caracteres y solo puede incluir letras, números, punto (.) y guion bajo (_), sin espacios."
+      );
+      return;
+    }
+
+    if (userType === "ALUMNA" && semestre) {
+      const sem = Number(semestre);
+      if (!Number.isInteger(sem) || sem < 1 || sem > 9) {
+        onError("El semestre debe estar entre 1 y 9.");
+        return;
+      }
+    }
+
+    setLoading(true);
 
     const payload: Record<string, unknown> = {
       userType,
       fullName,
       birthDate,
       email,
-      username,
+      username: cleanUsername,
       password,
-      institution,
     };
 
     if (campus) payload.campus = campus;
@@ -111,7 +126,7 @@ export function RegisterForm({ onSuccess, onError }: RegisterFormProps) {
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
           className={inputBase}
-          placeholder="Tu nombre completo"
+          placeholder="Ej. Ana García López"
           required
         />
       </div>
@@ -134,7 +149,7 @@ export function RegisterForm({ onSuccess, onError }: RegisterFormProps) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className={inputBase}
-          placeholder="tu@correo.com"
+          placeholder="ejemplo@uabc.edu.mx"
           required
         />
       </div>
@@ -144,11 +159,23 @@ export function RegisterForm({ onSuccess, onError }: RegisterFormProps) {
         <input
           type="text"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={(e) =>
+            setUsername(e.target.value.replace(/[^a-zA-Z0-9._]/g, "").slice(0, 30))
+          }
           className={inputBase}
-          placeholder="Handle público"
+          placeholder="Ej. ana.garcia"
+          pattern="[A-Za-z0-9._]+"
+          minLength={3}
+          maxLength={30}
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
+          title="Solo letras, números, punto (.) y guion bajo (_), sin espacios"
           required
         />
+        <p className="mt-1 text-[11px] text-dark-purple/40">
+          Solo letras, números, punto (.) y guion bajo (_). Sin espacios.
+        </p>
       </div>
 
       <div>
@@ -168,10 +195,11 @@ export function RegisterForm({ onSuccess, onError }: RegisterFormProps) {
         <label className="block text-sm font-medium text-dark-purple mb-1">Institución</label>
         <input
           type="text"
-          value={institution}
-          onChange={(e) => setInstitution(e.target.value)}
-          className={inputBase}
-          required
+          value="UABC"
+          readOnly
+          aria-readonly="true"
+          tabIndex={-1}
+          className={`${inputBase} cursor-not-allowed bg-cream/60 text-dark-purple/60`}
         />
       </div>
 
@@ -196,7 +224,7 @@ export function RegisterForm({ onSuccess, onError }: RegisterFormProps) {
               value={carrera}
               onChange={(e) => setCarrera(e.target.value)}
               className={inputBase}
-              placeholder="Tu carrera"
+              placeholder="Ej. Ingeniería en Computación"
             />
           </div>
           <div>
@@ -208,6 +236,7 @@ export function RegisterForm({ onSuccess, onError }: RegisterFormProps) {
               className={inputBase}
               placeholder="Ej. 5"
               min={1}
+              max={9}
             />
           </div>
         </>
@@ -221,7 +250,7 @@ export function RegisterForm({ onSuccess, onError }: RegisterFormProps) {
             value={sector}
             onChange={(e) => setSector(e.target.value)}
             className={inputBase}
-            placeholder="Área o sector de trabajo"
+            placeholder="Ej. Tecnología"
           />
         </div>
       )}
@@ -235,7 +264,7 @@ export function RegisterForm({ onSuccess, onError }: RegisterFormProps) {
               value={carrera}
               onChange={(e) => setCarrera(e.target.value)}
               className={inputBase}
-              placeholder="Tu carrera"
+              placeholder="Ej. Ingeniería en Computación"
             />
           </div>
           <div>
@@ -245,7 +274,7 @@ export function RegisterForm({ onSuccess, onError }: RegisterFormProps) {
               value={ocupacion}
               onChange={(e) => setOcupacion(e.target.value)}
               className={inputBase}
-              placeholder="Tu ocupación actual"
+              placeholder="Ej. Ingeniera de software"
             />
           </div>
           <div>

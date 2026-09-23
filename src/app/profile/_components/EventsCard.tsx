@@ -1,5 +1,5 @@
 import { CalendarDays, Clock } from "lucide-react";
-import { formatDate } from "./types";
+import { formatDateOnly } from "./types";
 import type { EventItem } from "./types";
 
 interface EventsCardProps {
@@ -37,7 +37,7 @@ export default function EventsCard({
                   <div className="flex gap-3 mt-1 text-[10px] text-white/80">
                     <span className="flex items-center gap-1">
                       <CalendarDays size={10} />
-                      {formatDate(ev.date)}
+                      {formatDateOnly(ev.date)}
                     </span>
                     <span className="flex items-center gap-1">
                       <Clock size={10} />
@@ -79,7 +79,7 @@ export default function EventsCard({
               <div className="flex items-center gap-3 mt-1 text-xs text-dark-purple/40">
                 <span className="flex items-center gap-1">
                   <CalendarDays size={12} />
-                  {formatDate(ev.date)} {ev.hour}
+                  {formatDateOnly(ev.date)} {ev.hour}
                 </span>
               </div>
             </div>

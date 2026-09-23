@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import {
+  validatePracticeDates,
+  PRACTICE_DATE_ERROR_MESSAGES,
+} from "@/lib/practices-validation";
 
 function parseDate(value: unknown): Date | null | undefined {
   if (value === undefined) return undefined;
@@ -66,6 +70,17 @@ export async function PUT(
 
     const end = parseDate(body.fechaFin);
     if (end !== undefined) data.fechaFin = end;
+
+    const effectiveStart = start ?? owned.practica.fechaInicio;
+    const effectiveEnd = end !== undefined ? end : owned.practica.fechaFin;
+
+    const dateError = validatePracticeDates(effectiveStart, effectiveEnd);
+    if (dateError) {
+      return NextResponse.json(
+        { data: null, error: PRACTICE_DATE_ERROR_MESSAGES[dateError] },
+        { status: 400 }
+      );
+    }
 
     const practica = await prisma.practicaProfesional.update({
       where: { id },

@@ -59,7 +59,7 @@ export default function Navbar() {
           <Link href="/home" className="flex items-center shrink-0">
             <Image
               src="/logo.png"
-              alt="SheShips logo"
+              alt="+Mujeres STEM logo"
               width={48}
               height={40}
               className="object-contain"

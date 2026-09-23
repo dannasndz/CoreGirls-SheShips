@@ -2,7 +2,7 @@
 
 import { Briefcase, CalendarDays } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import { formatDate } from "./types";
+import { formatDateOnly } from "./types";
 import type { PracticeItem } from "./types";
 
 export default function PracticesList({
@@ -33,9 +33,11 @@ export default function PracticesList({
               </div>
               <p className="flex items-center gap-1.5 text-[11px] text-dark-purple/40 mt-1.5">
                 <CalendarDays size={12} />
-                {formatDate(p.fechaInicio)}
+                {formatDateOnly(p.fechaInicio)}
                 {" – "}
-                {p.fechaFin ? formatDate(p.fechaFin) : t("profile.inProgress")}
+                {p.fechaFin
+                  ? formatDateOnly(p.fechaFin)
+                  : t("profile.inProgress")}
               </p>
             </li>
           ))}

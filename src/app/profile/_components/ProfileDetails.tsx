@@ -14,7 +14,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import { formatDate } from "./types";
+import { formatDateOnly } from "./types";
 
 interface ProfileDetailsProps {
   data: {
@@ -186,7 +186,7 @@ export default function ProfileDetails({ data }: ProfileDetailsProps) {
               <InfoRow
                 icon={<CalendarDays size={15} />}
                 label={t("profile.entryDateLabel")}
-                value={formatDate(data.fechaIngresoAlumna)}
+                value={formatDateOnly(data.fechaIngresoAlumna)}
               />
             )}
           </>
@@ -212,7 +212,7 @@ export default function ProfileDetails({ data }: ProfileDetailsProps) {
               <InfoRow
                 icon={<CalendarDays size={15} />}
                 label={t("profile.laborStart")}
-                value={formatDate(data.fechaInicioLabor)}
+                value={formatDateOnly(data.fechaInicioLabor)}
               />
             )}
           </>
@@ -245,14 +245,14 @@ export default function ProfileDetails({ data }: ProfileDetailsProps) {
               <InfoRow
                 icon={<CalendarDays size={15} />}
                 label={t("profile.entryDateLabel")}
-                value={formatDate(data.fechaIngreso)}
+                value={formatDateOnly(data.fechaIngreso)}
               />
             )}
             {data.fechaEgreso && (
               <InfoRow
                 icon={<CalendarDays size={15} />}
                 label={t("profile.graduationDate")}
-                value={formatDate(data.fechaEgreso)}
+                value={formatDateOnly(data.fechaEgreso)}
               />
             )}
           </>

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Briefcase, Pencil, Trash2 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import { formatDate } from "./types";
+import { formatDateOnly } from "./types";
 import type { PracticeItem } from "./types";
 
 const inputBase =
@@ -20,12 +20,24 @@ function toDateInput(value: string | null) {
   return value ? value.slice(0, 10) : "";
 }
 
+function todayISO() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+    d.getDate()
+  ).padStart(2, "0")}`;
+}
+
+function isFutureDate(value: string) {
+  return value.slice(0, 10) > todayISO();
+}
+
 export default function PracticesManager({
   initial,
 }: {
   initial: PracticeItem[];
 }) {
   const { t } = useI18n();
+  const today = todayISO();
   const [items, setItems] = useState<PracticeItem[]>(initial);
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -49,8 +61,25 @@ export default function PracticesManager({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setBusy(true);
     setError("");
+
+    if (isFutureDate(form.fechaInicio)) {
+      setError(t("profile.dateInFuture"));
+      return;
+    }
+
+    if (form.fechaFin) {
+      if (isFutureDate(form.fechaFin)) {
+        setError(t("profile.dateInFuture"));
+        return;
+      }
+      if (form.fechaFin < form.fechaInicio) {
+        setError(t("profile.endBeforeStart"));
+        return;
+      }
+    }
+
+    setBusy(true);
 
     try {
       const res = await fetch(
@@ -118,9 +147,11 @@ export default function PracticesManager({
                   </p>
                   <p className="text-xs text-dark-purple/50">{p.area}</p>
                   <p className="text-[11px] text-dark-purple/40 mt-0.5">
-                    {formatDate(p.fechaInicio)}
+                    {formatDateOnly(p.fechaInicio)}
                     {" – "}
-                    {p.fechaFin ? formatDate(p.fechaFin) : t("profile.inProgress")}
+                    {p.fechaFin
+                      ? formatDateOnly(p.fechaFin)
+                      : t("profile.inProgress")}
                   </p>
                 </div>
               </div>
@@ -182,6 +213,7 @@ export default function PracticesManager({
             <input
               type="date"
               value={form.fechaInicio}
+              max={today}
               onChange={(e) => setForm({ ...form, fechaInicio: e.target.value })}
               className={inputBase}
               required
@@ -194,9 +226,14 @@ export default function PracticesManager({
             <input
               type="date"
               value={form.fechaFin}
+              min={form.fechaInicio || undefined}
+              max={today}
               onChange={(e) => setForm({ ...form, fechaFin: e.target.value })}
               className={inputBase}
             />
+            <p className="text-[10px] text-dark-purple/40 mt-1">
+              {t("profile.endDateHint")}
+            </p>
           </div>
         </div>
         {error && <p className="text-sm text-red-500 font-medium">{error}</p>}

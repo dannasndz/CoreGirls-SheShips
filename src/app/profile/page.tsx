@@ -19,7 +19,7 @@ import {
   Pencil,
 } from "lucide-react";
 import type { ProfileData } from "./_components/types";
-import { formatDate } from "./_components/types";
+import { formatDate, formatDateOnly } from "./_components/types";
 import PostsCard from "./_components/PostsCard";
 import ProfileDetails from "./_components/ProfileDetails";
 import CertificatesList from "./_components/CertificatesList";
@@ -182,7 +182,7 @@ export default function ProfilePage() {
                     <div className="flex items-center gap-3 mt-1 text-[10px] text-white/60">
                       <span className="flex items-center gap-1">
                         <CalendarIcon size={10} />
-                        {formatDate(ev.date)}
+                        {formatDateOnly(ev.date)}
                       </span>
                       <span className="flex items-center gap-1">
                         <Clock size={10} />

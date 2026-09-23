@@ -18,8 +18,9 @@ const baloo2 = Baloo_2({
 });
 
 export const metadata: Metadata = {
-  title: "SheShips",
-  description: "Discover your career path",
+  title: "+MSTEM",
+  description:
+    "Más M, más mujeres en STEM. Inspiramos, informamos y conectamos a mujeres y niñas con el mundo STEM.",
   icons: {
     icon: "/logo.png",
   },

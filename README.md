@@ -1,4 +1,4 @@
-# +Más Mujeres
+# +Mujeres STEM
 
 ## Inspiración
 
@@ -17,9 +17,9 @@ Esto ocurre porque:
 
 Como **tres mujeres mexicanas en tech**, quisimos construir ese espacio.
 
-# Qué hace +Más Mujeres
+# Qué hace +Mujeres STEM
 
-**+Más Mujeres** es una **plataforma web bilingüe (español / inglés)** que ataca la brecha de género en STEM desde tres ángulos principales.
+**+Mujeres STEM** es una **plataforma web bilingüe (español / inglés)** que ataca la brecha de género en STEM desde tres ángulos principales.
 
 ## 1. Descubrimiento
 

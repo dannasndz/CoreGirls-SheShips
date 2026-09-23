@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { RegisterForm } from "@/components/register-form";
 import { useI18n } from "@/lib/i18n";
@@ -15,6 +16,7 @@ interface AuthModalProps {
 
 export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
   const { t } = useI18n();
+  const router = useRouter();
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -44,6 +46,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
       setEmail("");
       setPassword("");
       onSuccess();
+      router.push("/community");
     } catch {
       setError(t("auth.somethingWentWrong"));
     } finally {
@@ -77,7 +80,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full rounded-lg border border-light-pink bg-cream px-3 py-2 text-dark-purple placeholder:text-dark-purple/40 focus:outline-none focus:ring-2 focus:ring-girly-purple"
-                placeholder="tu@correo.com"
+                placeholder="ejemplo@uabc.edu.mx"
                 required
               />
             </div>
@@ -118,6 +121,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
               }).then((result) => {
                 if (!result?.error) {
                   onSuccess();
+                  router.push("/community");
                 }
               });
             }}

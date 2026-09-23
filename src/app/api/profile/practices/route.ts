@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import {
+  validatePracticeDates,
+  PRACTICE_DATE_ERROR_MESSAGES,
+} from "@/lib/practices-validation";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -77,6 +81,14 @@ export async function POST(req: NextRequest) {
         );
       }
       end = parsedEnd;
+    }
+
+    const dateError = validatePracticeDates(start, end);
+    if (dateError) {
+      return NextResponse.json(
+        { data: null, error: PRACTICE_DATE_ERROR_MESSAGES[dateError] },
+        { status: 400 }
+      );
     }
 
     const practica = await prisma.practicaProfesional.create({

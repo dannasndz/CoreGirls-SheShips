@@ -6,6 +6,11 @@ import { UserType, Campus, Prisma } from "@/generated/prisma/client";
 const VALID_USER_TYPES = Object.values(UserType);
 const VALID_CAMPUSES = Object.values(Campus);
 
+const USERNAME_PATTERN = /^[a-zA-Z0-9._]{3,30}$/;
+const INSTITUTION = "UABC";
+const MIN_SEMESTER = 1;
+const MAX_SEMESTER = 9;
+
 function isValidPassword(pw: string) {
   if (pw.length < 8) return false;
   if (!/[A-Z]/.test(pw)) return false;
@@ -23,7 +28,6 @@ export async function POST(req: NextRequest) {
       userType,
       fullName,
       birthDate,
-      institution = "UABC",
       campus,
       carrera,
       semestre,
@@ -35,6 +39,20 @@ export async function POST(req: NextRequest) {
     if (!username || !email || !password || !userType || !fullName || !birthDate) {
       return NextResponse.json(
         { data: null, error: "Missing required fields" },
+        { status: 400 }
+      );
+    }
+
+    const cleanUsername =
+      typeof username === "string" ? username.trim() : "";
+
+    if (!USERNAME_PATTERN.test(cleanUsername)) {
+      return NextResponse.json(
+        {
+          data: null,
+          error:
+            "Username must be 3-30 characters and only contain letters, numbers, dots or underscores (no spaces)",
+        },
         { status: 400 }
       );
     }
@@ -68,7 +86,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const existingUsername = await prisma.user.findUnique({ where: { username } });
+    const existingUsername = await prisma.user.findUnique({
+      where: { username: cleanUsername },
+    });
     if (existingUsername) {
       return NextResponse.json(
         { data: null, error: "Username already taken" },
@@ -85,13 +105,13 @@ export async function POST(req: NextRequest) {
     }
 
     const createData: Prisma.UserUncheckedCreateInput = {
-      username,
+      username: cleanUsername,
       email,
       password: await hashPassword(password),
       userType,
       fullName,
       birthDate: parsedBirthDate,
-      institution,
+      institution: INSTITUTION,
     };
 
     if (campus && VALID_CAMPUSES.includes(campus)) {
@@ -100,7 +120,23 @@ export async function POST(req: NextRequest) {
 
     if (userType === "ALUMNA") {
       if (carrera) createData.carrera = carrera;
-      if (typeof semestre === "number") createData.semestre = semestre;
+      if (semestre !== undefined && semestre !== null && semestre !== "") {
+        const parsedSemester = Number(semestre);
+        if (
+          !Number.isInteger(parsedSemester) ||
+          parsedSemester < MIN_SEMESTER ||
+          parsedSemester > MAX_SEMESTER
+        ) {
+          return NextResponse.json(
+            {
+              data: null,
+              error: `Semester must be between ${MIN_SEMESTER} and ${MAX_SEMESTER}`,
+            },
+            { status: 400 }
+          );
+        }
+        createData.semestre = parsedSemester;
+      }
     } else if (userType === "ACADEMICA") {
       if (sector) createData.sector = sector;
     } else if (userType === "EGRESADA") {

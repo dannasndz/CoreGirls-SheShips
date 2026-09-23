@@ -10,7 +10,7 @@ const es = {
 
   // Hero Section
   hero: {
-    sloganAlt: "Conoce a las mujeres que están cambiando el mundo y únete a ellas",
+    sloganAlt: "Más M, más mujeres en STEM.",
     subtitle: "Realiza nuestro quiz y descubre tu camino en STEM",
     takeTheQuiz: "Haz el Quiz",
     explore: "Explorar",
@@ -101,7 +101,7 @@ const es = {
     coreGirls: "Core Girls",
     teamDescription:
       "Somos un equipo de tres mujeres apasionadas de México que creen que cada niña merece verse representada en STEM.",
-    projectName: "+Más Mujeres",
+    projectName: "+Mujeres STEM",
     projectDescription:
       "Nuestro proyecto nació para inspirar, informar y conectar a niñas y mujeres con el mundo STEM.",
     sheships: "💜 #SheShips",
@@ -337,7 +337,7 @@ const es = {
     myself: "Yo",
     custom: "Personalizado",
     organizerNameLabel: "Nombre del organizador",
-    organizerNamePlaceholder: "ej. Comunidad SheShips",
+    organizerNamePlaceholder: "ej. Comunidad +Mujeres STEM",
     participantsLimit: "Límite de Participantes",
     unlimited: "Sin límite",
     externalLink: "Enlace de Información Externa (opcional)",
@@ -388,7 +388,7 @@ const es = {
   // Auth Modal
   auth: {
     welcomeBack: "¡Bienvenida de nuevo!",
-    joinSheShips: "Únete a SheShips",
+    joinSheShips: "Únete a +Mujeres STEM",
     email: "Correo electrónico",
     emailPlaceholder: "tu@correo.com",
     username: "Usuario",
@@ -456,15 +456,16 @@ const es = {
     delete: "Eliminar",
     confirmDelete: "¿Seguro que deseas eliminar este elemento?",
     viewFile: "Ver archivo",
-    practices: "Prácticas y servicio social",
-    noPractices: "Aún no hay prácticas registradas",
-    addPractice: "Agregar práctica",
-    editPractice: "Editar práctica",
+    practices: "Experiencia",
+    noPractices: "Aún no hay experiencias registradas",
+    addPractice: "Agregar experiencia",
+    editPractice: "Editar experiencia",
     company: "Empresa / Institución",
     area: "Área",
     startDate: "Fecha de inicio",
     endDate: "Fecha de fin",
-    inProgress: "En curso",
+    endDateHint: "Déjala vacía si la experiencia sigue en curso.",
+    inProgress: "Actualidad",
     projects: "Proyectos",
     noProjects: "Aún no hay proyectos",
     accountStatus: "Estado de la cuenta",
@@ -488,6 +489,8 @@ const es = {
     selectPlaceholder: "Selecciona una opción",
     updated: "Perfil actualizado correctamente.",
     updateError: "No se pudo actualizar el perfil.",
+    dateInFuture: "La fecha no puede estar en el futuro.",
+    endBeforeStart: "La fecha de fin no puede ser anterior a la de inicio.",
     uploadError:
       "No se pudo subir el archivo. Verifica el formato (PDF, JPG, PNG) y el tamaño máximo de 5 MB.",
     publicProfile: "Perfil público",

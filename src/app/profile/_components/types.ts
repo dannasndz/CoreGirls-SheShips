@@ -109,3 +109,20 @@ export function formatDate(dateStr: string) {
     day: "numeric",
   });
 }
+
+/**
+ * Formatea fechas "solo día" (YYYY-MM-DD o ISO) sin desfase por zona horaria.
+ * Usar para fechas de calendario (experiencias, eventos, ingreso/egreso), no
+ * para timestamps como createdAt/uploadedAt.
+ */
+export function formatDateOnly(dateStr: string | null | undefined) {
+  if (!dateStr) return "";
+  const parts = dateStr.slice(0, 10).split("-").map(Number);
+  const [y, m, d] = parts;
+  if (!y || !m || !d) return formatDate(dateStr);
+  return new Date(y, m - 1, d).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}

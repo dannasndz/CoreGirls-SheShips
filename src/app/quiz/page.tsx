@@ -219,7 +219,7 @@ export default function QuizPage() {
             <Link href="/home" className="fixed top-3 left-3 z-50 sm:top-4 sm:left-4">
                 <Image
                     src="/logoBlanco.png"
-                    alt="SheShips logo"
+                    alt="+Mujeres STEM logo"
                     width={40}
                     height={40}
                     className="object-contain sm:w-12 sm:h-12"

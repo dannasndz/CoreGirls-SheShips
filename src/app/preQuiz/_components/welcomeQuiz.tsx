@@ -114,7 +114,7 @@ export default function WelcomeQuiz() {
                 <Link href="/home" className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20">
                     <Image
                         src="/logoBlanco.png"
-                        alt="SheShips logo"
+                        alt="+Mujeres STEM logo"
                         width={40}
                         height={40}
                         className="object-contain w-9 h-9 sm:w-12 sm:h-12"
