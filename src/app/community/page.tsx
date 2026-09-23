@@ -178,6 +178,20 @@ export default function CommunityPage() {
     }
   };
 
+  const handlePostDeleted = (postId: string) => {
+    setPosts((prev) => prev.filter((p) => p.id !== postId));
+    setLikedPosts((prev) => prev.filter((p) => p.id !== postId));
+  };
+
+  const handlePostUpdated = (updated: PostData) => {
+    setPosts((prev) =>
+      prev.map((p) => (p.id === updated.id ? { ...p, ...updated } : p))
+    );
+    setLikedPosts((prev) =>
+      prev.map((p) => (p.id === updated.id ? { ...p, ...updated } : p))
+    );
+  };
+
   const handleCreatePost = async (data: {
     title: string;
     content: string;
@@ -455,6 +469,8 @@ export default function CommunityPage() {
                     post={post}
                     onLike={handleLike}
                     commentsApiBase={`/api/forum/posts/${post.id}`}
+                    onDeleted={handlePostDeleted}
+                    onUpdated={handlePostUpdated}
                   />
                 ))}
               </>
@@ -488,6 +504,8 @@ export default function CommunityPage() {
                     post={post}
                     onLike={handleLikedPostLike}
                     commentsApiBase={`/api/forum/posts/${post.id}`}
+                    onDeleted={handlePostDeleted}
+                    onUpdated={handlePostUpdated}
                   />
                 ))}
               </>

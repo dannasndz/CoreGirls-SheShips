@@ -118,6 +118,16 @@ export default function GroupPage({
     }
   };
 
+  const handlePostDeleted = (postId: string) => {
+    setPosts((prev) => prev.filter((p) => p.id !== postId));
+  };
+
+  const handlePostUpdated = (updated: PostData) => {
+    setPosts((prev) =>
+      prev.map((p) => (p.id === updated.id ? { ...p, ...updated } : p))
+    );
+  };
+
   const handleCreatePost = async (data: {
     title: string;
     content: string;
@@ -261,6 +271,8 @@ export default function GroupPage({
                     post={post}
                     onLike={handleLike}
                     commentsApiBase={`/api/groups/${groupId}/posts/${post.id}`}
+                    onDeleted={handlePostDeleted}
+                    onUpdated={handlePostUpdated}
                   />
                 ))}
             </div>

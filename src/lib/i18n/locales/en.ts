@@ -243,6 +243,21 @@ const en = {
     placeholder: "Write a comment...",
   },
 
+  // Post actions
+  post: {
+    options: "Options",
+    edit: "Edit",
+    delete: "Delete",
+    save: "Save",
+    cancel: "Cancel",
+    confirmDelete: "Are you sure you want to delete this post?",
+    titlePlaceholder: "Post title",
+    contentPlaceholder: "Write your post...",
+    required: "Title and content are required.",
+    saveError: "Could not save the post.",
+    deleteError: "Could not delete the post.",
+  },
+
   // Time
   time: {
     mAgo: "{n}m ago",
@@ -529,6 +544,8 @@ const en = {
     all: "All",
     previous: "Previous",
     nextPage: "Next",
+    cancel: "Cancel",
+    delete: "Delete",
   },
 } as const;
 

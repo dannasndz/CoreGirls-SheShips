@@ -243,6 +243,21 @@ const es = {
     placeholder: "Escribe un comentario...",
   },
 
+  // Post actions
+  post: {
+    options: "Opciones",
+    edit: "Editar",
+    delete: "Eliminar",
+    save: "Guardar",
+    cancel: "Cancelar",
+    confirmDelete: "¿Seguro que deseas eliminar esta publicación?",
+    titlePlaceholder: "Título de la publicación",
+    contentPlaceholder: "Escribe tu publicación...",
+    required: "El título y el contenido son obligatorios.",
+    saveError: "No se pudo guardar la publicación.",
+    deleteError: "No se pudo eliminar la publicación.",
+  },
+
   // Time
   time: {
     mAgo: "hace {n}m",
@@ -529,6 +544,8 @@ const es = {
     all: "Todos",
     previous: "Anterior",
     nextPage: "Siguiente",
+    cancel: "Cancelar",
+    delete: "Eliminar",
   },
 } as const;
 

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Briefcase, Pencil, Trash2 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { formatDateOnly } from "./types";
 import type { PracticeItem } from "./types";
 
@@ -43,6 +44,8 @@ export default function PracticesManager({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const resetForm = () => {
     setForm(emptyForm);
@@ -113,16 +116,22 @@ export default function PracticesManager({
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm(t("profile.confirmDelete"))) return;
+  const confirmDelete = async () => {
+    if (!confirmId) return;
+    setDeleting(true);
     try {
-      const res = await fetch(`/api/profile/practices/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/profile/practices/${confirmId}`, {
+        method: "DELETE",
+      });
       if (res.ok) {
-        setItems((prev) => prev.filter((p) => p.id !== id));
-        if (editingId === id) resetForm();
+        setItems((prev) => prev.filter((p) => p.id !== confirmId));
+        if (editingId === confirmId) resetForm();
       }
     } catch {
       // ignore
+    } finally {
+      setDeleting(false);
+      setConfirmId(null);
     }
   };
 
@@ -166,7 +175,7 @@ export default function PracticesManager({
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleDelete(p.id)}
+                  onClick={() => setConfirmId(p.id)}
                   className="text-red-400 hover:text-red-600"
                   aria-label={t("profile.delete")}
                 >
@@ -256,6 +265,14 @@ export default function PracticesManager({
           )}
         </div>
       </form>
+
+      <ConfirmDialog
+        open={confirmId !== null}
+        message={t("profile.confirmDelete")}
+        busy={deleting}
+        onCancel={() => setConfirmId(null)}
+        onConfirm={confirmDelete}
+      />
     </div>
   );
 }

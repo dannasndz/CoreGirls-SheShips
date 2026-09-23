@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Award, ExternalLink, Loader2, Trash2 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { uploadFile } from "@/lib/blob-upload";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { formatDate } from "./types";
 import type { CertificateItem } from "./types";
 
@@ -23,6 +24,8 @@ export default function CertificatesManager({
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,17 +57,21 @@ export default function CertificatesManager({
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm(t("profile.confirmDelete"))) return;
+  const confirmDelete = async () => {
+    if (!confirmId) return;
+    setDeleting(true);
     try {
-      const res = await fetch(`/api/profile/certificates/${id}`, {
+      const res = await fetch(`/api/profile/certificates/${confirmId}`, {
         method: "DELETE",
       });
       if (res.ok) {
-        setItems((prev) => prev.filter((c) => c.id !== id));
+        setItems((prev) => prev.filter((c) => c.id !== confirmId));
       }
     } catch {
       // ignore
+    } finally {
+      setDeleting(false);
+      setConfirmId(null);
     }
   };
 
@@ -104,7 +111,7 @@ export default function CertificatesManager({
                 </a>
                 <button
                   type="button"
-                  onClick={() => handleDelete(c.id)}
+                  onClick={() => setConfirmId(c.id)}
                   className="text-red-400 hover:text-red-600"
                   aria-label={t("profile.delete")}
                 >
@@ -146,6 +153,14 @@ export default function CertificatesManager({
           {busy ? t("profile.uploading") : t("profile.uploadCertificate")}
         </button>
       </form>
+
+      <ConfirmDialog
+        open={confirmId !== null}
+        message={t("profile.confirmDelete")}
+        busy={deleting}
+        onCancel={() => setConfirmId(null)}
+        onConfirm={confirmDelete}
+      />
     </div>
   );
 }
