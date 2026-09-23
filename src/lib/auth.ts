@@ -24,7 +24,12 @@ export const authOptions: NextAuthOptions = {
         const isValid = await verifyPassword(credentials.password, user.password);
         if (!isValid) return null;
 
-        return { id: user.id, name: user.username, email: user.email };
+        return {
+          id: user.id,
+          name: user.username,
+          email: user.email,
+          userType: user.userType,
+        };
       },
     }),
   ],
@@ -34,6 +39,15 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.name = user.name ?? "";
         token.email = user.email ?? "";
+        token.userType = (user as { userType?: string }).userType ?? "";
+      }
+      // Sesiones previas (emitidas antes de incluir userType) se completan aquí.
+      if (token.id && !token.userType) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { userType: true },
+        });
+        token.userType = dbUser?.userType ?? "";
       }
       return token;
     },
@@ -42,6 +56,7 @@ export const authOptions: NextAuthOptions = {
         id: token.id as string,
         name: token.name as string,
         email: token.email as string,
+        userType: token.userType as string,
       };
       return session;
     },

@@ -91,6 +91,60 @@ export interface EventData {
   _count: { attendees: number };
 }
 
+export interface ProjectUser {
+  id: string;
+  username: string;
+  fullName?: string;
+  avatarUrl?: string | null;
+  userType?: string;
+}
+
+export interface ProjectSolicitudData {
+  id: string;
+  estado: string;
+  message: string | null;
+  createdAt: string;
+  decidedAt: string | null;
+  userId: string;
+  user: ProjectUser;
+}
+
+export interface ProjectData {
+  id: string;
+  nombre: string;
+  descripcion: string;
+  areasSTEM: string[];
+  imagenes: string[];
+  estado: string;
+  anio: number | null;
+  fechaPublicacion: string;
+  fechaInicio: string | null;
+  fechaFin: string | null;
+  lugar: string | null;
+  modalidad: string | null;
+  cupoMaximo: number | null;
+  perfilInteresadas: string | null;
+  createdAt: string;
+  encargadas: ProjectUser[];
+  interestedByMe: boolean;
+  acceptedCount: number;
+  mySolicitud: { id: string; estado: string } | null;
+  solicitudes: ProjectSolicitudData[];
+  _count: { interesadas: number; solicitudes: number };
+}
+
+export function formatProjectDate(dateStr: string | null, locale: Locale = "es") {
+  if (!dateStr) return "";
+  const parts = dateStr.slice(0, 10).split("-").map(Number);
+  const [y, m, d] = parts;
+  const date = y && m && d ? new Date(y, m - 1, d) : new Date(dateStr);
+  return date.toLocaleDateString(locale === "es" ? "es-ES" : "en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
 export function formatEventDate(dateStr: string, locale: Locale = "es") {
   return new Date(dateStr).toLocaleDateString(locale === "es" ? "es-ES" : "en-US", {
     weekday: "short",

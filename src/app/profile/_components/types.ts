@@ -67,10 +67,13 @@ export interface ProjectItem {
   id: string;
   nombre: string;
   descripcion: string;
-  areaSTEM: string | null;
+  areasSTEM: string[];
+  imagenes: string[];
   estado: string;
   anio: number | null;
-  fecha: string | null;
+  fechaPublicacion: string;
+  fechaInicio: string | null;
+  fechaFin: string | null;
   lugar: string | null;
   modalidad: string | null;
   cupoMaximo: number | null;

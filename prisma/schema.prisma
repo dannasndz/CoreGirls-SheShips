@@ -107,6 +107,9 @@ model User {
   proyectos          Proyecto[]
   referentesManuales ReferenteManual[]
 
+  proyectoIntereses ProyectoInteres[]
+  proyectoSolicitudes ProyectoSolicitud[]
+
   posts             Post[]
   likes             Like[]
   comments          Comment[]
@@ -168,19 +171,52 @@ model Proyecto {
   id                String    @id @default(cuid())
   nombre            String
   descripcion       String
-  areaSTEM          AreaSTEM?
+  areasSTEM         Json?     @default("[]")
+  imagenes          Json?     @default("[]")
   estado            String    // "abierto" | "en_progreso" | "concluido" | "cerrado"
   anio              Int?
-  fecha             DateTime?
+  fechaPublicacion  DateTime  @default(now())
+  fechaInicio       DateTime?
+  fechaFin          DateTime?
   lugar             String?
   modalidad         String?   // "presencial" | "virtual" | "hibrido"
   cupoMaximo        Int?
   perfilInteresadas String?
 
-  encargadaId String
-  encargada   User   @relation(fields: [encargadaId], references: [id])
+  encargadas  User[]
+  interesadas ProyectoInteres[]
+  solicitudes ProyectoSolicitud[]
 
   createdAt DateTime @default(now())
+}
+
+// Solicitudes de ingreso a un proyecto. Las encargadas las aceptan o rechazan.
+model ProyectoSolicitud {
+  id        String    @id @default(cuid())
+  estado    String    @default("pendiente") // "pendiente" | "aceptada" | "rechazada"
+  message   String?
+  createdAt DateTime  @default(now())
+  decidedAt DateTime?
+
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  proyectoId String
+  proyecto   Proyecto @relation(fields: [proyectoId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, proyectoId])
+}
+
+// Alumnas que expresan interés en un proyecto (RF-14).
+model ProyectoInteres {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  proyectoId String
+  proyecto   Proyecto @relation(fields: [proyectoId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, proyectoId])
 }
 
 // ============================================================

@@ -3,19 +3,21 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { AuthModal } from "@/components/auth-modal";
-import { Plus, Home, Heart, Users as UsersIcon, Calendar as CalendarIcon } from "lucide-react";
-import { PostData, GroupData, EventData, STEM_CATEGORIES } from "./_components/helpers";
+import { Plus, Home, Heart, Users as UsersIcon, Calendar as CalendarIcon, FolderKanban } from "lucide-react";
+import { PostData, GroupData, EventData, ProjectData, STEM_CATEGORIES } from "./_components/helpers";
 import { useI18n } from "@/lib/i18n";
 import { PostCard } from "./_components/post-card";
 import { CreatePostForm } from "./_components/create-post-form";
 import { CreateGroupModal } from "./_components/create-group-modal";
 import { CreateEventModal } from "./_components/create-event-modal";
+import { CreateProjectModal } from "./_components/create-project-modal";
 import { LeftSidebar } from "./_components/left-sidebar";
 import { RightSidebar } from "./_components/right-sidebar";
 import { GroupsList } from "./_components/groups-list";
 import { EventsList } from "./_components/events-list";
+import { ProjectsList } from "./_components/projects-list";
 
-type View = "feed" | "groups" | "liked" | "events";
+type View = "feed" | "groups" | "liked" | "events" | "projects";
 const filterOptions = ["All", ...STEM_CATEGORIES];
 const PAGE_SIZE = 20;
 
@@ -27,14 +29,18 @@ export default function CommunityPage() {
   const [groups, setGroups] = useState<GroupData[]>([]);
   const [events, setEvents] = useState<EventData[]>([]);
   const [attendingIds, setAttendingIds] = useState<Set<string>>(new Set());
+  const [projects, setProjects] = useState<ProjectData[]>([]);
   const [activeView, setActiveView] = useState<View>("feed");
   const [activeCategory, setActiveCategory] = useState("All");
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [showCreateGroup, setShowCreateGroup] = useState(false);
   const [showCreateEvent, setShowCreateEvent] = useState(false);
+  const [showCreateProject, setShowCreateProject] = useState(false);
+  const [editingProject, setEditingProject] = useState<ProjectData | null>(null);
   const [editingEvent, setEditingEvent] = useState<EventData | null>(null);
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [loadingEvents, setLoadingEvents] = useState(true);
+  const [loadingProjects, setLoadingProjects] = useState(true);
   const [likedPosts, setLikedPosts] = useState<PostData[]>([]);
   const [loadingLiked, setLoadingLiked] = useState(false);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
@@ -119,6 +125,19 @@ export default function CommunityPage() {
     }
   }, []);
 
+  const fetchProjects = useCallback(async () => {
+    setLoadingProjects(true);
+    try {
+      const res = await fetch("/api/projects");
+      const data = await res.json();
+      if (data.data) setProjects(data.data);
+    } catch {
+      // ignore
+    } finally {
+      setLoadingProjects(false);
+    }
+  }, []);
+
   // Fetch which events current user is attending
   const fetchAttendingIds = useCallback(async () => {
     if (!session) return;
@@ -156,8 +175,9 @@ export default function CommunityPage() {
       fetchPosts();
       fetchGroups();
       fetchEvents();
+      fetchProjects();
     }
-  }, [status, fetchPosts, fetchGroups, fetchEvents]);
+  }, [status, fetchPosts, fetchGroups, fetchEvents, fetchProjects]);
 
   useEffect(() => {
     if (activeView === "liked" && status === "authenticated") {
@@ -261,6 +281,74 @@ export default function CommunityPage() {
       // ignore
     }
     return false;
+  };
+
+  const handleProjectInterest = async (projectId: string) => {
+    try {
+      const res = await fetch(`/api/projects/${projectId}/interest`, {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (data.data) {
+        setProjects((prev) =>
+          prev.map((p) =>
+            p.id === projectId
+              ? {
+                  ...p,
+                  interestedByMe: data.data.interested,
+                  _count: { ...p._count, interesadas: data.data.count },
+                }
+              : p
+          )
+        );
+      }
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleProjectRequest = async (projectId: string) => {
+    try {
+      const res = await fetch(`/api/projects/${projectId}/request`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+      if (res.ok) fetchProjects();
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleCancelProjectRequest = async (projectId: string) => {
+    try {
+      const res = await fetch(`/api/projects/${projectId}/request`, {
+        method: "DELETE",
+      });
+      if (res.ok) fetchProjects();
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleDecideProjectRequest = async (
+    projectId: string,
+    requestId: string,
+    estado: "aceptada" | "rechazada"
+  ) => {
+    try {
+      const res = await fetch(
+        `/api/projects/${projectId}/requests/${requestId}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ estado }),
+        }
+      );
+      if (res.ok) fetchProjects();
+    } catch {
+      // ignore
+    }
   };
 
   const handleAttendEvent = async (eventId: string) => {
@@ -403,6 +491,7 @@ export default function CommunityPage() {
                   { key: "feed", label: t("community.home"), icon: <Home size={22} /> },
                   { key: "liked", label: t("community.liked"), icon: <Heart size={22} /> },
                   { key: "groups", label: t("community.groups"), icon: <UsersIcon size={22} /> },
+                  { key: "projects", label: t("community.projects"), icon: <FolderKanban size={22} /> },
                   { key: "events", label: t("community.events"), icon: <CalendarIcon size={22} /> },
                 ] as const
               ).map((item) => (
@@ -593,6 +682,27 @@ export default function CommunityPage() {
               />
             )}
 
+            {activeView === "projects" && (
+              <ProjectsList
+                projects={projects}
+                loading={loadingProjects}
+                onCreateProject={() => {
+                  setEditingProject(null);
+                  setShowCreateProject(true);
+                }}
+                onEditProject={(project) => {
+                  setEditingProject(project);
+                  setShowCreateProject(true);
+                }}
+                onInterest={handleProjectInterest}
+                onRequest={handleProjectRequest}
+                onCancelRequest={handleCancelProjectRequest}
+                onDecideRequest={handleDecideProjectRequest}
+                currentUserType={session.user.userType}
+                currentUserId={session.user.id}
+              />
+            )}
+
             {activeView === "groups" && (
               <GroupsList
                 groups={groups}
@@ -619,6 +729,22 @@ export default function CommunityPage() {
         onCreated={() => {
           fetchGroups();
         }}
+      />
+
+      <CreateProjectModal
+        open={showCreateProject}
+        onClose={() => {
+          setShowCreateProject(false);
+          setEditingProject(null);
+        }}
+        onSaved={() => {
+          fetchProjects();
+        }}
+        currentUser={{
+          id: session?.user?.id ?? "",
+          username: session?.user?.name ?? "",
+        }}
+        editProject={editingProject}
       />
 
       <CreateEventModal

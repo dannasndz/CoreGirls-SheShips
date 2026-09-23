@@ -1,8 +1,9 @@
 "use client";
 
-import { FolderKanban, MapPin, Users } from "lucide-react";
+import Image from "next/image";
+import { FolderKanban, MapPin, Users, CalendarDays } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import type { ProjectItem } from "./types";
+import { formatDateOnly, type ProjectItem } from "./types";
 
 export default function ProjectsList({ proyectos }: { proyectos: ProjectItem[] }) {
   const { t } = useI18n();
@@ -16,7 +17,7 @@ export default function ProjectsList({ proyectos }: { proyectos: ProjectItem[] }
       {proyectos.length > 0 ? (
         <div className="space-y-3">
           {proyectos.map((p) => {
-            const areaLabel = p.areaSTEM ? t(`profile.areas.${p.areaSTEM}`) : "";
+            const imagenes = p.imagenes ?? [];
             return (
               <div key={p.id} className="rounded-xl bg-cream/60 px-4 py-3">
                 <div className="flex items-start justify-between gap-2">
@@ -32,13 +33,33 @@ export default function ProjectsList({ proyectos }: { proyectos: ProjectItem[] }
                 <p className="text-xs text-dark-purple/60 mt-1 line-clamp-3">
                   {p.descripcion}
                 </p>
+
+                {imagenes.length > 0 && (
+                  <div className="flex gap-1.5 mt-2">
+                    {imagenes.slice(0, 4).map((url) => (
+                      <span
+                        key={url}
+                        className="relative h-14 w-14 rounded-lg overflow-hidden bg-white shrink-0"
+                      >
+                        <Image
+                          src={url}
+                          alt={p.nombre}
+                          fill
+                          unoptimized
+                          className="object-cover"
+                        />
+                      </span>
+                    ))}
+                  </div>
+                )}
+
                 <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-[11px] text-dark-purple/50">
-                  {areaLabel && (
-                    <span className="flex items-center gap-1">
+                  {(p.areasSTEM ?? []).map((area) => (
+                    <span key={area} className="flex items-center gap-1">
                       <FolderKanban size={12} />
-                      {areaLabel}
+                      {t(`profile.areas.${area}`)}
                     </span>
-                  )}
+                  ))}
                   {p.lugar && (
                     <span className="flex items-center gap-1">
                       <MapPin size={12} />
@@ -49,6 +70,14 @@ export default function ProjectsList({ proyectos }: { proyectos: ProjectItem[] }
                     <span className="flex items-center gap-1">
                       <Users size={12} />
                       {p.cupoMaximo}
+                    </span>
+                  )}
+                  {(p.fechaInicio || p.fechaFin) && (
+                    <span className="flex items-center gap-1">
+                      <CalendarDays size={12} />
+                      {formatDateOnly(p.fechaInicio)}
+                      {p.fechaInicio && p.fechaFin ? " – " : ""}
+                      {formatDateOnly(p.fechaFin)}
                     </span>
                   )}
                   {p.anio != null && <span>{p.anio}</span>}

@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { signOut } from "next-auth/react";
-import { Home, Users, Heart, Calendar, LogOut, Plus } from "lucide-react";
+import { Home, Users, Heart, Calendar, LogOut, Plus, FolderKanban } from "lucide-react";
 import { GroupData } from "./helpers";
 import { useI18n } from "@/lib/i18n";
 
-type View = "feed" | "groups" | "liked" | "events";
+type View = "feed" | "groups" | "liked" | "events" | "projects";
 
 interface LeftSidebarProps {
   activeView: View;
@@ -69,6 +69,16 @@ export function LeftSidebar({
           >
             <Calendar size={18} />
             {t("sidebar.events")}
+          </button>
+          <button
+            onClick={() => onViewChange("projects")}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-sm w-full text-left transition ${activeView === "projects"
+                ? "bg-girly-purple/10 text-girly-purple"
+                : "text-dark-purple hover:bg-girly-purple/10"
+              }`}
+          >
+            <FolderKanban size={18} />
+            {t("sidebar.projects")}
           </button>
         </nav>
       </div>
