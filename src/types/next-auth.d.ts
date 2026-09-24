@@ -7,6 +7,8 @@ declare module "next-auth" {
       name: string;
       email: string;
       userType: string;
+      accountStatus: string;
+      isAdmin: boolean;
     };
   }
 }
@@ -17,5 +19,7 @@ declare module "next-auth/jwt" {
     name: string;
     email: string;
     userType: string;
+    accountStatus: string;
+    isAdmin: boolean;
   }
 }

@@ -4,16 +4,22 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import {
+  canCreateEvent,
+  validateEventInput,
+} from "@/lib/events-validation";
+
+const eventInclude = {
+  createdBy: { select: { id: true, username: true, avatarUrl: true } },
+  _count: { select: { attendees: true } },
+} as const;
 
 export async function GET() {
   try {
     const events = await prisma.event.findMany({
       where: { estado: "PUBLICADO" },
       orderBy: { date: "asc" },
-      include: {
-        createdBy: { select: { id: true, username: true, avatarUrl: true } },
-        _count: { select: { attendees: true } },
-      },
+      include: eventInclude,
     });
 
     return NextResponse.json({ data: events, error: null });
@@ -29,78 +35,59 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session) {
+    if (!session?.user?.id) {
       return NextResponse.json(
         { data: null, error: "Unauthorized" },
         { status: 401 }
       );
     }
 
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { userType: true, accountStatus: true, isAdmin: true },
+    });
+
+    if (!canCreateEvent(user ?? {})) {
+      return NextResponse.json(
+        {
+          data: null,
+          error: "You do not have permission to create events",
+        },
+        { status: 403 }
+      );
+    }
+
     const body = await req.json();
-    const {
-      title,
-      description,
-      modality,
-      location,
-      meetingLink,
-      externalLink,
-      date,
-      hour,
-      participantsLimit,
-      organizerName,
-      estado,
-    } = body;
-
-    if (!title?.trim() || !description?.trim() || !modality || !date || !hour || !organizerName?.trim()) {
+    const result = validateEventInput(body);
+    if (!result.ok) {
       return NextResponse.json(
-        { data: null, error: "Missing required fields" },
+        { data: null, error: result.message },
         { status: 400 }
       );
     }
 
-    const validModalities = ["in-person", "remote", "hybrid"];
-    if (!validModalities.includes(modality)) {
-      return NextResponse.json(
-        { data: null, error: "Invalid modality" },
-        { status: 400 }
-      );
-    }
-
-    if ((modality === "in-person" || modality === "hybrid") && !location?.trim()) {
-      return NextResponse.json(
-        { data: null, error: "Location is required for in-person/hybrid events" },
-        { status: 400 }
-      );
-    }
-
-    if ((modality === "remote" || modality === "hybrid") && !meetingLink?.trim()) {
-      return NextResponse.json(
-        { data: null, error: "Meeting link is required for remote/hybrid events" },
-        { status: 400 }
-      );
-    }
-
-    const eventEstado = estado === "BORRADOR" ? "BORRADOR" : "PUBLICADO";
+    const organizerName =
+      (typeof body.organizerName === "string" && body.organizerName.trim()) ||
+      session.user.name ||
+      "Comunidad +Mujeres STEM";
 
     const event = await prisma.event.create({
       data: {
-        title: title.trim(),
-        description: description.trim(),
-        modality,
-        location: location?.trim() || null,
-        meetingLink: meetingLink?.trim() || null,
-        externalLink: externalLink?.trim() || null,
-        date: new Date(date),
-        hour: hour.trim(),
-        participantsLimit: participantsLimit ? Number(participantsLimit) : null,
-        organizerName: organizerName.trim(),
-        estado: eventEstado,
+        title: result.data.title,
+        description: result.data.description,
+        modality: result.data.modalityDb,
+        location: result.data.location,
+        meetingLink: result.data.meetingLink,
+        externalLink: result.data.externalLink,
+        date: result.data.date,
+        hour: result.data.hour,
+        participantsLimit: result.data.participantsLimit,
+        imageUrl: result.data.imageUrl,
+        estado: result.data.estadoDb,
+        organizerName,
         createdById: session.user.id,
       },
-      include: {
-        createdBy: { select: { id: true, username: true, avatarUrl: true } },
-        _count: { select: { attendees: true } },
-      },
+      include: eventInclude,
     });
 
     return NextResponse.json({ data: event, error: null }, { status: 201 });

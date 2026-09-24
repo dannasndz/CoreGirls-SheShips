@@ -349,13 +349,14 @@ model Event {
   id                String       @id @default(cuid())
   title             String
   description       String
-  modality          String       // "in-person", "remote", "hybrid"
-  location          String?      // required if in-person or hybrid
-  meetingLink       String?      // required if remote or hybrid
+  modality          String       // "presencial" | "virtual" | "hibrido"
+  location          String?      // required if presencial or hibrido
+  meetingLink       String?      // required if virtual or hibrido
   externalLink      String?      // optional link to external info page
   date              DateTime
   hour              String       // e.g. "14:00"
   participantsLimit Int?
+  imageUrl          String?
   organizerName     String
   estado            EstadoEvento @default(BORRADOR)
   createdAt         DateTime     @default(now())

@@ -29,6 +29,8 @@ export const authOptions: NextAuthOptions = {
           name: user.username,
           email: user.email,
           userType: user.userType,
+          accountStatus: user.accountStatus,
+          isAdmin: user.isAdmin,
         };
       },
     }),
@@ -40,14 +42,21 @@ export const authOptions: NextAuthOptions = {
         token.name = user.name ?? "";
         token.email = user.email ?? "";
         token.userType = (user as { userType?: string }).userType ?? "";
+        token.accountStatus =
+          (user as { accountStatus?: string }).accountStatus ?? "";
+        token.isAdmin = (user as { isAdmin?: boolean }).isAdmin ?? false;
       }
-      // Sesiones previas (emitidas antes de incluir userType) se completan aquí.
-      if (token.id && !token.userType) {
+      // Sesiones previas se completan aquí.
+      if (token.id && (!token.userType || !token.accountStatus)) {
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id as string },
-          select: { userType: true },
+          select: { userType: true, accountStatus: true, isAdmin: true },
         });
-        token.userType = dbUser?.userType ?? "";
+        token.userType = token.userType || dbUser?.userType || "";
+        token.accountStatus = token.accountStatus || dbUser?.accountStatus || "";
+        if (token.isAdmin === undefined) {
+          token.isAdmin = dbUser?.isAdmin ?? false;
+        }
       }
       return token;
     },
@@ -57,6 +66,8 @@ export const authOptions: NextAuthOptions = {
         name: token.name as string,
         email: token.email as string,
         userType: token.userType as string,
+        accountStatus: token.accountStatus as string,
+        isAdmin: Boolean(token.isAdmin),
       };
       return session;
     },

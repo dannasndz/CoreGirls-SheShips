@@ -84,6 +84,7 @@ export interface EventData {
   date: string;
   hour: string;
   participantsLimit: number | null;
+  imageUrl: string | null;
   organizerName: string;
   estado: string;
   createdAt: string;

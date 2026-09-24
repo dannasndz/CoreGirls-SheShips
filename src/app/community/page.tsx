@@ -6,6 +6,7 @@ import { AuthModal } from "@/components/auth-modal";
 import { Plus, Home, Heart, Users as UsersIcon, Calendar as CalendarIcon, FolderKanban } from "lucide-react";
 import { PostData, GroupData, EventData, ProjectData, STEM_CATEGORIES } from "./_components/helpers";
 import { useI18n } from "@/lib/i18n";
+import { canCreateEvent } from "@/lib/events-validation";
 import { PostCard } from "./_components/post-card";
 import { CreatePostForm } from "./_components/create-post-form";
 import { CreateGroupModal } from "./_components/create-group-modal";
@@ -403,39 +404,20 @@ export default function CommunityPage() {
     }
   };
 
-  const handleShareEventToForum = (event: EventData) => {
-    setActiveView("feed");
-    setShowCreatePost(true);
-    // We'll pre-fill via a small delay so the form mounts first
-    setTimeout(() => {
-      const titleInput = document.querySelector<HTMLInputElement>(
-        'input[placeholder="Post title"]'
-      );
-      const contentInput = document.querySelector<HTMLTextAreaElement>(
-        'textarea[placeholder="What\'s on your mind?"]'
-      );
-      if (titleInput) titleInput.value = `Event: ${event.title}`;
-      if (contentInput)
-        contentInput.value = `Join us for "${event.title}"!\n\n${event.description}\n\nDate: ${new Date(event.date).toLocaleDateString()} at ${event.hour}\nModality: ${event.modality}${event.location ? `\nLocation: ${event.location}` : ""}${event.meetingLink ? `\nLink: ${event.meetingLink}` : ""}\nOrganized by: ${event.organizerName}`;
-      // Trigger React onChange
-      if (titleInput) {
-        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-          window.HTMLInputElement.prototype,
-          "value"
-        )?.set;
-        nativeInputValueSetter?.call(titleInput, `Event: ${event.title}`);
-        titleInput.dispatchEvent(new Event("input", { bubbles: true }));
+  const handleDeleteEvent = async (eventId: string) => {
+    try {
+      const res = await fetch(`/api/events/${eventId}`, { method: "DELETE" });
+      if (res.ok) {
+        setEvents((prev) => prev.filter((e) => e.id !== eventId));
+        setAttendingIds((prev) => {
+          const next = new Set(prev);
+          next.delete(eventId);
+          return next;
+        });
       }
-      if (contentInput) {
-        const nativeTextareaValueSetter = Object.getOwnPropertyDescriptor(
-          window.HTMLTextAreaElement.prototype,
-          "value"
-        )?.set;
-        const content = `Join us for "${event.title}"!\n\n${event.description}\n\nDate: ${new Date(event.date).toLocaleDateString()} at ${event.hour}\nModality: ${event.modality}${event.location ? `\nLocation: ${event.location}` : ""}${event.meetingLink ? `\nLink: ${event.meetingLink}` : ""}\nOrganized by: ${event.organizerName}`;
-        nativeTextareaValueSetter?.call(contentInput, content);
-        contentInput.dispatchEvent(new Event("input", { bubbles: true }));
-      }
-    }, 100);
+    } catch {
+      // ignore
+    }
   };
 
   const allTags = Array.from(new Set(posts.flatMap((p) => p.tags ?? [])));
@@ -669,14 +651,19 @@ export default function CommunityPage() {
               <EventsList
                 events={events}
                 loading={loadingEvents}
+                canCreate={canCreateEvent({
+                  userType: session.user.userType,
+                  accountStatus: session.user.accountStatus,
+                  isAdmin: session.user.isAdmin,
+                })}
                 onCreateEvent={() => setShowCreateEvent(true)}
                 onAttend={handleAttendEvent}
-                onShareToForum={handleShareEventToForum}
                 onEdit={(event) => {
                   setEditingEvent(event);
                   setShowCreateEvent(true);
                 }}
                 onCancel={handleCancelEvent}
+                onDelete={handleDeleteEvent}
                 attendingIds={attendingIds}
                 currentUserId={session.user.id}
               />
@@ -757,6 +744,7 @@ export default function CommunityPage() {
           fetchEvents();
         }}
         currentUsername={session?.user?.name ?? ""}
+        currentUserId={session?.user?.id ?? ""}
         editEvent={editingEvent}
       />
     </div>
