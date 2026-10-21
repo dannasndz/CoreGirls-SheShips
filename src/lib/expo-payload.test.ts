@@ -44,6 +44,7 @@ describe("buildExpoRow", () => {
       carrera: "biologist",
       ocupacion: "",
       carreraEstudiante: "",
+      satisfaccion: "",
     });
   });
 
@@ -122,6 +123,7 @@ describe("buildExpoRow", () => {
       "carrera",
       "ocupacion",
       "carreraEstudiante",
+      "satisfaccion",
     ]);
   });
 });

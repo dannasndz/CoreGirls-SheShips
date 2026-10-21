@@ -138,12 +138,16 @@ export default function QuizPage() {
                 return
             }
 
+            const submissionId = makeSubmissionId()
+            params.set("submissionId", submissionId)
+            resultUrl.current = `/quiz/result?${params.toString()}`
+
             setShowLoader(true)
             const send = fetch("/api/expo/quiz", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    submissionId: makeSubmissionId(),
+                    submissionId,
                     locale,
                     demographics,
                     answers,

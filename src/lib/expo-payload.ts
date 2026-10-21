@@ -20,6 +20,7 @@ export const EXPO_SHEET_HEADERS = [
   "carrera",
   "ocupacion",
   "carreraEstudiante",
+  "satisfaccion",
 ] as const;
 
 export interface ExpoRow {
@@ -40,6 +41,7 @@ export interface ExpoRow {
   carrera: string;
   ocupacion: string;
   carreraEstudiante: string;
+  satisfaccion: string;
 }
 
 /**
@@ -88,5 +90,7 @@ export function buildExpoRow(params: {
     carrera: careerId,
     ocupacion: demographics.ocupacion,
     carreraEstudiante: demographics.carreraEstudiante,
+    // Se llena después con /api/expo/feedback.
+    satisfaccion: "",
   };
 }

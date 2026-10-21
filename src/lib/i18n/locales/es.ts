@@ -677,6 +677,16 @@ const es = {
     privacy:
       "No pedimos tu nombre ni correo. Tus respuestas se usan solo para fines estadísticos del evento y se guardan de forma anónima.",
     errorInvalid: "Revisa los datos: edad (5–99) y campos obligatorios.",
+    satisfactionTitle: "Tu opinión nos ayuda",
+    satisfactionQuestion:
+      "¿Qué tan satisfecha estás con el resultado de acuerdo con tus intereses profesionales y académicos?",
+    satisfactionMin: "1 · Nada satisfecha",
+    satisfactionMax: "5 · Muy satisfecha",
+    satisfactionRequired: "Elige una opción del 1 al 5.",
+    satisfactionSubmit: "Enviar respuesta",
+    satisfactionSending: "Enviando...",
+    satisfactionThanks: "¡Gracias por tu respuesta!",
+    satisfactionError: "No se pudo enviar. Intenta de nuevo.",
     levels: {
       Primaria: "Primaria",
       Secundaria: "Secundaria",

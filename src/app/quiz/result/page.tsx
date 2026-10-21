@@ -1,13 +1,14 @@
 "use client"
 
 import { useSearchParams } from "next/navigation"
-import { Suspense } from "react"
+import { Suspense, useEffect, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { careers as careersEn, categoryLabels as categoryLabelsEn, categoryColors } from "@/data/careers"
 import { careersEs, categoryLabelsEs } from "@/data/careers.es"
 import { StemType } from "@/types/quiz"
 import { useI18n } from "@/lib/i18n"
+import { SatisfactionSheet } from "@/app/quiz/_components/satisfaction-sheet"
 import { Sparkles, BookOpen, Users, ArrowRight, RotateCcw, LinkIcon } from "lucide-react"
 
 const categoryGradients: Record<StemType, string> = {
@@ -38,6 +39,21 @@ function QuizResultContent() {
         E: Number(searchParams.get("E") || 0),
         M: Number(searchParams.get("M") || 0),
     }
+
+    const submissionId = searchParams.get("submissionId")
+    const [showSatisfaction, setShowSatisfaction] = useState(false)
+
+    useEffect(() => {
+        if (!isExpo || !submissionId) return
+        const key = `expo-satisfaction-${submissionId}`
+        try {
+            if (sessionStorage.getItem(key) === "done") return
+        } catch {
+            // ignore
+        }
+        const timer = setTimeout(() => setShowSatisfaction(true), 1200)
+        return () => clearTimeout(timer)
+    }, [isExpo, submissionId])
 
     const career = careers.find((c) => c.id === careerId)
 
@@ -347,6 +363,23 @@ function QuizResultContent() {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {showSatisfaction && submissionId && (
+                <SatisfactionSheet
+                    submissionId={submissionId}
+                    onDone={() => {
+                        try {
+                            sessionStorage.setItem(
+                                `expo-satisfaction-${submissionId}`,
+                                "done"
+                            )
+                        } catch {
+                            // ignore
+                        }
+                        setShowSatisfaction(false)
+                    }}
+                />
             )}
         </div>
     )

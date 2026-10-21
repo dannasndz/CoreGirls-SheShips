@@ -677,6 +677,16 @@ const en = {
     privacy:
       "We don't ask for your name or email. Your answers are used only for anonymous event statistics.",
     errorInvalid: "Please check your data: age (5–99) and required fields.",
+    satisfactionTitle: "Your feedback helps us",
+    satisfactionQuestion:
+      "How satisfied are you with the result based on your professional and academic interests?",
+    satisfactionMin: "1 · Not satisfied at all",
+    satisfactionMax: "5 · Very satisfied",
+    satisfactionRequired: "Choose an option from 1 to 5.",
+    satisfactionSubmit: "Send answer",
+    satisfactionSending: "Sending...",
+    satisfactionThanks: "Thanks for your feedback!",
+    satisfactionError: "Could not send. Please try again.",
     levels: {
       Primaria: "Elementary",
       Secundaria: "Middle school",
