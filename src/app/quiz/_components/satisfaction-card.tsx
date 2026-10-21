@@ -8,7 +8,7 @@ import {
   EXPO_SATISFACCION_MIN,
 } from "@/lib/expo-feedback";
 
-interface SatisfactionSheetProps {
+interface SatisfactionCardProps {
   submissionId: string;
   onDone: () => void;
 }
@@ -18,10 +18,10 @@ const RATINGS = Array.from(
   (_, i) => EXPO_SATISFACCION_MIN + i
 );
 
-export function SatisfactionSheet({
+export function SatisfactionCard({
   submissionId,
   onDone,
-}: SatisfactionSheetProps) {
+}: SatisfactionCardProps) {
   const { t } = useI18n();
   const [rating, setRating] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -46,7 +46,7 @@ export function SatisfactionSheet({
       }
 
       setDone(true);
-      setTimeout(onDone, 1200);
+      setTimeout(onDone, 1400);
     } catch {
       setError(t("expo.satisfactionError"));
     } finally {
@@ -55,27 +55,20 @@ export function SatisfactionSheet({
   };
 
   return (
-    <div
-      className="fixed inset-0 z-[120] flex items-end justify-center"
-      role="dialog"
-      aria-modal="true"
-      aria-label={t("expo.satisfactionTitle")}
-    >
-      <div className="absolute inset-0 backdrop-blur-sm" />
-
-      <div className="relative w-full max-w-lg rounded-t-3xl bg-white p-6 pb-8 shadow-2xl border-t border-[#E5E0D9] animate-funfact-in">
+    <div className="bg-cream px-6 py-10 sm:px-10 md:px-16">
+      <div className="max-w-3xl mx-auto rounded-3xl bg-white border border-[#E5E0D9] shadow-sm p-6 sm:p-8">
         {done ? (
-          <div className="flex flex-col items-center text-center gap-2 py-6">
-            <Sparkles className="text-girly-purple" size={32} />
+          <div className="flex flex-col items-center text-center gap-2 py-4">
+            <Sparkles className="text-girly-purple" size={30} />
             <p className="text-lg font-bold text-dark-purple font-[family-name:var(--font-fredoka)]">
               {t("expo.satisfactionThanks")}
             </p>
           </div>
         ) : (
           <>
-            <h2 className="text-lg font-bold text-dark-purple font-[family-name:var(--font-fredoka)] mb-1">
+            <h3 className="text-xl font-extrabold text-dark-purple font-heading mb-1">
               {t("expo.satisfactionTitle")}
-            </h2>
+            </h3>
             <p className="text-sm text-dark-purple/60 mb-5">
               {t("expo.satisfactionQuestion")}
             </p>
@@ -117,7 +110,7 @@ export function SatisfactionSheet({
               type="button"
               onClick={handleSubmit}
               disabled={rating === null || submitting}
-              className="w-full rounded-full bg-girly-purple text-white font-semibold py-2.5 hover:bg-strong-purple transition disabled:opacity-40 disabled:pointer-events-none"
+              className="w-full sm:w-auto sm:px-8 rounded-full bg-girly-purple text-white font-semibold py-2.5 hover:bg-strong-purple transition disabled:opacity-40 disabled:pointer-events-none"
             >
               {submitting
                 ? t("expo.satisfactionSending")
