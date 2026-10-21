@@ -9,13 +9,18 @@ import { normalizeAnswers, pickCareer } from "@/lib/quiz-scoring";
 
 const careersMap = { en: careersEn, es: careersEs } as const;
 
-async function postToSheet(payload: unknown): Promise<boolean> {
+interface SheetResult {
+  ok: boolean;
+  error?: string;
+}
+
+async function postToSheet(payload: unknown): Promise<SheetResult> {
   const url = process.env.EXPO_SHEETS_WEBAPP_URL;
   if (!url) {
-    console.error("EXPO_SHEETS_WEBAPP_URL is not configured");
-    return false;
+    return { ok: false, error: "EXPO_SHEETS_WEBAPP_URL is not configured" };
   }
 
+  let lastError = "Unknown error";
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
       const res = await fetch(url, {
@@ -25,12 +30,33 @@ async function postToSheet(payload: unknown): Promise<boolean> {
         redirect: "follow",
         cache: "no-store",
       });
-      if (res.ok) return true;
+
+      const text = await res.text();
+      let data: { ok?: boolean; error?: string; duplicate?: boolean } | null =
+        null;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        // Apps Script may return non-JSON on error.
+      }
+
+      // Apps Script responde HTTP 200 incluso en errores; hay que leer `ok`.
+      if (res.ok && data?.ok === true) {
+        return { ok: true };
+      }
+
+      lastError = data?.error ?? `HTTP ${res.status}`;
+      console.error(
+        `POST expo sheet attempt ${attempt + 1} rejected:`,
+        lastError,
+        text.slice(0, 200)
+      );
     } catch (err) {
+      lastError = err instanceof Error ? err.message : String(err);
       console.error(`POST expo sheet attempt ${attempt + 1} failed:`, err);
     }
   }
-  return false;
+  return { ok: false, error: lastError };
 }
 
 export async function POST(req: NextRequest) {
@@ -87,7 +113,7 @@ export async function POST(req: NextRequest) {
       row,
     });
 
-    if (!saved) {
+    if (!saved.ok) {
       return NextResponse.json(
         { data: null, error: "Could not save response" },
         { status: 502 }
