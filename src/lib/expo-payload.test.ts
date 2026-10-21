@@ -3,6 +3,7 @@ import { buildExpoRow, EXPO_SHEET_HEADERS } from "@/lib/expo-payload";
 import type { ExpoDemographics } from "@/lib/expo-validation";
 
 const demographics: ExpoDemographics = {
+  estudiante: true,
   edad: 15,
   escuela: "Prepa Federal",
   nivel: "Preparatoria",
@@ -31,6 +32,7 @@ describe("buildExpoRow", () => {
       grado: "Preparatoria 2°",
       municipio: "Tijuana",
       genero: "No binario",
+      estudiante: "Sí",
       idioma: "es",
       S: 5,
       T: 4,
@@ -54,6 +56,44 @@ describe("buildExpoRow", () => {
     expect(row.idioma).toBe("en");
   });
 
+  it("para no estudiantes deja grado vacío y marca No", () => {
+    const row = buildExpoRow({
+      submissionId: "y",
+      demographics: {
+        estudiante: false,
+        edad: 30,
+        escuela: "",
+        nivel: null,
+        grado: "",
+        municipio: "Mexicali",
+        genero: null,
+      },
+      score: { S: 1, T: 0, E: 0, M: 0 },
+      topType: "S",
+      careerId: "biologist",
+      locale: "es",
+    });
+    expect(row.estudiante).toBe("No");
+    expect(row.escuela).toBe("");
+    expect(row.grado).toBe("");
+  });
+
+  it("arma el grado de Posgrado", () => {
+    const row = buildExpoRow({
+      submissionId: "z",
+      demographics: {
+        ...demographics,
+        nivel: "Posgrado",
+        grado: "Doctorado",
+      },
+      score: { S: 1, T: 0, E: 0, M: 0 },
+      topType: "S",
+      careerId: "biologist",
+      locale: "es",
+    });
+    expect(row.grado).toBe("Posgrado Doctorado");
+  });
+
   it("mantiene el orden de columnas esperado", () => {
     expect(EXPO_SHEET_HEADERS).toEqual([
       "timestamp",
@@ -63,6 +103,7 @@ describe("buildExpoRow", () => {
       "grado",
       "municipio",
       "genero",
+      "estudiante",
       "idioma",
       "S",
       "T",

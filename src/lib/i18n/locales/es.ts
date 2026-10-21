@@ -655,6 +655,9 @@ const es = {
     title: "Antes de empezar",
     subtitle:
       "Cuéntanos un poco sobre ti. Estos datos nos ayudan a conocer a las participantes del quiz.",
+    student: "¿Eres estudiante? *",
+    yes: "Sí",
+    no: "No",
     age: "Edad *",
     agePlaceholder: "ej. 15",
     gender: "Género",
@@ -675,6 +678,12 @@ const es = {
       Secundaria: "Secundaria",
       Preparatoria: "Preparatoria",
       Universidad: "Universidad",
+      Posgrado: "Posgrado",
+    },
+    posgrados: {
+      Maestría: "Maestría",
+      Doctorado: "Doctorado",
+      Especialidad: "Especialidad",
     },
     genders: {
       Femenino: "Femenino",

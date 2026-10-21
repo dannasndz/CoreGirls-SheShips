@@ -10,6 +10,7 @@ export const EXPO_SHEET_HEADERS = [
   "grado",
   "municipio",
   "genero",
+  "estudiante",
   "idioma",
   "S",
   "T",
@@ -27,6 +28,7 @@ export interface ExpoRow {
   grado: string;
   municipio: string;
   genero: string;
+  estudiante: string;
   idioma: string;
   S: number;
   T: number;
@@ -59,14 +61,20 @@ export function buildExpoRow(params: {
     timestamp = new Date(),
   } = params;
 
+  const grado =
+    demographics.estudiante && demographics.nivel
+      ? `${demographics.nivel} ${demographics.grado}`
+      : "";
+
   return {
     timestamp: timestamp.toISOString(),
     submissionId: submissionId.trim(),
     edad: demographics.edad,
     escuela: demographics.escuela,
-    grado: `${demographics.nivel} ${demographics.grado}`,
+    grado,
     municipio: demographics.municipio,
     genero: demographics.genero ?? "",
+    estudiante: demographics.estudiante ? "Sí" : "No",
     idioma: locale,
     S: score.S,
     T: score.T,

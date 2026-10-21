@@ -21,6 +21,7 @@ export const EXPO_NIVELES = [
   "Secundaria",
   "Preparatoria",
   "Universidad",
+  "Posgrado",
 ] as const;
 export type ExpoNivel = (typeof EXPO_NIVELES)[number];
 
@@ -41,9 +42,12 @@ export const EXPO_GRADOS: Record<ExpoNivel, string[]> = {
   Secundaria: ["1°", "2°", "3°"],
   Preparatoria: ["1°", "2°", "3°"],
   Universidad: ["1°", "2°", "3°", "4°", "5°", "6°", "7°", "8°", "9°", "10°"],
+  Posgrado: ["Maestría", "Doctorado", "Especialidad"],
 };
 
 export type ExpoError =
+  | "estudiante_required"
+  | "estudiante_invalid"
   | "edad_required"
   | "edad_invalid"
   | "edad_range"
@@ -55,6 +59,8 @@ export type ExpoError =
   | "genero_invalid";
 
 export const EXPO_ERROR_MESSAGES: Record<ExpoError, string> = {
+  estudiante_required: "Indica si eres estudiante",
+  estudiante_invalid: "El valor de estudiante no es válido",
   edad_required: "La edad es obligatoria",
   edad_invalid: "La edad debe ser un número entero",
   edad_range: `La edad debe estar entre ${EXPO_AGE_MIN} y ${EXPO_AGE_MAX} años`,
@@ -67,6 +73,7 @@ export const EXPO_ERROR_MESSAGES: Record<ExpoError, string> = {
 };
 
 export interface ExpoDemographicsInput {
+  estudiante?: unknown;
   edad?: unknown;
   escuela?: unknown;
   nivel?: unknown;
@@ -76,9 +83,10 @@ export interface ExpoDemographicsInput {
 }
 
 export interface ExpoDemographics {
+  estudiante: boolean;
   edad: number;
   escuela: string;
-  nivel: ExpoNivel;
+  nivel: ExpoNivel | null;
   grado: string;
   municipio: ExpoMunicipio;
   genero: ExpoGender | null;
@@ -100,9 +108,27 @@ export function isValidGrade(nivel: ExpoNivel, grado: string): boolean {
   return EXPO_GRADOS[nivel]?.includes(grado) ?? false;
 }
 
+function parseStudentFlag(
+  value: unknown
+): boolean | "missing" | "invalid" {
+  if (value === undefined || value === null || value === "") return "missing";
+  if (typeof value === "boolean") return value;
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+    if (["si", "sí", "true", "yes"].includes(normalized)) return true;
+    if (["no", "false"].includes(normalized)) return false;
+  }
+  return "invalid";
+}
+
 export function validateExpoDemographics(
   input: ExpoDemographicsInput
 ): ExpoValidationResult {
+  const studentFlag = parseStudentFlag(input.estudiante);
+  if (studentFlag === "missing") return fail("estudiante_required");
+  if (studentFlag === "invalid") return fail("estudiante_invalid");
+  const estudiante = studentFlag;
+
   if (
     input.edad === undefined ||
     input.edad === null ||
@@ -114,20 +140,26 @@ export function validateExpoDemographics(
   if (!Number.isInteger(edad)) return fail("edad_invalid");
   if (edad < EXPO_AGE_MIN || edad > EXPO_AGE_MAX) return fail("edad_range");
 
-  const escuela = asTrimmedString(input.escuela);
-  if (!escuela) return fail("escuela_required");
-  if (escuela.length > EXPO_SCHOOL_MAX) return fail("escuela_too_long");
+  let escuela = "";
+  let nivel: ExpoNivel | null = null;
+  let grado = "";
 
-  const nivel = input.nivel;
-  if (
-    typeof nivel !== "string" ||
-    !(EXPO_NIVELES as readonly string[]).includes(nivel)
-  ) {
-    return fail("nivel_invalid");
+  if (estudiante) {
+    escuela = asTrimmedString(input.escuela);
+    if (!escuela) return fail("escuela_required");
+    if (escuela.length > EXPO_SCHOOL_MAX) return fail("escuela_too_long");
+
+    if (
+      typeof input.nivel !== "string" ||
+      !(EXPO_NIVELES as readonly string[]).includes(input.nivel)
+    ) {
+      return fail("nivel_invalid");
+    }
+    nivel = input.nivel as ExpoNivel;
+
+    grado = asTrimmedString(input.grado);
+    if (!isValidGrade(nivel, grado)) return fail("grado_invalid");
   }
-
-  const grado = asTrimmedString(input.grado);
-  if (!isValidGrade(nivel as ExpoNivel, grado)) return fail("grado_invalid");
 
   const municipio = input.municipio;
   if (
@@ -155,9 +187,10 @@ export function validateExpoDemographics(
   return {
     ok: true,
     data: {
+      estudiante,
       edad,
       escuela,
-      nivel: nivel as ExpoNivel,
+      nivel,
       grado,
       municipio: municipio as ExpoMunicipio,
       genero,

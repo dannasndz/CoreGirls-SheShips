@@ -655,6 +655,9 @@ const en = {
     title: "Before we start",
     subtitle:
       "Tell us a little about yourself. This helps us understand who takes part in the quiz.",
+    student: "Are you a student? *",
+    yes: "Yes",
+    no: "No",
     age: "Age *",
     agePlaceholder: "e.g. 15",
     gender: "Gender",
@@ -675,6 +678,12 @@ const en = {
       Secundaria: "Middle school",
       Preparatoria: "High school",
       Universidad: "University",
+      Posgrado: "Postgraduate",
+    },
+    posgrados: {
+      Maestría: "Master's",
+      Doctorado: "Doctorate",
+      Especialidad: "Specialty",
     },
     genders: {
       Femenino: "Female",

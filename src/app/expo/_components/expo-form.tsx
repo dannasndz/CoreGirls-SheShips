@@ -16,10 +16,13 @@ import {
   type ExpoNivel,
 } from "@/lib/expo-validation";
 
+type StudentAnswer = "" | "si" | "no";
+
 export function ExpoForm() {
   const { t } = useI18n();
   const router = useRouter();
 
+  const [estudiante, setEstudiante] = useState<StudentAnswer>("");
   const [edad, setEdad] = useState("");
   const [escuela, setEscuela] = useState("");
   const [nivel, setNivel] = useState<ExpoNivel | "">("");
@@ -36,11 +39,24 @@ export function ExpoForm() {
   const inputClass =
     "w-full rounded-lg border border-[#E5E0D9] bg-cream px-3 py-2 text-dark-purple placeholder:text-dark-purple/40 focus:outline-none focus:ring-2 focus:ring-girly-purple text-sm";
 
+  const handleStudentChange = (value: StudentAnswer) => {
+    setEstudiante(value);
+    if (value !== "si") {
+      setEscuela("");
+      setNivel("");
+      setGrado("");
+    }
+  };
+
+  const gradoLabel = (value: string) =>
+    nivel === "Posgrado" ? t(`expo.posgrados.${value}`) : value;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     const result = validateExpoDemographics({
+      estudiante: estudiante === "" ? undefined : estudiante === "si",
       edad,
       escuela,
       nivel,
@@ -75,6 +91,33 @@ export function ExpoForm() {
         <p className="text-sm text-dark-purple/60 mb-5">{t("expo.subtitle")}</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-dark-purple mb-1">
+              {t("expo.student")}
+            </label>
+            <div className="flex gap-2">
+              {(
+                [
+                  { value: "si", label: t("expo.yes") },
+                  { value: "no", label: t("expo.no") },
+                ] as const
+              ).map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => handleStudentChange(option.value)}
+                  className={`px-4 py-1.5 rounded-full text-sm font-semibold transition ${
+                    estudiante === option.value
+                      ? "bg-girly-purple text-white"
+                      : "bg-girly-purple/10 text-strong-purple hover:bg-girly-purple/20"
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-dark-purple mb-1">
@@ -110,63 +153,67 @@ export function ExpoForm() {
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-dark-purple mb-1">
-              {t("expo.school")}
-            </label>
-            <input
-              type="text"
-              value={escuela}
-              onChange={(e) => setEscuela(e.target.value)}
-              placeholder={t("expo.schoolPlaceholder")}
-              className={inputClass}
-              maxLength={100}
-              required
-            />
-          </div>
+          {estudiante === "si" && (
+            <>
+              <div>
+                <label className="block text-sm font-medium text-dark-purple mb-1">
+                  {t("expo.school")}
+                </label>
+                <input
+                  type="text"
+                  value={escuela}
+                  onChange={(e) => setEscuela(e.target.value)}
+                  placeholder={t("expo.schoolPlaceholder")}
+                  className={inputClass}
+                  maxLength={100}
+                  required
+                />
+              </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-dark-purple mb-1">
-                {t("expo.level")}
-              </label>
-              <select
-                value={nivel}
-                onChange={(e) => {
-                  setNivel(e.target.value as ExpoNivel | "");
-                  setGrado("");
-                }}
-                className={inputClass}
-                required
-              >
-                <option value="">{t("expo.select")}</option>
-                {EXPO_NIVELES.map((value) => (
-                  <option key={value} value={value}>
-                    {t(`expo.levels.${value}`)}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-dark-purple mb-1">
-                {t("expo.grade")}
-              </label>
-              <select
-                value={grado}
-                onChange={(e) => setGrado(e.target.value)}
-                className={inputClass}
-                disabled={!nivel}
-                required
-              >
-                <option value="">{t("expo.select")}</option>
-                {grados.map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-dark-purple mb-1">
+                    {t("expo.level")}
+                  </label>
+                  <select
+                    value={nivel}
+                    onChange={(e) => {
+                      setNivel(e.target.value as ExpoNivel | "");
+                      setGrado("");
+                    }}
+                    className={inputClass}
+                    required
+                  >
+                    <option value="">{t("expo.select")}</option>
+                    {EXPO_NIVELES.map((value) => (
+                      <option key={value} value={value}>
+                        {t(`expo.levels.${value}`)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-dark-purple mb-1">
+                    {t("expo.grade")}
+                  </label>
+                  <select
+                    value={grado}
+                    onChange={(e) => setGrado(e.target.value)}
+                    className={inputClass}
+                    disabled={!nivel}
+                    required
+                  >
+                    <option value="">{t("expo.select")}</option>
+                    {grados.map((value) => (
+                      <option key={value} value={value}>
+                        {gradoLabel(value)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </>
+          )}
 
           <div>
             <label className="block text-sm font-medium text-dark-purple mb-1">

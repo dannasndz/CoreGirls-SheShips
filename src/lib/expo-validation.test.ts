@@ -7,6 +7,7 @@ import {
 } from "@/lib/expo-validation";
 
 const valid = {
+  estudiante: true,
   edad: 15,
   escuela: "Prepa Federal",
   nivel: "Preparatoria",
@@ -20,9 +21,42 @@ describe("validateExpoDemographics", () => {
     const result = validateExpoDemographics({ ...valid, escuela: "  Prepa  " });
     expect(result.ok).toBe(true);
     if (!result.ok) return;
+    expect(result.data.estudiante).toBe(true);
     expect(result.data.edad).toBe(15);
     expect(result.data.escuela).toBe("Prepa");
     expect(result.data.genero).toBe("Prefiero no decir");
+  });
+
+  it("exige indicar si es estudiante", () => {
+    const result = validateExpoDemographics({ ...valid, estudiante: undefined });
+    expect(!result.ok && result.error).toBe("estudiante_required");
+  });
+
+  it("si no es estudiante, no exige escuela, nivel ni grado", () => {
+    const result = validateExpoDemographics({
+      estudiante: false,
+      edad: 30,
+      municipio: "Mexicali",
+    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.data.estudiante).toBe(false);
+    expect(result.data.escuela).toBe("");
+    expect(result.data.nivel).toBeNull();
+    expect(result.data.grado).toBe("");
+  });
+
+  it("acepta el indicador de estudiante como texto sí/no", () => {
+    const yes = validateExpoDemographics({ ...valid, estudiante: "sí" });
+    expect(yes.ok).toBe(true);
+    const no = validateExpoDemographics({
+      ...valid,
+      estudiante: "no",
+      escuela: "",
+      nivel: "",
+      grado: "",
+    });
+    expect(no.ok).toBe(true);
   });
 
   it("acepta los límites de edad", () => {
@@ -92,6 +126,23 @@ describe("validateExpoDemographics", () => {
     });
     expect(result.ok).toBe(true);
   });
+
+  it("acepta Posgrado con Maestría, Doctorado o Especialidad", () => {
+    for (const grado of ["Maestría", "Doctorado", "Especialidad"]) {
+      const result = validateExpoDemographics({
+        ...valid,
+        nivel: "Posgrado",
+        grado,
+      });
+      expect(result.ok).toBe(true);
+    }
+    const invalid = validateExpoDemographics({
+      ...valid,
+      nivel: "Posgrado",
+      grado: "1°",
+    });
+    expect(!invalid.ok && invalid.error).toBe("grado_invalid");
+  });
 });
 
 describe("isValidGrade", () => {
@@ -102,5 +153,9 @@ describe("isValidGrade", () => {
     expect(isValidGrade("Preparatoria", "4°")).toBe(false);
     expect(isValidGrade("Universidad", "10°")).toBe(true);
     expect(isValidGrade("Universidad", "11°")).toBe(false);
+    expect(isValidGrade("Posgrado", "Maestría")).toBe(true);
+    expect(isValidGrade("Posgrado", "Doctorado")).toBe(true);
+    expect(isValidGrade("Posgrado", "Especialidad")).toBe(true);
+    expect(isValidGrade("Posgrado", "1°")).toBe(false);
   });
 });
