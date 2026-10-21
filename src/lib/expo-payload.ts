@@ -18,6 +18,8 @@ export const EXPO_SHEET_HEADERS = [
   "M",
   "tipoTop",
   "carrera",
+  "ocupacion",
+  "carreraEstudiante",
 ] as const;
 
 export interface ExpoRow {
@@ -36,6 +38,8 @@ export interface ExpoRow {
   M: number;
   tipoTop: StemType;
   carrera: string;
+  ocupacion: string;
+  carreraEstudiante: string;
 }
 
 /**
@@ -82,5 +86,7 @@ export function buildExpoRow(params: {
     M: score.M,
     tipoTop: topType,
     carrera: careerId,
+    ocupacion: demographics.ocupacion,
+    carreraEstudiante: demographics.carreraEstudiante,
   };
 }

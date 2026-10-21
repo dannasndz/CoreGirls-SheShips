@@ -12,6 +12,7 @@ import {
   EXPO_MUNICIPIOS,
   EXPO_NIVELES,
   EXPO_STORAGE_KEY,
+  requiresMajor,
   validateExpoDemographics,
   type ExpoNivel,
 } from "@/lib/expo-validation";
@@ -27,6 +28,8 @@ export function ExpoForm() {
   const [escuela, setEscuela] = useState("");
   const [nivel, setNivel] = useState<ExpoNivel | "">("");
   const [grado, setGrado] = useState("");
+  const [carreraEstudiante, setCarreraEstudiante] = useState("");
+  const [ocupacion, setOcupacion] = useState("");
   const [municipio, setMunicipio] = useState("");
   const [genero, setGenero] = useState("");
   const [error, setError] = useState("");
@@ -41,10 +44,21 @@ export function ExpoForm() {
 
   const handleStudentChange = (value: StudentAnswer) => {
     setEstudiante(value);
-    if (value !== "si") {
+    if (value === "si") {
+      setOcupacion("");
+    } else {
       setEscuela("");
       setNivel("");
       setGrado("");
+      setCarreraEstudiante("");
+    }
+  };
+
+  const handleNivelChange = (value: ExpoNivel | "") => {
+    setNivel(value);
+    setGrado("");
+    if (!value || !requiresMajor(value)) {
+      setCarreraEstudiante("");
     }
   };
 
@@ -61,6 +75,8 @@ export function ExpoForm() {
       escuela,
       nivel,
       grado,
+      carreraEstudiante,
+      ocupacion,
       municipio,
       genero,
     });
@@ -177,10 +193,9 @@ export function ExpoForm() {
                   </label>
                   <select
                     value={nivel}
-                    onChange={(e) => {
-                      setNivel(e.target.value as ExpoNivel | "");
-                      setGrado("");
-                    }}
+                    onChange={(e) =>
+                      handleNivelChange(e.target.value as ExpoNivel | "")
+                    }
                     className={inputClass}
                     required
                   >
@@ -212,7 +227,41 @@ export function ExpoForm() {
                   </select>
                 </div>
               </div>
+
+              {requiresMajor(nivel) && (
+                <div>
+                  <label className="block text-sm font-medium text-dark-purple mb-1">
+                    {t("expo.major")}
+                  </label>
+                  <input
+                    type="text"
+                    value={carreraEstudiante}
+                    onChange={(e) => setCarreraEstudiante(e.target.value)}
+                    placeholder={t("expo.majorPlaceholder")}
+                    className={inputClass}
+                    maxLength={100}
+                    required
+                  />
+                </div>
+              )}
             </>
+          )}
+
+          {estudiante === "no" && (
+            <div>
+              <label className="block text-sm font-medium text-dark-purple mb-1">
+                {t("expo.occupation")}
+              </label>
+              <input
+                type="text"
+                value={ocupacion}
+                onChange={(e) => setOcupacion(e.target.value)}
+                placeholder={t("expo.occupationPlaceholder")}
+                className={inputClass}
+                maxLength={100}
+                required
+              />
+            </div>
           )}
 
           <div>

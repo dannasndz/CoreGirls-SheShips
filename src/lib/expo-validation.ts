@@ -3,6 +3,8 @@
 export const EXPO_AGE_MIN = 5;
 export const EXPO_AGE_MAX = 99;
 export const EXPO_SCHOOL_MAX = 100;
+export const EXPO_MAJOR_MAX = 100;
+export const EXPO_OCCUPATION_MAX = 100;
 
 // Clave de sessionStorage donde se guardan los demográficos entre /expo y /quiz.
 export const EXPO_STORAGE_KEY = "expo-demographics";
@@ -45,6 +47,17 @@ export const EXPO_GRADOS: Record<ExpoNivel, string[]> = {
   Posgrado: ["Maestría", "Doctorado", "Especialidad"],
 };
 
+// Niveles en los que se debe pedir la carrera (área de estudio).
+export const EXPO_MAJOR_NIVELES: readonly ExpoNivel[] = [
+  "Universidad",
+  "Posgrado",
+];
+
+export function requiresMajor(nivel: string | null | undefined): boolean {
+  if (!nivel) return false;
+  return (EXPO_MAJOR_NIVELES as readonly string[]).includes(nivel);
+}
+
 export type ExpoError =
   | "estudiante_required"
   | "estudiante_invalid"
@@ -55,6 +68,10 @@ export type ExpoError =
   | "escuela_too_long"
   | "nivel_invalid"
   | "grado_invalid"
+  | "carrera_required"
+  | "carrera_too_long"
+  | "ocupacion_required"
+  | "ocupacion_too_long"
   | "municipio_invalid"
   | "genero_invalid";
 
@@ -68,6 +85,10 @@ export const EXPO_ERROR_MESSAGES: Record<ExpoError, string> = {
   escuela_too_long: `La escuela no puede superar los ${EXPO_SCHOOL_MAX} caracteres`,
   nivel_invalid: "El nivel educativo no es válido",
   grado_invalid: "El grado no es válido para el nivel seleccionado",
+  carrera_required: "La carrera es obligatoria",
+  carrera_too_long: `La carrera no puede superar los ${EXPO_MAJOR_MAX} caracteres`,
+  ocupacion_required: "La ocupación es obligatoria",
+  ocupacion_too_long: `La ocupación no puede superar los ${EXPO_OCCUPATION_MAX} caracteres`,
   municipio_invalid: "El municipio no es válido",
   genero_invalid: "El género no es válido",
 };
@@ -78,6 +99,8 @@ export interface ExpoDemographicsInput {
   escuela?: unknown;
   nivel?: unknown;
   grado?: unknown;
+  carreraEstudiante?: unknown;
+  ocupacion?: unknown;
   municipio?: unknown;
   genero?: unknown;
 }
@@ -88,6 +111,8 @@ export interface ExpoDemographics {
   escuela: string;
   nivel: ExpoNivel | null;
   grado: string;
+  carreraEstudiante: string;
+  ocupacion: string;
   municipio: ExpoMunicipio;
   genero: ExpoGender | null;
 }
@@ -143,6 +168,8 @@ export function validateExpoDemographics(
   let escuela = "";
   let nivel: ExpoNivel | null = null;
   let grado = "";
+  let carreraEstudiante = "";
+  let ocupacion = "";
 
   if (estudiante) {
     escuela = asTrimmedString(input.escuela);
@@ -159,6 +186,22 @@ export function validateExpoDemographics(
 
     grado = asTrimmedString(input.grado);
     if (!isValidGrade(nivel, grado)) return fail("grado_invalid");
+
+    // Universidad y Posgrado piden carrera/área de estudio.
+    if (requiresMajor(nivel)) {
+      carreraEstudiante = asTrimmedString(input.carreraEstudiante);
+      if (!carreraEstudiante) return fail("carrera_required");
+      if (carreraEstudiante.length > EXPO_MAJOR_MAX) {
+        return fail("carrera_too_long");
+      }
+    }
+  } else {
+    // Quien no estudia indica su ocupación.
+    ocupacion = asTrimmedString(input.ocupacion);
+    if (!ocupacion) return fail("ocupacion_required");
+    if (ocupacion.length > EXPO_OCCUPATION_MAX) {
+      return fail("ocupacion_too_long");
+    }
   }
 
   const municipio = input.municipio;
@@ -192,6 +235,8 @@ export function validateExpoDemographics(
       escuela,
       nivel,
       grado,
+      carreraEstudiante,
+      ocupacion,
       municipio: municipio as ExpoMunicipio,
       genero,
     },

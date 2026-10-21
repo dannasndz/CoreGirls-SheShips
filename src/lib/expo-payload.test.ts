@@ -8,6 +8,8 @@ const demographics: ExpoDemographics = {
   escuela: "Prepa Federal",
   nivel: "Preparatoria",
   grado: "2°",
+  carreraEstudiante: "",
+  ocupacion: "",
   municipio: "Tijuana",
   genero: "No binario",
 };
@@ -40,6 +42,8 @@ describe("buildExpoRow", () => {
       M: 3,
       tipoTop: "S",
       carrera: "biologist",
+      ocupacion: "",
+      carreraEstudiante: "",
     });
   });
 
@@ -56,7 +60,7 @@ describe("buildExpoRow", () => {
     expect(row.idioma).toBe("en");
   });
 
-  it("para no estudiantes deja grado vacío y marca No", () => {
+  it("para no estudiantes guarda ocupación y deja grado vacío", () => {
     const row = buildExpoRow({
       submissionId: "y",
       demographics: {
@@ -65,6 +69,8 @@ describe("buildExpoRow", () => {
         escuela: "",
         nivel: null,
         grado: "",
+        carreraEstudiante: "",
+        ocupacion: "Diseñadora gráfica",
         municipio: "Mexicali",
         genero: null,
       },
@@ -76,15 +82,17 @@ describe("buildExpoRow", () => {
     expect(row.estudiante).toBe("No");
     expect(row.escuela).toBe("");
     expect(row.grado).toBe("");
+    expect(row.ocupacion).toBe("Diseñadora gráfica");
   });
 
-  it("arma el grado de Posgrado", () => {
+  it("arma el grado de Posgrado y su carrera", () => {
     const row = buildExpoRow({
       submissionId: "z",
       demographics: {
         ...demographics,
         nivel: "Posgrado",
         grado: "Doctorado",
+        carreraEstudiante: "Ciencias Computacionales",
       },
       score: { S: 1, T: 0, E: 0, M: 0 },
       topType: "S",
@@ -92,6 +100,7 @@ describe("buildExpoRow", () => {
       locale: "es",
     });
     expect(row.grado).toBe("Posgrado Doctorado");
+    expect(row.carreraEstudiante).toBe("Ciencias Computacionales");
   });
 
   it("mantiene el orden de columnas esperado", () => {
@@ -111,6 +120,8 @@ describe("buildExpoRow", () => {
       "M",
       "tipoTop",
       "carrera",
+      "ocupacion",
+      "carreraEstudiante",
     ]);
   });
 });

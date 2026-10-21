@@ -32,10 +32,11 @@ describe("validateExpoDemographics", () => {
     expect(!result.ok && result.error).toBe("estudiante_required");
   });
 
-  it("si no es estudiante, no exige escuela, nivel ni grado", () => {
+  it("si no es estudiante, no exige escuela/nivel/grado pero sí ocupación", () => {
     const result = validateExpoDemographics({
       estudiante: false,
       edad: 30,
+      ocupacion: "Diseñadora",
       municipio: "Mexicali",
     });
     expect(result.ok).toBe(true);
@@ -44,6 +45,14 @@ describe("validateExpoDemographics", () => {
     expect(result.data.escuela).toBe("");
     expect(result.data.nivel).toBeNull();
     expect(result.data.grado).toBe("");
+    expect(result.data.ocupacion).toBe("Diseñadora");
+
+    const missing = validateExpoDemographics({
+      estudiante: false,
+      edad: 30,
+      municipio: "Mexicali",
+    });
+    expect(!missing.ok && missing.error).toBe("ocupacion_required");
   });
 
   it("acepta el indicador de estudiante como texto sí/no", () => {
@@ -55,6 +64,7 @@ describe("validateExpoDemographics", () => {
       escuela: "",
       nivel: "",
       grado: "",
+      ocupacion: "Comerciante",
     });
     expect(no.ok).toBe(true);
   });
@@ -118,21 +128,41 @@ describe("validateExpoDemographics", () => {
     expect(!bad.ok && bad.error).toBe("genero_invalid");
   });
 
-  it("acepta Universidad con semestres 1° a 10°", () => {
+  it("acepta Universidad con semestres 1° a 10° y exige carrera", () => {
     const result = validateExpoDemographics({
       ...valid,
       nivel: "Universidad",
       grado: "10°",
+      carreraEstudiante: "Ingeniería en Computación",
     });
     expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.data.carreraEstudiante).toBe("Ingeniería en Computación");
+
+    const missing = validateExpoDemographics({
+      ...valid,
+      nivel: "Universidad",
+      grado: "10°",
+    });
+    expect(!missing.ok && missing.error).toBe("carrera_required");
   });
 
-  it("acepta Posgrado con Maestría, Doctorado o Especialidad", () => {
+  it("no pide carrera en Primaria, Secundaria ni Preparatoria", () => {
+    for (const nivel of ["Primaria", "Secundaria", "Preparatoria"]) {
+      const grado = nivel === "Primaria" ? "6°" : "3°";
+      const result = validateExpoDemographics({ ...valid, nivel, grado });
+      expect(result.ok).toBe(true);
+      if (result.ok) expect(result.data.carreraEstudiante).toBe("");
+    }
+  });
+
+  it("acepta Posgrado con Maestría, Doctorado o Especialidad y exige carrera", () => {
     for (const grado of ["Maestría", "Doctorado", "Especialidad"]) {
       const result = validateExpoDemographics({
         ...valid,
         nivel: "Posgrado",
         grado,
+        carreraEstudiante: "Ciencias Computacionales",
       });
       expect(result.ok).toBe(true);
     }
@@ -140,8 +170,16 @@ describe("validateExpoDemographics", () => {
       ...valid,
       nivel: "Posgrado",
       grado: "1°",
+      carreraEstudiante: "X",
     });
     expect(!invalid.ok && invalid.error).toBe("grado_invalid");
+
+    const missing = validateExpoDemographics({
+      ...valid,
+      nivel: "Posgrado",
+      grado: "Maestría",
+    });
+    expect(!missing.ok && missing.error).toBe("carrera_required");
   });
 });
 
