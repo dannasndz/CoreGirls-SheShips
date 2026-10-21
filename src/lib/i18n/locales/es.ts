@@ -650,6 +650,41 @@ const es = {
     },
   },
 
+  // Expo (registro anónimo para expo ciencia)
+  expo: {
+    title: "Antes de empezar",
+    subtitle:
+      "Cuéntanos un poco sobre ti. Estos datos nos ayudan a conocer a las participantes del quiz.",
+    age: "Edad *",
+    agePlaceholder: "ej. 15",
+    gender: "Género",
+    optional: "Opcional",
+    school: "Escuela *",
+    schoolPlaceholder: "ej. Preparatoria Federal Lázaro Cárdenas",
+    level: "Nivel educativo *",
+    grade: "Grado / semestre *",
+    municipality: "Municipio *",
+    other: "Otro",
+    select: "Selecciona una opción",
+    start: "Comenzar quiz",
+    privacy:
+      "No pedimos tu nombre ni correo. Tus respuestas se usan solo para fines estadísticos del evento y se guardan de forma anónima.",
+    errorInvalid: "Revisa los datos: edad (5–99) y campos obligatorios.",
+    levels: {
+      Primaria: "Primaria",
+      Secundaria: "Secundaria",
+      Preparatoria: "Preparatoria",
+      Universidad: "Universidad",
+    },
+    genders: {
+      Femenino: "Femenino",
+      Masculino: "Masculino",
+      "No binario": "No binario",
+      Otro: "Otro",
+      "Prefiero no decir": "Prefiero no decir",
+    },
+  },
+
   // Common / Shared
   common: {
     all: "Todos",

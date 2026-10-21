@@ -58,7 +58,7 @@ export default function WelcomeQuiz() {
 
     function handleStart() {
         setLoading(true)
-        setTimeout(() => router.push("/quiz"), 2800)
+        setTimeout(() => router.push("/expo"), 2800)
     }
 
     if (loading) {

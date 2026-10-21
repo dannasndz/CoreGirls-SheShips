@@ -45,7 +45,7 @@ export default function Navbar() {
       .catch(() => {});
   }, [session?.user]);
 
-  if (pathname === "/quiz" || pathname === "/preQuiz") return null;
+  if (pathname === "/quiz" || pathname === "/preQuiz" || pathname === "/expo") return null;
 
   const navLinks = hasCompletedQuiz
     ? baseLinks

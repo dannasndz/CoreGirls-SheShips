@@ -8,9 +8,15 @@ import { questions as questionsEn } from "@/data/quizQuestions"
 import { questionsEs } from "@/data/quizQuestions.es"
 import Question from "@/app/quiz/_components/question"
 import ProgressBar from "@/app/quiz/_components/progressBar"
-import { StemType, Score } from "@/types/quiz"
+import { StemType } from "@/types/quiz"
 import { careers as careersEn } from "@/data/careers"
 import { careersEs } from "@/data/careers.es"
+import { pickCareer } from "@/lib/quiz-scoring"
+import {
+    EXPO_STORAGE_KEY,
+    validateExpoDemographics,
+    type ExpoDemographics,
+} from "@/lib/expo-validation"
 import Grainient from '@/components/Grainient';
 import { Sparkles } from "lucide-react";
 import { useI18n } from "@/lib/i18n"
@@ -18,24 +24,27 @@ import { useI18n } from "@/lib/i18n"
 const questionsMap = { en: questionsEn, es: questionsEs } as const
 const careersMap = { en: careersEn, es: careersEs } as const
 
-function pickCareer(answers: Record<number, StemType>, careers: typeof careersEn) {
-    const score: Score = { S: 0, T: 0, E: 0, M: 0 }
-    for (const type of Object.values(answers)) {
-        score[type]++
+function readExpoDemographics(): ExpoDemographics | null {
+    try {
+        const raw = sessionStorage.getItem(EXPO_STORAGE_KEY)
+        if (!raw) return null
+        const parsed = JSON.parse(raw)
+        const result = validateExpoDemographics(parsed)
+        return result.ok ? result.data : null
+    } catch {
+        return null
     }
+}
 
-    const topType = (Object.entries(score) as [StemType, number][])
-        .sort((a, b) => b[1] - a[1])[0][0]
-
-    const categoryCareers = careers.filter((c) => c.category === topType)
-    const growthCareers = categoryCareers.filter((c) => c.growth)
-    const pool = growthCareers.length > 0 ? growthCareers : categoryCareers
-
-    // Deterministic pick based on total score hash
-    const hash = Object.values(answers).reduce((acc, t) => acc + t.charCodeAt(0), 0)
-    const picked = pool[hash % pool.length]
-
-    return { career: picked, score, topType }
+function makeSubmissionId(): string {
+    try {
+        if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+            return crypto.randomUUID()
+        }
+    } catch {
+        // ignore
+    }
+    return `${Date.now()}-${Math.random().toString(36).slice(2)}`
 }
 
 export default function QuizPage() {
@@ -95,14 +104,22 @@ export default function QuizPage() {
         return () => clearInterval(interval)
     }, [showLoader])
 
-    function navigateToResults() {
-        const { career, score } = pickCareer(answers, careers)
+    // En modo expo, si faltan los datos demográficos, regresar al formulario.
+    useEffect(() => {
+        if (typeof window === "undefined") return
+        const isExpo =
+            new URLSearchParams(window.location.search).get("expo") === "1"
+        if (isExpo && !readExpoDemographics()) {
+            router.replace("/expo")
+        }
+    }, [router])
 
-        fetch("/api/quiz/submit", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ answers, career: career.id }),
-        }).catch(() => {})
+    async function navigateToResults() {
+        const isExpoMode =
+            typeof window !== "undefined" &&
+            new URLSearchParams(window.location.search).get("expo") === "1"
+
+        const { career, score } = pickCareer(answers, careers)
 
         const params = new URLSearchParams({
             career: career.id,
@@ -110,8 +127,59 @@ export default function QuizPage() {
             T: String(score.T),
             E: String(score.E),
             M: String(score.M),
+            ...(isExpoMode ? { expo: "1" } : {}),
         })
         resultUrl.current = `/quiz/result?${params.toString()}`
+
+        if (isExpoMode) {
+            const demographics = readExpoDemographics()
+            if (!demographics) {
+                router.replace("/expo")
+                return
+            }
+
+            setShowLoader(true)
+            const send = fetch("/api/expo/quiz", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    submissionId: makeSubmissionId(),
+                    locale,
+                    demographics,
+                    answers,
+                }),
+                keepalive: true,
+            }).catch(() => {})
+
+            // Híbrido: si la usuaria tiene sesión, también guarda en su perfil.
+            const saveProfile = fetch("/api/quiz/submit", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ answers, career: career.id }),
+            }).catch(() => {})
+
+            await Promise.all([
+                send,
+                saveProfile,
+                new Promise((resolve) => setTimeout(resolve, 3500)),
+            ])
+
+            try {
+                sessionStorage.removeItem(EXPO_STORAGE_KEY)
+            } catch {
+                // ignore
+            }
+
+            router.push(resultUrl.current)
+            return
+        }
+
+        fetch("/api/quiz/submit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ answers, career: career.id }),
+        }).catch(() => {})
+
         setShowLoader(true)
         setTimeout(() => router.push(resultUrl.current), 3500)
     }

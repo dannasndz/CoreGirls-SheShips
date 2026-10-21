@@ -31,6 +31,7 @@ function QuizResultContent() {
     const categoryLabels = categoryLabelsMap[locale]
     const searchParams = useSearchParams()
     const careerId = searchParams.get("career")
+    const isExpo = searchParams.get("expo") === "1"
     const scores = {
         S: Number(searchParams.get("S") || 0),
         T: Number(searchParams.get("T") || 0),
@@ -47,7 +48,7 @@ function QuizResultContent() {
                     <h1 className="text-3xl font-extrabold text-dark-purple mb-4 font-heading">
                         {t("quizResult.noResult")}
                     </h1>
-                    <Link href="/quiz" className="text-girly-purple font-semibold underline">
+                    <Link href={isExpo ? "/expo" : "/quiz"} className="text-girly-purple font-semibold underline">
                         {t("quizResult.takeAgain")}
                     </Link>
                 </div>
@@ -93,7 +94,7 @@ function QuizResultContent() {
                         </p>
 
                         <Link
-                            href="/preQuiz"
+                            href={isExpo ? "/expo" : "/preQuiz"}
                             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full
                                 bg-white/15 border border-white/30 text-white font-bold text-sm
                                 hover:bg-white/25 hover:border-white/50

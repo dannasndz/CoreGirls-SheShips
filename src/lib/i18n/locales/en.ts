@@ -650,6 +650,41 @@ const en = {
     },
   },
 
+  // Expo (anonymous registration for science expo)
+  expo: {
+    title: "Before we start",
+    subtitle:
+      "Tell us a little about yourself. This helps us understand who takes part in the quiz.",
+    age: "Age *",
+    agePlaceholder: "e.g. 15",
+    gender: "Gender",
+    optional: "Optional",
+    school: "School *",
+    schoolPlaceholder: "e.g. Lázaro Cárdenas High School",
+    level: "Education level *",
+    grade: "Grade / semester *",
+    municipality: "Municipality *",
+    other: "Other",
+    select: "Select an option",
+    start: "Start quiz",
+    privacy:
+      "We don't ask for your name or email. Your answers are used only for anonymous event statistics.",
+    errorInvalid: "Please check your data: age (5–99) and required fields.",
+    levels: {
+      Primaria: "Elementary",
+      Secundaria: "Middle school",
+      Preparatoria: "High school",
+      Universidad: "University",
+    },
+    genders: {
+      Femenino: "Female",
+      Masculino: "Male",
+      "No binario": "Non-binary",
+      Otro: "Other",
+      "Prefiero no decir": "Prefer not to say",
+    },
+  },
+
   // Common / Shared
   common: {
     all: "All",
