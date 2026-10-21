@@ -55,7 +55,7 @@ export function SatisfactionCard({
   };
 
   return (
-    <div className="bg-cream px-6 py-10 sm:px-10 md:px-16">
+    <div className="bg-linear-to-br from-girly-purple to-strong-purple px-6 py-10 sm:px-10 md:px-16">
       <div className="max-w-3xl mx-auto rounded-3xl bg-white border border-[#E5E0D9] shadow-sm p-6 sm:p-8">
         {done ? (
           <div className="flex flex-col items-center text-center gap-2 py-4">
